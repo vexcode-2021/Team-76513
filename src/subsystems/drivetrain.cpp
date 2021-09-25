@@ -1,4 +1,5 @@
 #include "drivetrain.hpp"
+#include "../design_consts.hpp"
 
 using namespace CONFIG_DRIVE;
 using namespace okapi;
@@ -7,7 +8,7 @@ Drivetrain::Drivetrain()
 {
     chassis =
         okapi::ChassisControllerBuilder()
-            .withMotors(okapi::MotorGroup(std::initializer_list<okapi::Motor>{1}), okapi::MotorGroup(std::initializer_list<okapi::Motor>{-9}))
+            .withMotors(okapi::MotorGroup(HARDWARE::drive_motors_left), okapi::MotorGroup(HARDWARE::drive_motors_right))
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(okapi::AbstractMotor::gearset::blue, {{4_in, 11.5_in}, okapi::imev5BlueTPR})
             .build();
