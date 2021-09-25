@@ -1,3 +1,5 @@
+#pragma once
+
 namespace CONFIG_DRIVE
 {
     enum MODE
@@ -46,4 +48,9 @@ namespace ButtonMapping
     const ControllerDigital claw_arm_up = ControllerDigital::R1;
     const ControllerDigital claw_arm_down = ControllerDigital::R2;
 
+}
+
+namespace CLAW_CONF
+{
+    const float velocity_voltage = 8;
 }
