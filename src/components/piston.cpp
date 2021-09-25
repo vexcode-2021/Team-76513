@@ -1,8 +1,8 @@
 #include "piston.hpp"
 
-Piston::Piston(const char* port, bool reversed)
+Piston::Piston(const char port, bool reversed)
 {
-    this->port = pros::ADIDigitalOut(port[0]);
+    this->port = pros::ADIDigitalOut(port);
     this->reversed = reversed;
 }
 
