@@ -67,6 +67,46 @@ void competition_initialize() {}
  */
 void autonomous() {}
 
+void opctrl_drivetrain()
+{
+	Drivetrain drive = Drivetrain();
+	okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
+
+	while (true)
+	{
+
+		// if button is pressed
+		if (pros::Task::notify_take(true, 0))
+			drive.toggleMode();
+
+		drive.drive(c);
+		pros::delay(CONFIG_DRIVE::delay_msec);
+	}
+}
+
+const uint32_t claw_task_up = 1 << 20;
+const uint32_t claw_task_down = 1 << 21;
+const uint32_t claw_task_toggle = 1 << 22;
+void opctrl_claw()
+{
+
+	Claw claw = Claw();
+	while (true)
+	{
+		uint32_t val = pros::Task::notify_take(true, TIMEOUT_MAX);
+
+		if (!((val && claw_task_up) ^ (val && claw_task_down)))
+			claw.ArmMove(0);
+		else if (val && claw_task_up)
+			claw.ArmMove(CLAW_CONF::velocity_voltage);
+		else if (val && claw_task_down)
+			claw.ArmMove(-CLAW_CONF::velocity_voltage);
+
+		if (val && claw_task_toggle)
+			claw.Toggle();
+	}
+}
+
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -82,85 +122,28 @@ void autonomous() {}
  */
 void opcontrol()
 {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	okapi::Controller controller;
-
-	bool arcade;
-
-	pros::Task drive_task = pros::Task(drivetrain); // Chassis Controller - lets us drive the robot around with open- or closed-loop control
-
-	pros::Motor claw_mtr(11, true);
-	pros::Motor claw_mtr2(19);
-	claw_mtr.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	claw_mtr2.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-
-	claw;
+	pros::Task drive_task = pros::Task(opctrl_drivetrain);
+	pros::Task claw_task = pros::Task(opctrl_claw);
 
 	while (true)
 	{
-		//pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		//				 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		//				 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		//int left = master.get_analog(ANALOG_LEFT_Y);
-		//int right = master.get_analog(ANALOG_RIGHT_Y);
 
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-		{
-			printf("r2\n");
-			claw_mtr.move(90);
-			claw_mtr2.move(90);
-		}
-		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-		{
-			printf("r1\n");
-			claw_mtr.move(-90);
-			claw_mtr2.move(-90);
-		}
-		else
-		{
-			claw_mtr.move(0);
-			claw_mtr2.move(0);
-		}
+		static okapi::ControllerButton drive_mode_button = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
 
-		//left_mtr = left;
-		//right_mtr = right;
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
-		{
-			printf("pressed\n");
-			claw.Toggle();
-		}
-
-		static okapi::ControllerButton a = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
-
-		if (a.changedToPressed())
+		if (drive_mode_button.changedToPressed())
 			drive_task.notify();
 
-		pros::delay(ButtonMapping::delay_msec);
-	}
-}
+		static okapi::ControllerButton claw_hook_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_hook_button);
 
-Drivetrain drive = Drivetrain();
+		static okapi::ControllerButton claw_up_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_arm_up);
 
-const int drive_button_press = 1 << 20;
-void drivetrain()
-{
-	okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
-	while (true)
-	{
+		static okapi::ControllerButton claw_down_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_arm_down);
 
-		// if button is pressed
-		if (pros::Task::notify_take(true, 0))
-			drive.toggleMode();
-
-		drive.drive(c);
-		pros::delay(CONFIG_DRIVE::delay_msec);
-	}
-}
-
-void buttons()
-{
-	while (true)
-	{
+		claw_task.notify_ext(
+			claw_hook_button.changedToPressed() * claw_task_toggle |
+				claw_up_button.changedToPressed() * claw_task_up |
+				claw_down_button.changedToPressed() * claw_task_down,
+			pros::E_NOTIFY_ACTION_BITS, NULL);
 
 		pros::delay(ButtonMapping::delay_msec);
 	}
