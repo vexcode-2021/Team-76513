@@ -98,9 +98,9 @@ void opctrl_claw()
 		if (!((val && claw_task_up) ^ (val && claw_task_down)))
 			claw.ArmMove(0);
 		else if (val && claw_task_up)
-			claw.ArmMove(CLAW_CONF::velocity_voltage);
+			claw.ArmMove(+.5);
 		else if (val && claw_task_down)
-			claw.ArmMove(-CLAW_CONF::velocity_voltage);
+			claw.ArmMove(-.5);
 
 		if (val && claw_task_toggle)
 			claw.Toggle();

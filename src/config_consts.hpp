@@ -1,3 +1,4 @@
+#include "design_consts.hpp"
 #pragma once
 
 namespace CONFIG_DRIVE
@@ -53,5 +54,6 @@ namespace ButtonMapping
 
 namespace CLAW_CONF
 {
-    const float velocity_voltage = 8;
+    using namespace okapi;
+    const QAngularSpeed arm_top_velocity = HARDWARE::claw_max_angle / 5_s;
 }
