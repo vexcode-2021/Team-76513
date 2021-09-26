@@ -80,7 +80,7 @@ void opctrl_drivetrain()
 			drive.toggleMode();
 
 		drive.drive(c);
-		pros::delay(CONFIG_DRIVE::delay_msec);
+		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
 	}
 }
 
@@ -145,6 +145,6 @@ void opcontrol()
 				claw_down_button.changedToPressed() * claw_task_down,
 			pros::E_NOTIFY_ACTION_BITS, NULL);
 
-		pros::delay(ButtonMapping::delay_msec);
+		pros::delay(ButtonMapping::delay.convert(1_ms));
 	}
 }

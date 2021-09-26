@@ -2,6 +2,7 @@
 
 namespace CONFIG_DRIVE
 {
+    using namespace okapi;
     enum MODE
     {
         DRIVE_MODE_TANK,
@@ -15,7 +16,7 @@ namespace CONFIG_DRIVE
     // default mode that the robot starts in
     const MODE DEFAULT_MODE = DRIVE_MODE_TANK;
 
-    const int delay_msec = 10;
+    const QTime delay = 10_ms;
 
 }
 
@@ -24,7 +25,7 @@ namespace ButtonMapping
 
     using namespace okapi;
 
-    const int delay_msec = 20;
+    const QTime delay = 20_ms;
 
     const ControllerId drive_controller = ControllerId::master;
 

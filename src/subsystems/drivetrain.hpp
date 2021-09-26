@@ -1,8 +1,6 @@
 #include "main.h"
 #include "../config_consts.hpp"
 
-//Drivetrain *drivetrain;
-
 class Drivetrain
 {
 private:
