@@ -2,23 +2,14 @@
 #include "subsystems/claw.hpp"
 #include "subsystems/drivetrain.hpp"
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button()
+Claw claw;
+Drivetrain drive;
+void claw_monitor()
 {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed)
+	while (true)
 	{
-		pros::lcd::set_text(2, "I was pressed!");
-	}
-	else
-	{
-		pros::lcd::clear_line(2);
+		claw.Protect();
+		pros::delay(1);
 	}
 }
 
@@ -30,10 +21,15 @@ void on_center_button()
  */
 void initialize()
 {
+	printf("init\n");
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	claw.init();
+	auto t = pros::Task(claw_monitor);
+
+	drive.init();
+	printf("inited\n");
 }
 
 /**
@@ -54,24 +50,12 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
+
 void autonomous() {}
 
 void opctrl_drivetrain()
 {
-	Drivetrain drive = Drivetrain();
 	okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
-
 	while (true)
 	{
 
@@ -84,47 +68,43 @@ void opctrl_drivetrain()
 	}
 }
 
-const uint32_t claw_task_up = 1 << 20;
-const uint32_t claw_task_down = 1 << 21;
-const uint32_t claw_task_toggle = 1 << 22;
+const uint32_t claw_task_up = 1 << 0;
+const uint32_t claw_task_down = 1 << 1;
+const uint32_t claw_task_toggle = 1 << 2;
 void opctrl_claw()
 {
 
-	Claw claw = Claw();
 	while (true)
 	{
 		uint32_t val = pros::Task::notify_take(true, TIMEOUT_MAX);
+		//if (val != 0)
+		//{
+		//	printf("%x %x %x %x\n", val, claw_task_up, claw_task_down, claw_task_toggle);
+		//	printf("%x\n", val & claw_task_up);
+		//	printf("%x\n", val & claw_task_down);
+		//	printf("%x\n", val & claw_task_toggle);
+		//	//printf("%x\n", false * 0b010);
+		//	//printf("%x\n", true * 0b010);
+		//}
 
-		if (!((val && claw_task_up) ^ (val && claw_task_down)))
-			claw.ArmMove(0);
-		else if (val && claw_task_up)
-			claw.ArmMove(+.5);
-		else if (val && claw_task_down)
-			claw.ArmMove(-.5);
+		if (!((val & claw_task_up) ^ (val & claw_task_down)))
+			claw.ArmSoftStop();
+		else if (val & claw_task_up)
+			claw.ArmUp();
+		else if (val & claw_task_down)
+			claw.ArmDown();
 
-		if (val && claw_task_toggle)
+		if (val & claw_task_toggle)
 			claw.Toggle();
 	}
 }
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
 void opcontrol()
 {
 	pros::Task drive_task = pros::Task(opctrl_drivetrain);
 	pros::Task claw_task = pros::Task(opctrl_claw);
 
+	printf("opinited\n");
 	while (true)
 	{
 
@@ -139,11 +119,22 @@ void opcontrol()
 
 		static okapi::ControllerButton claw_down_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_arm_down);
 
-		claw_task.notify_ext(
-			claw_hook_button.changedToPressed() * claw_task_toggle |
-				claw_up_button.changedToPressed() * claw_task_up |
-				claw_down_button.changedToPressed() * claw_task_down,
-			pros::E_NOTIFY_ACTION_BITS, NULL);
+		if (claw_hook_button.changed() || claw_up_button.changed() || claw_down_button.changed())
+
+			claw_task.notify_ext(
+				claw_hook_button.isPressed() * claw_task_toggle |
+					claw_up_button.isPressed() * claw_task_up |
+					claw_down_button.isPressed() * claw_task_down,
+				pros::E_NOTIFY_ACTION_BITS, NULL);
+
+		//static int count = 0;
+		//	if (count % 40 == 0)
+		//	{
+		//		printf("%x\n", claw_hook_button.changedToPressed() * claw_task_toggle |
+		//						 claw_up_button.changedToPressed() * claw_task_up |
+		//						 claw_down_button.changedToPressed() * claw_task_down);
+		//	}
+		//count++;
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));
 	}

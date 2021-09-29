@@ -6,6 +6,10 @@ using namespace okapi;
 
 Drivetrain::Drivetrain()
 {
+}
+
+void Drivetrain::init()
+{
     chassis =
         okapi::ChassisControllerBuilder()
             .withMotors(okapi::MotorGroup(HARDWARE::drive_motors_left), okapi::MotorGroup(HARDWARE::drive_motors_right))

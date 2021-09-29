@@ -9,6 +9,7 @@ private:
 
 public:
     Drivetrain();
+    void init();
 
     void drive(okapi::Controller driver_controller);
 
