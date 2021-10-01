@@ -6,11 +6,13 @@ Claw claw;
 Drivetrain drive;
 void claw_monitor()
 {
-	while (true)
-	{
-		claw.Protect();
-		pros::delay(1);
-	}
+	if (HARDWARE::LIMIT_SWITCHES.size() > 0)
+		while (true)
+		{
+			claw.Protect();
+			// 5 millis is a fraction of a degree of arm movement, it's fine to wait that long between checks
+			pros::delay(5);
+		}
 }
 
 /**
@@ -49,7 +51,6 @@ void disabled() {}
  * starts.
  */
 void competition_initialize() {}
-
 
 void autonomous() {}
 
