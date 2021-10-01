@@ -2,15 +2,34 @@
 #include "../design_consts.hpp"
 #include "../config_consts.hpp"
 
+//static okapi::ADIButton **buttonsFromStr(const char *a)
+//{
+//    static okapi::ADIButton *ret[HARDWARE::CLAW_NUM_MOTORS];
+//
+//    int count = 0;
+//    while (a[count++] != '\0')
+//        *ret[count - 1] = okapi::ADIButton(*a);
+//    return ret;
+//}
+//
+//static okapi::Motor **motorsFromInitList(std::initializer_list<okapi::Motor> a)
+//{
+//
+//    const int s = a.size();
+//    static okapi::Motor *ret[s];
+//    int count = 0;
+//    for (auto i : a)
+//        *ret[count++] = i;
+//    return ret;
+//}
+
 class Claw
 {
 private:
     Piston piston = Piston(HARDWARE::CLAW_PORT, HARDWARE::CLAW_REVERSED);
     bool state = false;
 
-    okapi::MotorGroup mtr = HARDWARE::CLAW_ARM_MOTORS;
-
-    okapi::ADIButton limit = okapi::ADIButton(HARDWARE::CLAW_BOTTOM_LIMIT_SWITCH);
+    okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
     bool currentlyLTOperating = false;
 
@@ -61,25 +80,46 @@ public:
     void ArmSoftStop()
     {
         printf("ArmSoft Stop: %d\n", !currentlyLTOperating);
-        if (!currentlyLTOperating)
+        //if (!currentlyLTOperating)
+        //maybe not needed now that things r only called on change???
             ArmMove(0);
     }
 
     void ArmTop(bool await = false)
     {
-        mtr.moveAbsolute(HARDWARE::claw_max_angle.convert(1_deg), CLAW_CONF::arm_top_velocity.convert(1_rpm));
+        ArmUp();
+        //lets just try relying on protect to take care of this for once
+        //        mtr.moveAbsolute(HARDWARE::claw_max_angle.convert(1_deg), CLAW_CONF::arm_top_velocity.convert(1_rpm));
         //if (await)
     };
 
     void ArmBottom()
     {
-        mtr.moveAbsolute(0, CLAW_CONF::arm_top_velocity.convert(1_rpm));
+        ArmDown();
+        //protect take care should
+        //mtr.moveAbsolute(0, CLAW_CONF::arm_top_velocity.convert(1_rpm));
     };
 
-    void Protect()
+    static void Protect()
     {
-        if (limit.changedToPressed()) //TODO tmrw
-            ArmMove(0);
-        mtr.tarePosition();
-    };
+        for (auto const &x : HARDWARE::LIMIT_SWITCHES)
+            //if switch is pressed AND is moving down
+            if (pros::c::adi_digital_read(x.first) &&
+                pros::c::motor_get_actual_velocity(x.first) * HARDWARE::claw_arm_gear_ratio < -0.1)
+                for (auto l : x.second)
+                {
+                    pros::c::motor_move_voltage(l, 0);
+                    pros::c::motor_tare_position(l);
+                }
+
+        const double max_ang = (HARDWARE::claw_max_angle / HARDWARE::claw_arm_gear_ratio).convert(1_deg);
+        for (auto i : HARDWARE::CLAW_ARM_MOTORS)
+        {
+            double gear_velocity_rpm = i.getActualVelocity() * HARDWARE::claw_arm_gear_ratio;
+
+            //stops if beyond limit AND moving up
+            if (i.getPosition() > max_ang && gear_velocity_rpm > 0.1)
+                i.moveVoltage(0);
+        }
+    }
 };

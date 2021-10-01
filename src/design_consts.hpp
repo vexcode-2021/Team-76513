@@ -13,14 +13,17 @@ namespace HARDWARE
     const okapi::QAngle claw_max_angle = 90_deg; //angle from the ground to the angle that is high enough to drop the MOGO on the platform
                                                  //TODO
 
-
-//encoderUnits don't matter since they're override anyway; gearset has to be set correctly
-    const auto CLAW_ARM_MOTORS = okapi::MotorGroup({
+    //encoderUnits don't matter since they're override anyway; gearset has to be set correctly
+    const auto CLAW_ARM_MOTORS = {
         okapi::Motor(11, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
         okapi::Motor(19, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
-    });
+    };
 
-    const auto CLAW_BOTTOM_LIMIT_SWITCH = 'B';
+    //there needs to be one per motor above
+    const std::map<char, std::initializer_list<int>> LIMIT_SWITCHES = {
+        {'B', {11, 19}},
+    };
+
 }
 
 const int MAX_MOTOR_VOLTAGE = 12;
