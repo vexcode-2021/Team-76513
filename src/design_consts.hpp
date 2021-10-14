@@ -3,25 +3,26 @@
 namespace HARDWARE
 {
 
-    const char CLAW_PORT = 'A';
+    const char CLAW_PORT = 'F';
     const bool CLAW_REVERSED = false;
 
-    const std::initializer_list<okapi::Motor> drive_motors_left = {1};
-    const std::initializer_list<okapi::Motor> drive_motors_right = {-9};
+    const std::initializer_list<okapi::Motor> drive_motors_left = {14, 11};
+    const std::initializer_list<okapi::Motor> drive_motors_right = {-13, -12};
 
     const double claw_arm_gear_ratio = 12.0 / 84.0;
     const okapi::QAngle claw_max_angle = 90_deg; //angle from the ground to the angle that is high enough to drop the MOGO on the platform
                                                  //TODO
 
-    //encoderUnits don't matter since they're override anyway; gearset has to be set correctly
+    //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
     const auto CLAW_ARM_MOTORS = {
-        okapi::Motor(11, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
-        okapi::Motor(19, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
+        okapi::Motor(15, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
+        okapi::Motor(16, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
     };
 
     //there needs to be one per motor above
-    const std::map<char, std::initializer_list<int>> LIMIT_SWITCHES = {
-        {'B', {11, 19}},
+    const std::initializer_list<std::pair<char, int>> LIMIT_SWITCHES = {
+        {'H', 15},
+        {'G', -16},
     };
 
 }

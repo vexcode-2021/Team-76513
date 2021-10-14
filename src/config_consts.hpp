@@ -31,13 +31,13 @@ namespace ButtonMapping
     const ControllerId drive_controller = ControllerId::master;
 
     const ControllerAnalog tank_drive[] = {
-        ControllerAnalog::leftX,
         ControllerAnalog::leftY,
+        ControllerAnalog::rightY,
     };
 
     const ControllerAnalog arcade_drive[] = {
         ControllerAnalog::leftY,
-        ControllerAnalog::leftX,
+        ControllerAnalog::rightX,
     };
 
     const ControllerDigital drive_mode_switch = ControllerDigital::A;
