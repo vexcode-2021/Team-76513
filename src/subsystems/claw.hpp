@@ -32,6 +32,7 @@ private:
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
     bool currentlyLTOperating = false;
+    int curr = 0;
 
 public:
     Claw() {}
@@ -61,33 +62,44 @@ public:
 
     void ArmMove(double v)
     {
-        if (v > 0.001 | v < -0.001 | true)
-            printf("armmove: %f\n", v * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        printf("armmove: %f\n", v * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
         v = v > 1 ? 1 : v;
         int ans = mtr.moveVelocity(v * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
     };
 
+    void ArmSet(double v)
+    {
+        mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+    }
+
     void ArmUp()
     {
-        printf("ArmUp\n");
-        ArmMove(.5);
+        ;
+        if (curr < CLAW_CONF::ARM_POS_LEN - 1)
+        {
+            printf("ArmUp\n");
+            ArmSet(CLAW_CONF::armPos[++curr]);
+        }
     }
     void ArmDown()
     {
-        printf("ArmDown\n");
-        ArmMove(-.5);
+        if (curr > 0)
+        {
+            printf("ArmDown\n");
+            ArmSet(CLAW_CONF::armPos[--curr]);
+        }
     }
     void ArmSoftStop()
     {
-        printf("ArmSoft Stop: %d\n", !currentlyLTOperating);
+        printf("ArmSoft Stop: %d\n", CLAW_CONF::armPos[curr]);
         //if (!currentlyLTOperating)
         //maybe not needed now that things r only called on change???
-            ArmMove(0);
+        //ArmMove(0);
     }
 
     void ArmTop(bool await = false)
     {
-        ArmUp();
+        ArmSet(CLAW_CONF::armPos[CLAW_CONF::ARM_POS_LEN - 1]);
         //lets just try relying on protect to take care of this for once
         //        mtr.moveAbsolute(HARDWARE::claw_max_angle.convert(1_deg), CLAW_CONF::arm_top_velocity.convert(1_rpm));
         //if (await)
@@ -95,31 +107,42 @@ public:
 
     void ArmBottom()
     {
-        ArmDown();
-        //protect take care should
-        //mtr.moveAbsolute(0, CLAW_CONF::arm_top_velocity.convert(1_rpm));
+        ArmMove(-.5);
     };
 
     static void Protect()
     {
-        for (auto const &x : HARDWARE::LIMIT_SWITCHES)
-            //if switch is pressed AND is moving down
-            if (pros::c::adi_digital_read(x.first) &&
-                pros::c::motor_get_actual_velocity(x.first) * HARDWARE::claw_arm_gear_ratio < -0.1)
-                for (auto l : x.second)
-                {
-                    pros::c::motor_move_voltage(l, 0);
-                    pros::c::motor_tare_position(l);
-                }
+        static int count = 0;
+        count++;
 
         const double max_ang = (HARDWARE::claw_max_angle / HARDWARE::claw_arm_gear_ratio).convert(1_deg);
-        for (auto i : HARDWARE::CLAW_ARM_MOTORS)
-        {
-            double gear_velocity_rpm = i.getActualVelocity() * HARDWARE::claw_arm_gear_ratio;
 
-            //stops if beyond limit AND moving up
-            if (i.getPosition() > max_ang && gear_velocity_rpm > 0.1)
-                i.moveVoltage(0);
+        for (auto const &x : HARDWARE::LIMIT_SWITCHES)
+        {
+
+            int port_num = x.second;
+
+            double vel = (port_num / abs(port_num)) * pros::c::motor_get_actual_velocity(abs(port_num)) * HARDWARE::claw_arm_gear_ratio;
+
+            double pos = pros::c::motor_get_position(abs(port_num));
+
+            if (!(count % 200))
+            {
+                printf("%c %d %f %f %d %d\n", x.first, port_num, vel, pos, count, pros::c::adi_digital_read(x.first));
+            }
+
+            //if switch is pressed AND is moving down
+            if (vel < -0.01 && pros::c::adi_digital_read(x.first))
+            {
+                printf("stopping %d\n", port_num);
+                pros::c::motor_move_voltage(abs(port_num), 0);
+                pros::c::motor_tare_position(abs(port_num));
+            }
+
+            if (vel > 0.01 && pos >= max_ang)
+            {
+                pros::c::motor_move_voltage(abs(port_num), 0);
+            }
         }
     }
 };

@@ -55,5 +55,8 @@ namespace ButtonMapping
 namespace CLAW_CONF
 {
     using namespace okapi;
-    const QAngularSpeed arm_top_velocity = HARDWARE::claw_max_angle / 5_s;
+    const QAngularSpeed arm_top_velocity = 90_deg / 2_s;
+
+    const int armPos[] = {-10000, 15, 59, 69};
+    const int ARM_POS_LEN = 4;
 }
