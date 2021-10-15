@@ -14,8 +14,9 @@ void Drivetrain::init()
         okapi::ChassisControllerBuilder()
             .withMotors(okapi::MotorGroup(HARDWARE::drive_motors_left), okapi::MotorGroup(HARDWARE::drive_motors_right))
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
-            .withDimensions(okapi::AbstractMotor::gearset::blue, {{4_in, 11.5_in}, okapi::imev5BlueTPR})
-            .build();
+            .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
+            .withOdometry()
+            .buildOdometry();
 }
 
 void Drivetrain::drive(Controller m_c)
