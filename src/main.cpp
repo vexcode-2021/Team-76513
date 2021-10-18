@@ -11,7 +11,8 @@ void claw_monitor()
 		{
 			claw.Protect();
 			// 5 millis is a fraction of a degree of arm movement, it's fine to wait that long between checks
-			pros::delay(5);
+			// its not says broken limit switch arms
+			pros::delay(1);
 		}
 }
 

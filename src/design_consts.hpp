@@ -14,7 +14,7 @@ namespace HARDWARE
     const std::initializer_list<okapi::Motor> drive_motors_right = {-13, -12};
 
     const double claw_arm_gear_ratio = 12.0 / 84.0;
-    const okapi::QAngle claw_max_angle = 90_deg; //angle from the ground to the angle that is high enough to drop the MOGO on the platform
+    const okapi::QAngle claw_max_angle = 95_deg; //angle from the ground to the angle that is high enough to drop the MOGO on the platform
                                                  //TODO
 
     //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly

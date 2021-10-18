@@ -32,7 +32,7 @@ private:
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
     bool currentlyLTOperating = false;
-    int curr = 0;
+    int curr = 1;
 
 public:
     Claw() {}
