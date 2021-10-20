@@ -27,7 +27,6 @@ class Claw
 {
 private:
     Piston piston = Piston(HARDWARE::CLAW_PORT, HARDWARE::CLAW_REVERSED);
-    bool state = false;
 
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
@@ -43,21 +42,19 @@ public:
     };
     void Clasp()
     {
-        state = true;
         printf("CLAW: CLASPING\n");
         return this->piston.extend();
     };
     void Leave()
     {
-        state = false;
 
         printf("CLAW: LEAVING\n");
-        return this->piston.retract();
+        this->piston.retract();
     };
     void Toggle()
     {
-        state ^= 1;
-        return state ? this->Clasp() : this->Leave();
+        printf("CLAW: TOGGLE\n");
+        this->piston.toggle();
     }
 
     void ArmMove(double v)
