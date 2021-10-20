@@ -66,7 +66,11 @@ public:
 
     void ArmSet(double v)
     {
-        mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        int code = mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        if (code != 1)
+        {
+            printf("AAAAAAAAAAAAAAAAAAA %d\n", code);
+        }
     }
 
     void ArmUp()
@@ -86,6 +90,26 @@ public:
             ArmSet(CLAW_CONF::armPos[--curr]);
         }
     }
+
+    void WaitUntilSettled()
+    {
+        const auto adjustedvel = CLAW_CONF::min_zeroed_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio;
+        printf("%f\n", adjustedvel);
+        while (mtr.getActualVelocity() < -adjustedvel || mtr.getActualVelocity() > adjustedvel)
+        {
+            pros::delay(10);
+        }
+    }
+
+    void ArmSetNum(const int n)
+    {
+        if (n >= 0 && n < CLAW_CONF::ARM_POS_LEN)
+        {
+            curr = n;
+            ArmSet(CLAW_CONF::armPos[n]);
+        }
+    }
+
     void ArmSoftStop()
     {
         printf("ArmSoft Stop: %d\n", CLAW_CONF::armPos[curr]);
