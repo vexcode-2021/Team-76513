@@ -1,6 +1,14 @@
 #include "piston.hpp"
 
-Piston::Piston(const char port, bool reversed)
+Piston::Piston()
+{
+}
+
+ Piston::Piston(const char port, bool reversed)
+{
+    init(port, reversed);
+}
+void Piston::init(const char port, bool reversed)
 {
     this->port = pros::ADIDigitalOut(port);
     this->reversed = reversed;
@@ -8,16 +16,26 @@ Piston::Piston(const char port, bool reversed)
 
 void Piston::retract()
 {
-    int err = this->port.set_value(true ^ this->reversed);
-    if (err != 1)
-    {
-        printf("AAAAA\n");
-    }
+
+    state = true;
+    apply();
 }
 
 void Piston::extend()
 {
-    int err = this->port.set_value(false ^ this->reversed);
+
+    state = false;
+    apply();
+}
+
+void Piston::toggle()
+{
+    state ^= 1;
+    apply();
+}
+void Piston::apply()
+{
+    int err = this->port.set_value(state ^ this->reversed);
     if (err != 1)
     {
         printf("AAAAA\n");
