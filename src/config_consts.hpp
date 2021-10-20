@@ -12,10 +12,10 @@ namespace CONFIG_DRIVE
     };
 
     //don't allow changing the mode from default
-    const bool FIXED_MODE = false;
+    const bool FIXED_MODE = true;
 
     // default mode that the robot starts in
-    const MODE DEFAULT_MODE = DRIVE_MODE_TANK;
+    const MODE DEFAULT_MODE = DRIVE_MODE_ARCADE;
 
     const QTime delay = 10_ms;
 
@@ -55,8 +55,10 @@ namespace ButtonMapping
 namespace CLAW_CONF
 {
     using namespace okapi;
-    const QAngularSpeed arm_top_velocity = 90_deg / 2_s;
+    //const QAngularSpeed arm_top_velocity = 90_deg / 8_s;
+    const QAngularSpeed arm_top_velocity = 90_deg / 1.75_s;
+    const QAngularSpeed min_zeroed_velocity = 8_deg / 1_s;
 
-    const int armPos[] = {-10000, 9, 15, 77, 92};
+    const int armPos[] = {-10000, 6, 15, 77, 92};
     const int ARM_POS_LEN = 5;
 }
