@@ -4,11 +4,11 @@ namespace HARDWARE
 {
 
     const char CLAW_PORT = 'F';
-    const bool CLAW_REVERSED = false;
+    const bool CLAW_REVERSED = true;
 
     const auto drive_gearset = okapi::AbstractMotor::gearset::green;
 
-    const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11.5_in}, okapi::imev5BlueTPR};
+    const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11.5_in}, okapi::imev5GreenTPR};
 
     const std::initializer_list<okapi::Motor> drive_motors_left = {14, 11};
     const std::initializer_list<okapi::Motor> drive_motors_right = {-13, -12};
@@ -28,6 +28,9 @@ namespace HARDWARE
         {'H', 15},
         {'G', -16},
     };
+
+    const char ULTRASONIC_FRONT_OUTPUT = 'C';
+    const char ULTRASONIC_FRONT_INPUT = 'D';
 
 }
 
