@@ -145,22 +145,27 @@ public:
 
             double vel = (port_num / abs(port_num)) * pros::c::motor_get_actual_velocity(abs(port_num)) * HARDWARE::claw_arm_gear_ratio;
 
-            double pos = pros::c::motor_get_position(abs(port_num));
+            double pos = (port_num / abs(port_num)) * pros::c::motor_get_position(abs(port_num));
 
-            if (!(count % 200))
+            if (CLAW_CONF::PRINT)
             {
-                printf("%c %d %f %f %d %d\n", x.first, port_num, vel, pos, count, pros::c::adi_digital_read(x.first));
+                if (!(count % 400))
+                {
+                    printf("%c %d %f %f %d %d\n", x.first, port_num, vel, pos, count, pros::c::adi_digital_read(x.first));
+                }
             }
 
             //if switch is pressed AND is moving down
-            if (vel < -0.01 && pros::c::adi_digital_read(x.first))
+            if (pros::c::adi_digital_get_new_press(x.first))
             {
-                printf("stopping %d\n", port_num);
-                pros::c::motor_move_voltage(abs(port_num), 0);
+                if (CLAW_CONF::PRINT)
+                    printf("stopping %c %d %f %f %d %d\n", x.first, port_num, vel, pos, count, pros::c::adi_digital_read(x.first));
+
                 pros::c::motor_tare_position(abs(port_num));
+                pros::c::motor_move_absolute(abs(port_num), 0, 1);
             }
 
-            if (vel > 0.01 && pos >= max_ang)
+            if (vel > CLAW_CONF::min_zeroed_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio/10 && pos >= max_ang)
             {
                 pros::c::motor_move_voltage(abs(port_num), 0);
             }
