@@ -4,7 +4,7 @@ namespace HARDWARE
 {
 
     const char CLAW_PORT = 'F';
-    const bool CLAW_REVERSED = true;
+    const bool CLAW_REVERSED = false;
 
     const auto drive_gearset = okapi::AbstractMotor::gearset::green;
 
@@ -17,10 +17,12 @@ namespace HARDWARE
     const okapi::QAngle claw_max_angle = 95_deg; //angle from the ground to the angle that is high enough to drop the MOGO on the platform
                                                  //TODO
 
+    const auto CLAW_ARM_MOTOR1 = okapi::Motor(15, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
+    const auto CLAW_ARM_MOTOR2 = okapi::Motor(16, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
     //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
     const auto CLAW_ARM_MOTORS = {
-        okapi::Motor(15, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
-        okapi::Motor(16, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations),
+        CLAW_ARM_MOTOR1,
+        CLAW_ARM_MOTOR2,
     };
 
     //there needs to be one per motor above

@@ -50,6 +50,8 @@ namespace ButtonMapping
     const ControllerDigital claw_arm_up = ControllerDigital::R1;
     const ControllerDigital claw_arm_down = ControllerDigital::R2;
 
+    const ControllerDigital auton_run = ControllerDigital::Y;
+
 }
 
 namespace CLAW_CONF
@@ -59,6 +61,12 @@ namespace CLAW_CONF
     const QAngularSpeed arm_top_velocity = 90_deg / 1.75_s;
     const QAngularSpeed min_zeroed_velocity = 8_deg / 1_s;
 
-    const int armPos[] = {-10000, 6, 15, 77, 92};
+    const int armPos[] = {-10000, 7, 15, 77, 92};
     const int ARM_POS_LEN = 5;
+    const bool PRINT = false;
+}
+
+namespace CONF_AUTON
+{
+    const bool autonButton = false;
 }
