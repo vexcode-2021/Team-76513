@@ -2,27 +2,6 @@
 #include "../design_consts.hpp"
 #include "../config_consts.hpp"
 
-//static okapi::ADIButton **buttonsFromStr(const char *a)
-//{
-//    static okapi::ADIButton *ret[HARDWARE::CLAW_NUM_MOTORS];
-//
-//    int count = 0;
-//    while (a[count++] != '\0')
-//        *ret[count - 1] = okapi::ADIButton(*a);
-//    return ret;
-//}
-//
-//static okapi::Motor **motorsFromInitList(std::initializer_list<okapi::Motor> a)
-//{
-//
-//    const int s = a.size();
-//    static okapi::Motor *ret[s];
-//    int count = 0;
-//    for (auto i : a)
-//        *ret[count++] = i;
-//    return ret;
-//}
-
 class Claw
 {
 private:
@@ -32,6 +11,8 @@ private:
 
     bool currentlyLTOperating = false;
     int curr = 1;
+
+    int motors = 2;
 
 public:
     Claw() {}
@@ -56,17 +37,30 @@ public:
         printf("CLAW: TOGGLE\n");
         this->piston.toggle();
     }
-
-    void ArmMove(double v)
+    void Motor2Hold(bool t)
     {
-        printf("armmove: %f\n", v * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
-        v = v > 1 ? 1 : v;
-        int ans = mtr.moveVelocity(v * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
-    };
+        auto mtr = HARDWARE::CLAW_ARM_MOTOR2;
+        if (t)
+        {
+            mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
+            motors = 2;
+        }
+        else
+        {
+            mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
+            motors = 1;
+        }
+    }
 
     void ArmSet(double v)
     {
-        int code = mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        int code;
+        okapi::Motor mttr = HARDWARE::CLAW_ARM_MOTOR1;
+        if (motors == 1)
+            code = mttr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        else
+            code = mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+
         if (code != 1)
         {
             printf("AAAAAAAAAAAAAAAAAAA %d\n", code);
@@ -126,11 +120,6 @@ public:
         //if (await)
     };
 
-    void ArmBottom()
-    {
-        ArmMove(-.5);
-    };
-
     static void Protect()
     {
         static int count = 0;
@@ -162,10 +151,11 @@ public:
                     printf("stopping %c %d %f %f %d %d\n", x.first, port_num, vel, pos, count, pros::c::adi_digital_read(x.first));
 
                 pros::c::motor_tare_position(abs(port_num));
-                pros::c::motor_move_absolute(abs(port_num), 0, 1);
+                pros::c::motor_move_voltage(abs(port_num), 0);
+                //pros::c::motor_move_absolute(abs(port_num), 0, 1);
             }
 
-            if (vel > CLAW_CONF::min_zeroed_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio/10 && pos >= max_ang)
+            if (vel > CLAW_CONF::min_zeroed_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio / 10 && pos >= max_ang)
             {
                 pros::c::motor_move_voltage(abs(port_num), 0);
             }
