@@ -216,6 +216,31 @@ void auton_yellow()
 	claw.Leave();
 }
 
+void auton_yellow_mid() //TODO
+{
+	okapi::QLength d = 47_in;
+	drive.chassis->setMaxVelocity(120);
+	claw.ArmSet(2);
+	printf("1\n");
+	drive.chassis->moveDistanceAsync(d - 5_in);
+	drive.chassis->turnAngleAsync(-5_deg);
+	printf("2\n");
+	drive.chassis->waitUntilSettled();
+	drive.chassis->setMaxVelocity(60);
+	printf("4\n");
+	drive.chassis->moveDistance(6_in);
+
+	printf("REACHED\n");
+
+	claw.Clasp();
+	pros::delay(600);
+	drive.chassis->moveDistance(-(d - 5_in) / 2);
+	drive.chassis->turnAngle(-9_deg);
+	drive.chassis->moveDistance(-(d - 5_in) / 2);
+
+	claw.Leave();
+}
+
 void autonomous()
 {
 
@@ -257,6 +282,13 @@ void opctrl_drivetrain()
 		drive.drive(c);
 		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
 	}
+}
+
+void claw_bail()
+{
+	claw.Motor2Hold(false);
+	pros::delay(300);
+	claw.Motor2Hold(true);
 }
 
 const uint32_t claw_task_up = 1 << 0;
@@ -343,6 +375,12 @@ void opcontrol()
 		}
 
 		//TODO add claw bail button
+		static okapi::ControllerButton bail_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_bail);
+		if (bail_button.changedToPressed())
+		{
+
+			auto t = pros::Task(claw_bail);
+		}
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));
 	}
