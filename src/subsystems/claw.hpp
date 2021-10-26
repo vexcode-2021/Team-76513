@@ -32,10 +32,10 @@ public:
         printf("CLAW: LEAVING\n");
         this->piston.retract();
     };
-    void Toggle()
+    bool Toggle()
     {
         printf("CLAW: TOGGLE\n");
-        this->piston.toggle();
+        return !this->piston.toggle();
     }
     void Motor2Hold(bool t)
     {

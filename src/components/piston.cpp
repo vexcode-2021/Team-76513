@@ -28,10 +28,11 @@ void Piston::extend()
     apply();
 }
 
-void Piston::toggle()
+bool Piston::toggle()
 {
     state ^= 1;
     apply();
+    return state;
 }
 void Piston::apply()
 {

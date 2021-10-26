@@ -15,5 +15,5 @@ public:
 
     void extend();
     void retract();
-    void toggle();
+    bool toggle();
 };
