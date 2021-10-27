@@ -47,6 +47,71 @@ void on_screen_button()
 	}
 }
 
+void opctrl_drivetrain()
+{
+
+	okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
+	while (true)
+	{
+
+		// if button is pressed
+		if (pros::Task::notify_take(true, 0))
+			drive.toggleMode();
+		static int count = 0;
+		count++;
+
+		if (pros::competition::is_autonomous())
+		{
+			pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
+			continue;
+		}
+		drive.drive(c);
+
+		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
+	}
+}
+
+void claw_bail()
+{
+	claw.Motor2Hold(false);
+	pros::delay(300);
+	claw.Motor2Hold(true);
+}
+
+const uint32_t claw_task_up = 1 << 0;
+const uint32_t claw_task_down = 1 << 1;
+const uint32_t claw_task_toggle = 1 << 2;
+void opctrl_claw()
+{
+	while (true)
+	{
+		uint32_t val = pros::Task::notify_take(true, TIMEOUT_MAX);
+		//if (val != 0)
+		//{
+		//	printf("%x %x %x %x\n", val, claw_task_up, claw_task_down, claw_task_toggle);
+		//	printf("%x\n", val & claw_task_up);
+		//	printf("%x\n", val & claw_task_down);
+		//	printf("%x\n", val & claw_task_toggle);
+		//	//printf("%x\n", false * 0b010);
+		//	//printf("%x\n", true * 0b010);
+		//}
+
+		if (pros::competition::is_autonomous())
+			continue;
+		if (!((val & claw_task_up) ^ (val & claw_task_down)))
+			claw.ArmSoftStop();
+		else if (val & claw_task_up)
+			claw.ArmUp();
+		else if (val & claw_task_down)
+			claw.ArmDown();
+
+		if (val & claw_task_toggle)
+			claw.Toggle();
+	}
+}
+
+pros::Task *drive_task = nullptr;
+pros::Task *claw_task = nullptr;
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -62,6 +127,8 @@ void initialize()
 	auto t = pros::Task(claw_monitor);
 
 	drive.init();
+	drive_task = new pros::Task(opctrl_drivetrain);
+	claw_task = new pros::Task(opctrl_claw);
 
 	printf("inited\n");
 }
@@ -269,64 +336,18 @@ void autonomous()
 	claw.Motor2Hold(true);
 }
 
-void opctrl_drivetrain()
-{
-	okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
-	while (true)
-	{
-
-		// if button is pressed
-		if (pros::Task::notify_take(true, 0))
-			drive.toggleMode();
 
 		drive.drive(c);
 		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
 	}
 }
 
-void claw_bail()
-{
-	claw.Motor2Hold(false);
-	pros::delay(300);
 	claw.Motor2Hold(true);
-}
-
-const uint32_t claw_task_up = 1 << 0;
-const uint32_t claw_task_down = 1 << 1;
-const uint32_t claw_task_toggle = 1 << 2;
-void opctrl_claw()
-{
-
-	while (true)
-	{
-		uint32_t val = pros::Task::notify_take(true, TIMEOUT_MAX);
-		//if (val != 0)
-		//{
-		//	printf("%x %x %x %x\n", val, claw_task_up, claw_task_down, claw_task_toggle);
-		//	printf("%x\n", val & claw_task_up);
-		//	printf("%x\n", val & claw_task_down);
-		//	printf("%x\n", val & claw_task_toggle);
-		//	//printf("%x\n", false * 0b010);
-		//	//printf("%x\n", true * 0b010);
-		//}
-
-		if (!((val & claw_task_up) ^ (val & claw_task_down)))
-			claw.ArmSoftStop();
-		else if (val & claw_task_up)
-			claw.ArmUp();
-		else if (val & claw_task_down)
-			claw.ArmDown();
-
-		if (val & claw_task_toggle)
-			claw.Toggle();
-	}
 }
 
 void opcontrol()
 {
 	claw.Motor2Hold(true);
-	pros::Task drive_task = pros::Task(opctrl_drivetrain);
-	pros::Task claw_task = pros::Task(opctrl_claw);
 
 	printf("opinited\n");
 	while (true)
@@ -335,7 +356,7 @@ void opcontrol()
 		static okapi::ControllerButton drive_mode_button = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
 
 		if (drive_mode_button.changedToPressed())
-			drive_task.notify();
+			drive_task->notify();
 
 		static okapi::ControllerButton claw_hook_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_hook_button);
 
@@ -345,7 +366,7 @@ void opcontrol()
 
 		if (claw_hook_button.changed() || claw_up_button.changed() || claw_down_button.changed())
 
-			claw_task.notify_ext(
+			claw_task->notify_ext(
 				claw_hook_button.isPressed() * claw_task_toggle |
 					claw_up_button.isPressed() * claw_task_up |
 					claw_down_button.isPressed() * claw_task_down,
@@ -365,12 +386,12 @@ void opcontrol()
 			static okapi::ControllerButton awp_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::auton_run);
 			if (awp_button.changedToPressed())
 			{
-				drive_task.suspend();
-				claw_task.suspend();
+				drive_task->suspend();
+				claw_task->suspend();
 				competition_initialize();
 				autonomous();
-				drive_task.resume();
-				claw_task.resume();
+				drive_task->resume();
+				claw_task->resume();
 			}
 		}
 
