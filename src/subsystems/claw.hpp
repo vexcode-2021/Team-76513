@@ -144,6 +144,17 @@ public:
                 }
             }
 
+            static int ct = 0;
+            if (ct < 10)
+            {
+                if (pros::c::adi_digital_read(x.first))
+                {
+                    printf("INIT TARE\n");
+                    pros::c::motor_tare_position(abs(port_num));
+                }
+                ct++;
+            }
+
             //if switch is pressed AND is moving down
             if (pros::c::adi_digital_get_new_press(x.first))
             {
@@ -152,7 +163,7 @@ public:
 
                 pros::c::motor_tare_position(abs(port_num));
                 pros::c::motor_move_voltage(abs(port_num), 0);
-                //pros::c::motor_move_absolute(abs(port_num), 0, 1);
+                //pros::c::motor_move_absolute(abs(port_num), 0 / HARDWARE::claw_arm_gear_ratio, 1);
             }
 
             if (vel > CLAW_CONF::min_zeroed_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio / 10 && pos >= max_ang)
