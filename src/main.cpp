@@ -112,6 +112,7 @@ void opctrl_claw()
 
 pros::Task *drive_task = nullptr;
 pros::Task *claw_task = nullptr;
+pros::Vision *visionsensor = nullptr;
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -122,6 +123,7 @@ void initialize()
 {
 	printf("init\n");
 	pros::lcd::initialize();
+	visionsensor = new pros::Vision(6);
 
 	claw.init();
 	auto t = pros::Task(claw_monitor);
@@ -129,6 +131,13 @@ void initialize()
 	drive.init();
 	drive_task = new pros::Task(opctrl_drivetrain);
 	claw_task = new pros::Task(opctrl_claw);
+
+	pros::vision_signature_s_t sig1 = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
+	pros::vision_signature_s_t sig2 = pros::Vision::signature_from_utility(2, -3229, -1431, -2330, 4031, 13055, 8542, 1.100, 0);
+	pros::vision_signature_s_t sig3 = pros::Vision::signature_from_utility(3, 2239, 9421, 5830, -1119, 221, -448, 1.000, 0);
+	visionsensor->set_signature(1, &sig1);
+	visionsensor->set_signature(2, &sig2);
+	visionsensor->set_signature(3, &sig3);
 
 	printf("inited\n");
 }
@@ -184,6 +193,34 @@ void print()
 
 		pros::delay(300);
 	}
+}
+
+double vision(int sig)
+{
+
+	auto alliancemogo = visionsensor->create_color_code(2, 3);
+	auto f = okapi::MedianFilter<5>();
+	for (int i = 0; i < 5; i++)
+	{
+		int16_t n;
+		if (sig == 1)
+			n = visionsensor->get_by_sig(0, sig).x_middle_coord;
+		else
+		{
+			auto a1 = visionsensor->get_by_code(0, 3).x_middle_coord;
+			auto a2 = visionsensor->get_by_sig(0, 2).x_middle_coord;
+			if (abs(a1 - 158) < abs(a2 - 158))
+			{
+				n = a1;
+			}
+			else
+				n = a2;
+		}
+		printf("vision %d\n", n);
+		f.filter(n);
+	}
+	printf("vision final %f\n", f.getOutput());
+	return f.getOutput() - VISION_FOV_WIDTH / 2.0;
 }
 void auton_awp()
 {
