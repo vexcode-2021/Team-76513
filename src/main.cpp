@@ -24,6 +24,7 @@ enum AUTON_ROUTINES
 	awp_right,
 	awp_left,
 	neumogo_front,
+	neumogo_mid,
 	auton_routine_none
 };
 static AUTON_ROUTINES SELECTED_AUTON_ROUTINE = awp_right;
@@ -39,6 +40,9 @@ void on_screen_button()
 		SELECTED_AUTON_ROUTINE = neumogo_front;
 		break;
 	case neumogo_front:
+		SELECTED_AUTON_ROUTINE = neumogo_mid;
+		break;
+	case neumogo_mid:
 		SELECTED_AUTON_ROUTINE = auton_routine_none;
 		break;
 	case auton_routine_none:
@@ -145,11 +149,14 @@ void initialize()
 void printAutonRoutines()
 {
 	auto r = SELECTED_AUTON_ROUTINE;
-	pros::lcd::print(1, "AWP Right %s", r == awp_right ? "yes" : "no");
-	pros::lcd::print(2, "AWP Left %s", r == awp_left ? "yes" : "no");
-	pros::lcd::print(3, "Front Neutral MOGO %s", r == neumogo_front ? "yes" : "no");
-	pros::lcd::print(4, "None %s", r == auton_routine_none ? "yes" : "no");
-	pros::lcd::print(5, "make sure arm down btw", r == auton_routine_none ? "yes" : "no");
+	bool ans =
+		pros::lcd::print(1, "AWP Right          %s", r == awp_right ? "yes" : "no ");
+	//printf("printing %d\n", ans);
+	pros::lcd::print(2, "AWP Left           %s", r == awp_left ? "yes" : "no ");
+	pros::lcd::print(3, "Front Neutral MOGO %s", r == neumogo_front ? "yes" : "no ");
+	pros::lcd::print(4, "Mid Neutral MOGO %s", r == neumogo_mid ? "yes" : "no ");
+	pros::lcd::print(5, "None               %s", r == auton_routine_none ? "yes" : "no ");
+	pros::lcd::print(6, "make sure arm down btw", r == auton_routine_none ? "yes" : "no ");
 }
 
 /**
@@ -322,25 +329,33 @@ void auton_yellow()
 
 void auton_yellow_mid() //TODO
 {
-	okapi::QLength d = 47_in;
+	printf("AUTON_YELLOW_MID\n");
 	drive.chassis->setMaxVelocity(120);
 	claw.ArmSet(2);
 	printf("1\n");
-	drive.chassis->moveDistanceAsync(d - 5_in);
-	drive.chassis->turnAngleAsync(-5_deg);
+	drive.chassis->moveDistance(21_in);
+	drive.chassis->setMaxVelocity(30);
+	drive.chassis->turnAngle(-47.5_deg);
+	drive.chassis->setMaxVelocity(120);
+	drive.chassis->moveDistance(32.49_in);
+	pros::delay(200);
 	printf("2\n");
 	drive.chassis->waitUntilSettled();
-	drive.chassis->setMaxVelocity(60);
+	drive.chassis->setMaxVelocity(30);
 	printf("4\n");
-	drive.chassis->moveDistance(6_in);
+
+	drive.chassis->turnAngle((vision(1) / 3.8) * 1.0_deg);
+
+	pros::delay(300);
+	drive.chassis->moveDistance(13_in);
 
 	printf("REACHED\n");
 
+	pros::delay(200);
 	claw.Clasp();
-	pros::delay(600);
-	drive.chassis->moveDistance(-(d - 5_in) / 2);
-	drive.chassis->turnAngle(-9_deg);
-	drive.chassis->moveDistance(-(d - 5_in) / 2);
+	pros::delay(200);
+	drive.chassis->setMaxVelocity(90);
+	drive.chassis->moveDistance(-53_in);
 
 	claw.Leave();
 }
@@ -363,21 +378,12 @@ void autonomous()
 		auton_awp2();
 	}
 	else if (SELECTED_AUTON_ROUTINE == neumogo_front)
-	{
 		auton_yellow();
-	}
+
+	else if (SELECTED_AUTON_ROUTINE == neumogo_mid)
+		auton_yellow_mid();
 	else
-	{
-	}
-
-	claw.Motor2Hold(true);
-}
-
-
-		drive.drive(c);
-		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
-	}
-}
+		;
 
 	claw.Motor2Hold(true);
 }
