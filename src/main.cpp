@@ -164,7 +164,17 @@ void printAutonRoutines()
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled()
+{
+
+	pros::lcd::register_btn0_cb(on_screen_button);
+	while (true)
+	{
+		//pros::lcd::clear();
+		printAutonRoutines();
+		pros::delay(100);
+	}
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -182,8 +192,9 @@ void competition_initialize()
 
 	while (true)
 	{
-		pros::lcd::clear();
+		//pros::lcd::clear();
 		printAutonRoutines();
+		pros::delay(100);
 	}
 
 	pros::lcd::clear();
@@ -231,13 +242,14 @@ double vision(int sig)
 }
 void auton_awp()
 {
-	drive.chassis->setMaxVelocity(20);
+	drive.chassis->setMaxVelocity(40);
 	claw.ArmSet(40);
 	claw.WaitUntilSettled();
-	drive.chassis->moveDistance(6_in);
+	drive.chassis->moveDistance(9_in);
+	drive.chassis->setMaxVelocity(20);
 
 	auto exampleController = okapi::IterativeControllerFactory::posPID(0.005, 0.001, 0);
-	exampleController.setTarget(145);
+	exampleController.setTarget(130);
 	while (!exampleController.isSettled())
 	{
 		double in = ultrasonic.controllerGet();
@@ -256,22 +268,23 @@ void auton_awp()
 	claw.Clasp();
 
 	pros::delay(300);
-	drive.chassis->moveDistance(1_in);
-	printf("REACHED\n");
-	drive.chassis->moveDistanceAsync(-8_in);
-	claw.Leave();
-	claw.ArmSetNum(1);
-	claw.ArmSet(2);
-	drive.chassis->waitUntilSettled();
-	claw.WaitUntilSettled();
-	printf("MOVED7andCLAW_DOWN\n");
+	//drive.chassis->moveDistance(-8_in);
 
-	drive.chassis->moveDistance(9_in);
-	printf("MOVEDforw7\n");
-	claw.Clasp();
-	printf("GRABBED\n");
-	drive.chassis->moveDistance(-1.3_ft);
 	claw.Leave();
+	//claw.ArmSet(2);
+	//pros::delay(300);
+	//claw.WaitUntilSettled();
+
+	//drive.chassis->turnAngle((vision(2) / 6) * 1.0_deg);
+	drive.chassis->turnAngle(15_deg);
+	drive.chassis->moveDistance(16_in);
+	printf("MOVEDforw7\n");
+	//claw.Clasp();
+	//printf("GRABBED\n");
+
+	//drive.chassis->setMaxVelocity(50);
+	//drive.chassis->moveDistance(-1.3_ft);
+	//claw.Leave();
 }
 
 void auton_awp2()
@@ -304,25 +317,23 @@ void auton_awp2()
 
 void auton_yellow()
 {
-	okapi::QLength d = 47_in;
+	printf("AUTON_YELLOW\n");
 	drive.chassis->setMaxVelocity(120);
 	claw.ArmSet(2);
 	printf("1\n");
-	drive.chassis->moveDistanceAsync(d - 5_in);
-	drive.chassis->turnAngleAsync(-5_deg);
-	printf("2\n");
-	drive.chassis->waitUntilSettled();
-	drive.chassis->setMaxVelocity(60);
+	drive.chassis->moveDistance(36_in);
+	pros::delay(100);
+	drive.chassis->setMaxVelocity(30);
+	drive.chassis->turnAngle((vision(1) / 3.8) * 1.0_deg);
 	printf("4\n");
-	drive.chassis->moveDistance(6_in);
+	drive.chassis->moveDistance(14_in);
 
 	printf("REACHED\n");
 
 	claw.Clasp();
-	pros::delay(600);
-	drive.chassis->moveDistance(-(d - 5_in) / 2);
-	drive.chassis->turnAngle(-9_deg);
-	drive.chassis->moveDistance(-(d - 5_in) / 2);
+	drive.chassis->setMaxVelocity(120);
+	pros::delay(300);
+	drive.chassis->moveDistance(-45_in);
 
 	claw.Leave();
 }
@@ -363,8 +374,16 @@ void auton_yellow_mid() //TODO
 void autonomous()
 {
 
+	claw.Leave();
+	pros::delay(100);
 	claw.Motor2Hold(false);
 	pros::Task us = pros::Task(print);
+
+	claw.ArmSetNum(0);
+	pros::delay(100);
+	claw.WaitUntilSettled();
+	printf("arm SETTLED\n");
+
 	if (SELECTED_AUTON_ROUTINE == awp_right)
 	{
 		claw.ArmSetNum(1);
