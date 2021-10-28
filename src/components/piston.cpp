@@ -10,7 +10,7 @@ Piston::Piston(const char port, bool reversed)
 }
 void Piston::init(const char port, bool reversed)
 {
-    this->port = pros::ADIDigitalOut(port, false);
+    this->port = pros::ADIDigitalOut(port, true);
     this->reversed = reversed;
 }
 
