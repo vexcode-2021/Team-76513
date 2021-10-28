@@ -59,7 +59,7 @@ namespace CLAW_CONF
 {
     using namespace okapi;
     //const QAngularSpeed arm_top_velocity = 90_deg / 8_s;
-    const QAngularSpeed arm_top_velocity = 90_deg / 1.75_s;
+    const QAngularSpeed arm_top_velocity = 90_deg / 0.001_s;
     const QAngularSpeed min_zeroed_velocity = 8_deg / 1_s;
 
     const int armPos[] = {-10000, 7, 15, 77, 92};
