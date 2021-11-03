@@ -119,6 +119,12 @@ void opctrl_claw()
 pros::Task *drive_task = nullptr;
 pros::Task *claw_task = nullptr;
 pros::Vision *visionsensor = nullptr;
+
+static   pros::ADIAnalogIn sensor ('A');
+		static   pros::ADIAnalogIn sensor2 ('B');
+
+
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -145,6 +151,9 @@ void initialize()
 	visionsensor->set_signature(2, &sig2);
 	visionsensor->set_signature(3, &sig3);
 
+	sensor.calibrate();
+	sensor2.calibrate();
+
 	printf("inited\n");
 }
 
@@ -170,6 +179,7 @@ void disabled()
 {
 
 	pros::lcd::register_btn0_cb(on_screen_button);
+	
 	while (true)
 	{
 		//pros::lcd::clear();
@@ -416,6 +426,11 @@ void opcontrol()
 	printf("opinited\n");
 	while (true)
 	{
+		
+		static int ct = 0;
+		ct ++;
+		if (!(ct % 50))
+		printf("pot %d %d\n", sensor.get_value_calibrated(), sensor2.get_value_calibrated());
 
 		static okapi::ControllerButton drive_mode_button = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
 

@@ -13,6 +13,8 @@ private:
     int curr = 1;
 
     int motors = 2;
+    std::shared_ptr<okapi::AsyncPositionController<double, double>> controllerl;
+    std::shared_ptr<okapi::AsyncPositionController<double, double>> controllerr;
 
 public:
     Claw() {}
@@ -20,6 +22,8 @@ public:
     {
         mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
+        controllerl = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR2).withGains({0.0006, 0, 0}).withSensor(HARDWARE::POTL).build();
+        controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains({0.0006, 0, 0}).withSensor(HARDWARE::POTR).build();
     };
     void Clasp()
     {
@@ -56,10 +60,20 @@ public:
     {
         int code;
         okapi::Motor mttr = HARDWARE::CLAW_ARM_MOTOR1;
-        if (motors == 1)
-            code = mttr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
-        else
-            code = mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        //        if (motors == 1)
+        //            code = mttr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        //        else
+        //            code = mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
+        //
+
+        double val = v;
+        double val2 = (val * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90)) + HARDWARE::LMIN;
+        double val3 = (val * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90)) + HARDWARE::RMIN;
+
+        printf("%f %f %f\n", val, val2, val3);
+
+        controllerl->setTarget(val2);
+        controllerr->setTarget(val3);
 
         if (code != 1)
         {
@@ -106,7 +120,7 @@ public:
 
     void ArmSoftStop()
     {
-        printf("ArmSoft Stop: %d\n", CLAW_CONF::armPos[curr]);
+        //printf("ArmSoft Stop: %d\n", CLAW_CONF::armPos[curr]);
         //if (!currentlyLTOperating)
         //maybe not needed now that things r only called on change???
         //ArmMove(0);
