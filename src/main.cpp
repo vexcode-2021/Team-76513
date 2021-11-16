@@ -77,7 +77,7 @@ void opctrl_claw()
 
 		if (val & claw_task_toggle)
 		{
-			claw.Toggle() ? claw.ArmUp() : claw.ArmDown();
+			claw.Toggle() ;
 		}
 	}
 }
