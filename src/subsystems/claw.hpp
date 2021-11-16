@@ -10,7 +10,7 @@ private:
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
     bool currentlyLTOperating = false;
-    int curr = 1;
+    int curr = 0;
 
     int motors = 2;
     std::shared_ptr<okapi::AsyncPositionController<double, double>> controllerl;
@@ -22,8 +22,15 @@ public:
     {
         mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-        controllerl = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR2).withGains({0.0006, 0, 0}).withSensor(HARDWARE::POTL).build();
-        controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains({0.0006, 0, 0}).withSensor(HARDWARE::POTR).build();
+        //const okapi::IterativePosPIDController::Gains gains = {0.0015, 0.0007, 0.00004};
+        //const okapi::IterativePosPIDController::Gains gains = {0.0072,0.008,0.00007 };
+        const okapi::IterativePosPIDController::Gains gains = {0.00002,0.008,0.00007 };
+        controllerl = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR2).withGains(gains).withSensor(HARDWARE::POTL).build();
+        controllerl->setMaxVelocity(20);
+        controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains(gains).withSensor(HARDWARE::POTR).build();
+        controllerr->setMaxVelocity(20);
+
+        ArmSet(3);
     };
     void Clasp()
     {
@@ -58,8 +65,8 @@ public:
 
     void ArmSet(double v)
     {
-        int code;
-        okapi::Motor mttr = HARDWARE::CLAW_ARM_MOTOR1;
+        //int code;
+        //okapi::Motor mttr = HARDWARE::CLAW_ARM_MOTOR1;
         //        if (motors == 1)
         //            code = mttr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
         //        else
@@ -75,10 +82,10 @@ public:
         controllerl->setTarget(val2);
         controllerr->setTarget(val3);
 
-        if (code != 1)
-        {
-            printf("AAAAAAAAAAAAAAAAAAA %d\n", code);
-        }
+        //if (code != 1)
+        //{
+        //    printf("AAAAAAAAAAAAAAAAAAA %d\n", code);
+        //}
     }
 
     void ArmUp()

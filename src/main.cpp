@@ -131,6 +131,31 @@ static   pros::ADIAnalogIn sensor ('A');
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
+void print()
+{
+
+	while (true)
+	{
+		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
+
+		pros::delay(500);
+	}
+}
+
+void calibratearm()
+{
+	pros::delay(500);
+	double lproportion = HARDWARE::POTL->get() / (HARDWARE::LMIN - HARDWARE::LMAX);
+	double rproportion_shouldbe = lproportion * (HARDWARE::RMIN - HARDWARE::RMAX);
+	double r_is = HARDWARE::POTR->controllerGet();
+
+	HARDWARE::RMIN -= r_is - rproportion_shouldbe;
+	HARDWARE::RMAX -= r_is - rproportion_shouldbe;
+
+	printf("R-ARM adjust %f %f %f\n", r_is - rproportion_shouldbe, lproportion, r_is);
+	printf("%f\n", HARDWARE::POTR->controllerGet());
+}
+
 void initialize()
 {
 	printf("init\n");
@@ -155,6 +180,8 @@ void initialize()
 	sensor2.calibrate();
 
 	printf("inited\n");
+	pros::Task _ = pros::Task(print);
+	//pros::Task _1 = pros::Task(calibratearm);
 }
 
 void printAutonRoutines()
@@ -212,17 +239,6 @@ void competition_initialize()
 	pros::lcd::clear();
 
 	printf("COMPINIT\n");
-}
-
-void print()
-{
-
-	while (true)
-	{
-		//printf("c %f\n", ultrasonic.controllerGet());
-
-		pros::delay(300);
-	}
 }
 
 double vision(int sig)
@@ -389,7 +405,6 @@ void autonomous()
 	claw.Leave();
 	pros::delay(100);
 	claw.Motor2Hold(false);
-	pros::Task us = pros::Task(print);
 
 	claw.ArmSetNum(0);
 	pros::delay(100);
@@ -426,11 +441,6 @@ void opcontrol()
 	printf("opinited\n");
 	while (true)
 	{
-		
-		static int ct = 0;
-		ct ++;
-		if (!(ct % 50))
-		printf("pot %d %d\n", sensor.get_value_calibrated(), sensor2.get_value_calibrated());
 
 		static okapi::ControllerButton drive_mode_button = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
 
