@@ -18,9 +18,9 @@ namespace HARDWARE
                                                  //TODO
 
     //right
-    const auto CLAW_ARM_MOTOR1 = okapi::Motor(2, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
+    const auto CLAW_ARM_MOTOR1 = okapi::Motor(2, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
     //left
-    const auto CLAW_ARM_MOTOR2 = okapi::Motor(9, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
+    const auto CLAW_ARM_MOTOR2 = okapi::Motor(9, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
     //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
     const auto CLAW_ARM_MOTORS = {
         CLAW_ARM_MOTOR1,
@@ -38,11 +38,11 @@ namespace HARDWARE
 
     const auto POTL = std::make_shared<okapi::Potentiometer>('B');
     const auto POTR = std::make_shared<okapi::Potentiometer>('A');
-    const int LMIN = 2480;
-     const int LMAX = 1069;
+    const int LMIN = 456;
+    const int LMAX = 2252;
 
-     const int RMIN = 2358;
-     const int RMAX = 1143;
+    static int RMIN = 416;
+    static int RMAX = 2224;
 
 }
 
