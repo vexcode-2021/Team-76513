@@ -31,3 +31,16 @@ void on_screen_button()
 		break;
 	}
 }
+
+void printAutonRoutines()
+{
+	auto r = SELECTED_AUTON_ROUTINE;
+	bool ans =
+		pros::lcd::print(1, "AWP Right          %s", r == awp_right ? "yes" : "no ");
+	//printf("printing %d\n", ans);
+	pros::lcd::print(2, "AWP Left           %s", r == awp_left ? "yes" : "no ");
+	pros::lcd::print(3, "Front Neutral MOGO %s", r == neumogo_front ? "yes" : "no ");
+	pros::lcd::print(4, "Mid Neutral MOGO %s", r == neumogo_mid ? "yes" : "no ");
+	pros::lcd::print(5, "None               %s", r == auton_routine_none ? "yes" : "no ");
+	pros::lcd::print(6, "make sure arm down btw", r == auton_routine_none ? "yes" : "no ");
+}

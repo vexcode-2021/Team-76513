@@ -5,9 +5,6 @@
 
 #include "auton_screen.hpp"
 
-
-
-
 void claw_monitor()
 {
 	if (HARDWARE::LIMIT_SWITCHES.size() > 0)
@@ -19,8 +16,6 @@ void claw_monitor()
 			pros::delay(1);
 		}
 }
-
-
 
 void opctrl_drivetrain()
 {
@@ -90,7 +85,6 @@ void opctrl_claw()
 pros::Task *drive_task = nullptr;
 pros::Task *claw_task = nullptr;
 
-
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -126,7 +120,6 @@ void initialize()
 {
 	printf("init\n");
 	pros::lcd::initialize();
-	visionsensor = new pros::Vision(6);
 
 	claw.init();
 	auto t = pros::Task(claw_monitor);
@@ -135,30 +128,14 @@ void initialize()
 	drive_task = new pros::Task(opctrl_drivetrain);
 	claw_task = new pros::Task(opctrl_claw);
 
-	pros::vision_signature_s_t sig1 = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
-	pros::vision_signature_s_t sig2 = pros::Vision::signature_from_utility(2, -3229, -1431, -2330, 4031, 13055, 8542, 1.100, 0);
-	pros::vision_signature_s_t sig3 = pros::Vision::signature_from_utility(3, 2239, 9421, 5830, -1119, 221, -448, 1.000, 0);
-	visionsensor->set_signature(1, &sig1);
-	visionsensor->set_signature(2, &sig2);
-	visionsensor->set_signature(3, &sig3);
+	vision_init();
 
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
 	//pros::Task _1 = pros::Task(calibratearm);
 }
 
-void printAutonRoutines()
-{
-	auto r = SELECTED_AUTON_ROUTINE;
-	bool ans =
-		pros::lcd::print(1, "AWP Right          %s", r == awp_right ? "yes" : "no ");
-	//printf("printing %d\n", ans);
-	pros::lcd::print(2, "AWP Left           %s", r == awp_left ? "yes" : "no ");
-	pros::lcd::print(3, "Front Neutral MOGO %s", r == neumogo_front ? "yes" : "no ");
-	pros::lcd::print(4, "Mid Neutral MOGO %s", r == neumogo_mid ? "yes" : "no ");
-	pros::lcd::print(5, "None               %s", r == auton_routine_none ? "yes" : "no ");
-	pros::lcd::print(6, "make sure arm down btw", r == auton_routine_none ? "yes" : "no ");
-}
+
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -169,7 +146,7 @@ void disabled()
 {
 
 	pros::lcd::register_btn0_cb(on_screen_button);
-	
+
 	while (true)
 	{
 		//pros::lcd::clear();
@@ -203,7 +180,6 @@ void competition_initialize()
 
 	printf("COMPINIT\n");
 }
-
 
 void autonomous()
 {
@@ -305,11 +281,11 @@ void opcontrol()
 		m.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 		if (back_claw_up_button.changedToPressed())
 		{
-			m.moveRelative(30/ HARDWARE::BACK_CLAW_RATIO, 30);
+			m.moveRelative(30 / HARDWARE::BACK_CLAW_RATIO, 30);
 		}
 		else if (back_claw_down_button.changedToPressed())
 		{
-			m.moveRelative(-30 /HARDWARE::BACK_CLAW_RATIO, 30);
+			m.moveRelative(-30 / HARDWARE::BACK_CLAW_RATIO, 30);
 		}
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));
