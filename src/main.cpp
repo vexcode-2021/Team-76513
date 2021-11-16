@@ -1,11 +1,12 @@
+
 #include "main.h"
-#include "subsystems/claw.hpp"
-#include "subsystems/drivetrain.hpp"
+#include "shared.hpp"
+#include "autonomous.hpp"
 
-Claw claw;
-Drivetrain drive;
+#include "auton_screen.hpp"
 
-okapi::ADIUltrasonic ultrasonic = okapi::ADIUltrasonic(HARDWARE::ULTRASONIC_FRONT_OUTPUT, HARDWARE::ULTRASONIC_FRONT_INPUT, std::make_unique<okapi::MedianFilter<5>>());
+
+
 
 void claw_monitor()
 {
@@ -19,37 +20,7 @@ void claw_monitor()
 		}
 }
 
-enum AUTON_ROUTINES
-{
-	awp_right,
-	awp_left,
-	neumogo_front,
-	neumogo_mid,
-	auton_routine_none
-};
-static AUTON_ROUTINES SELECTED_AUTON_ROUTINE = awp_right;
 
-void on_screen_button()
-{
-	switch (SELECTED_AUTON_ROUTINE)
-	{
-	case awp_right:
-		SELECTED_AUTON_ROUTINE = awp_left;
-		break;
-	case awp_left:
-		SELECTED_AUTON_ROUTINE = neumogo_front;
-		break;
-	case neumogo_front:
-		SELECTED_AUTON_ROUTINE = neumogo_mid;
-		break;
-	case neumogo_mid:
-		SELECTED_AUTON_ROUTINE = auton_routine_none;
-		break;
-	case auton_routine_none:
-		SELECTED_AUTON_ROUTINE = awp_right;
-		break;
-	}
-}
 
 void opctrl_drivetrain()
 {
@@ -118,11 +89,6 @@ void opctrl_claw()
 
 pros::Task *drive_task = nullptr;
 pros::Task *claw_task = nullptr;
-pros::Vision *visionsensor = nullptr;
-
-static   pros::ADIAnalogIn sensor ('A');
-		static   pros::ADIAnalogIn sensor2 ('B');
-
 
 
 /**
@@ -175,9 +141,6 @@ void initialize()
 	visionsensor->set_signature(1, &sig1);
 	visionsensor->set_signature(2, &sig2);
 	visionsensor->set_signature(3, &sig3);
-
-	sensor.calibrate();
-	sensor2.calibrate();
 
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
@@ -241,163 +204,6 @@ void competition_initialize()
 	printf("COMPINIT\n");
 }
 
-double vision(int sig)
-{
-
-	auto alliancemogo = visionsensor->create_color_code(2, 3);
-	auto f = okapi::MedianFilter<5>();
-	for (int i = 0; i < 5; i++)
-	{
-		int16_t n;
-		if (sig == 1)
-			n = visionsensor->get_by_sig(0, sig).x_middle_coord;
-		else
-		{
-			auto a1 = visionsensor->get_by_code(0, 3).x_middle_coord;
-			auto a2 = visionsensor->get_by_sig(0, 2).x_middle_coord;
-			if (abs(a1 - 158) < abs(a2 - 158))
-			{
-				n = a1;
-			}
-			else
-				n = a2;
-		}
-		printf("vision %d\n", n);
-		f.filter(n);
-	}
-	printf("vision final %f\n", f.getOutput());
-	return f.getOutput() - VISION_FOV_WIDTH / 2.0;
-}
-void auton_awp()
-{
-	drive.chassis->setMaxVelocity(40);
-	claw.ArmSet(40);
-	claw.WaitUntilSettled();
-	drive.chassis->moveDistance(9_in);
-	drive.chassis->setMaxVelocity(20);
-
-	auto exampleController = okapi::IterativeControllerFactory::posPID(0.005, 0.001, 0);
-	exampleController.setTarget(130);
-	while (!exampleController.isSettled())
-	{
-		double in = ultrasonic.controllerGet();
-		double newOutput = exampleController.step(in);
-
-		static int count = 0;
-		count++;
-		if (!(count % 30))
-			printf("%f:%f\n", in, newOutput);
-		drive.chassis->getModel()->forward(-newOutput);
-		pros::delay(10);
-	}
-	//drive.chassis->moveDistance(1_in);
-	printf("REACHED\n");
-
-	claw.Clasp();
-
-	pros::delay(300);
-	//drive.chassis->moveDistance(-8_in);
-
-	claw.Leave();
-	//claw.ArmSet(2);
-	//pros::delay(300);
-	//claw.WaitUntilSettled();
-
-	//drive.chassis->turnAngle((vision(2) / 6) * 1.0_deg);
-	drive.chassis->turnAngle(15_deg);
-	drive.chassis->moveDistance(16_in);
-	printf("MOVEDforw7\n");
-	//claw.Clasp();
-	//printf("GRABBED\n");
-
-	//drive.chassis->setMaxVelocity(50);
-	//drive.chassis->moveDistance(-1.3_ft);
-	//claw.Leave();
-}
-
-void auton_awp2()
-{
-	drive.chassis->setMaxVelocity(20);
-	claw.ArmSet(40);
-	claw.WaitUntilSettled();
-	drive.chassis->moveDistance(10_in);
-
-	auto exampleController = okapi::IterativeControllerFactory::posPID(0.005, 0.001, 0);
-	exampleController.setTarget(145);
-	while (!exampleController.isSettled())
-	{
-		double in = ultrasonic.controllerGet();
-		double newOutput = exampleController.step(in);
-
-		static int count = 0;
-		count++;
-		if (!(count % 30))
-			printf("%f:%f\n", in, newOutput);
-		drive.chassis->getModel()->forward(-newOutput);
-		pros::delay(10);
-	}
-	printf("REACHED\n");
-
-	claw.Clasp();
-	pros::delay(600);
-	claw.Leave();
-}
-
-void auton_yellow()
-{
-	printf("AUTON_YELLOW\n");
-	drive.chassis->setMaxVelocity(120);
-	claw.ArmSet(2);
-	printf("1\n");
-	drive.chassis->moveDistance(36_in);
-	pros::delay(100);
-	drive.chassis->setMaxVelocity(30);
-	drive.chassis->turnAngle((vision(1) / 3.8) * 1.0_deg);
-	printf("4\n");
-	drive.chassis->moveDistance(14_in);
-
-	printf("REACHED\n");
-
-	claw.Clasp();
-	drive.chassis->setMaxVelocity(120);
-	pros::delay(300);
-	drive.chassis->moveDistance(-45_in);
-
-	claw.Leave();
-}
-
-void auton_yellow_mid() //TODO
-{
-	printf("AUTON_YELLOW_MID\n");
-	drive.chassis->setMaxVelocity(120);
-	claw.ArmSet(2);
-	printf("1\n");
-	drive.chassis->moveDistance(21_in);
-	drive.chassis->setMaxVelocity(30);
-	drive.chassis->turnAngle(-47.5_deg);
-	drive.chassis->setMaxVelocity(120);
-	drive.chassis->moveDistance(32.49_in);
-	pros::delay(200);
-	printf("2\n");
-	drive.chassis->waitUntilSettled();
-	drive.chassis->setMaxVelocity(30);
-	printf("4\n");
-
-	drive.chassis->turnAngle((vision(1) / 3.8) * 1.0_deg);
-
-	pros::delay(300);
-	drive.chassis->moveDistance(13_in);
-
-	printf("REACHED\n");
-
-	pros::delay(200);
-	claw.Clasp();
-	pros::delay(200);
-	drive.chassis->setMaxVelocity(90);
-	drive.chassis->moveDistance(-53_in);
-
-	claw.Leave();
-}
 
 void autonomous()
 {
@@ -490,6 +296,20 @@ void opcontrol()
 		{
 
 			auto t = pros::Task(claw_bail);
+		}
+
+		static okapi::ControllerButton back_claw_up_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_up);
+		static okapi::ControllerButton back_claw_down_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_down);
+
+		static auto m = HARDWARE::BACK_CLAW_MOTOR;
+		m.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
+		if (back_claw_up_button.changedToPressed())
+		{
+			m.moveRelative(30/ HARDWARE::BACK_CLAW_RATIO, 30);
+		}
+		else if (back_claw_down_button.changedToPressed())
+		{
+			m.moveRelative(-30 /HARDWARE::BACK_CLAW_RATIO, 30);
 		}
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));

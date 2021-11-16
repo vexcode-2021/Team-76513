@@ -10,11 +10,11 @@ namespace HARDWARE
 
     const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11.5_in}, okapi::imev5GreenTPR};
 
-    const std::initializer_list<okapi::Motor> drive_motors_left = {14, 10};
+    const std::initializer_list<okapi::Motor> drive_motors_left = {6, 7};
     const std::initializer_list<okapi::Motor> drive_motors_right = {-8, -4};
 
     const double claw_arm_gear_ratio = 12.0 / 84.0;
-    const okapi::QAngle claw_max_angle = 95_deg; //angle from the ground to the angle that is high enough to drop the MOGO on the platform
+    const okapi::QAngle claw_max_angle = 95_deg; //auangle from the ground to the angle that is high enough to drop the MOGO on the platform
                                                  //TODO
 
     //right
@@ -43,6 +43,10 @@ namespace HARDWARE
 
     static int RMIN = 416;
     static int RMAX = 2224;
+
+
+    const auto BACK_CLAW_MOTOR = okapi::Motor(10, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
+    const double BACK_CLAW_RATIO = 12.0/36.;
 
 }
 
