@@ -1,5 +1,7 @@
 #include "main.h"
 
+#pragma once
+
 class Piston
 {
 private:

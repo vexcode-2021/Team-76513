@@ -69,6 +69,16 @@ namespace CLAW_CONF
     const bool PRINT = false;
 }
 
+namespace BACK_CLAW_CONF
+{
+    using namespace okapi;
+    const QAngularSpeed arm_top_velocity = 90_deg / 0.001_s;
+
+    const int armPos[] = {-77, -45, -15, -7, 0};
+    const int ARM_POS_LEN = 5;
+}
+
+
 namespace CONF_AUTON
 {
     const bool autonButton = false;

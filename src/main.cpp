@@ -61,8 +61,41 @@ void opctrl_claw()
 	}
 }
 
+void opctrl_back_claw()
+{
+	while (true)
+	{
+		uint32_t val = pros::Task::notify_take(true, TIMEOUT_MAX);
+
+		if (pros::competition::is_autonomous())
+			continue;
+
+		if (val == 2)
+		{
+			claw.ArmSetRelative(30);
+		}
+		else if (val == 1)
+		{
+			claw.ArmSetRelative(-30);
+		}
+
+		//todo uncommen, keeping legacy compat rn
+		//if (val == 2)
+		//	claw.ArmUp();
+		//else if (val == 1)
+		//	claw.ArmDown();
+
+		//back_claw only gonna be toggled in auton
+		//if (val & claw_task_toggle)
+		//{
+		//	claw.Toggle() ? claw.ArmSetRelative(5) : claw.ArmSetRelative(-5);
+		//}
+	}
+}
+
 pros::Task *drive_task = nullptr;
 pros::Task *claw_task = nullptr;
+pros::Task *back_claw_task = nullptr;
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -101,10 +134,12 @@ void initialize()
 	pros::lcd::initialize();
 
 	claw.init();
+	back_claw.init();
 
 	drive.init();
 	drive_task = new pros::Task(opctrl_drivetrain);
 	claw_task = new pros::Task(opctrl_claw);
+	back_claw_task = new pros::Task(opctrl_back_claw);
 
 	vision_init();
 
@@ -187,7 +222,6 @@ void autonomous()
 		auton_yellow_mid();
 	else
 		;
-
 }
 
 void opcontrol()
@@ -246,11 +280,11 @@ void opcontrol()
 		m.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 		if (back_claw_up_button.changedToPressed())
 		{
-			m.moveRelative(30 / HARDWARE::BACK_CLAW_RATIO, 30);
+			back_claw_task->notify_ext(2, pros::E_NOTIFY_ACTION_OWRITE, NULL);
 		}
 		else if (back_claw_down_button.changedToPressed())
 		{
-			m.moveRelative(-30 / HARDWARE::BACK_CLAW_RATIO, 30);
+			back_claw_task->notify_ext(1, pros::E_NOTIFY_ACTION_OWRITE, NULL);
 		}
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));

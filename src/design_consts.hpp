@@ -48,6 +48,10 @@ namespace HARDWARE
     const auto BACK_CLAW_MOTOR = okapi::Motor(10, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
     const double BACK_CLAW_RATIO = 12.0/36.;
 
+    const char BACK_CLAW_PORT = 'A';
+    const bool BACK_CLAW_REVERSED = false;
+
+
 }
 
 const int MAX_MOTOR_VOLTAGE = 12;
