@@ -51,7 +51,6 @@ namespace ButtonMapping
     const ControllerDigital claw_arm_down = ControllerDigital::R2;
 
     const ControllerDigital auton_run = ControllerDigital::Y;
-    const ControllerDigital claw_bail = ControllerDigital::X;
 
     const ControllerDigital back_claw_up = ControllerDigital::L2;
     const ControllerDigital back_claw_down = ControllerDigital::L1;

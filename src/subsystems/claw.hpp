@@ -9,10 +9,8 @@ private:
 
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
-    bool currentlyLTOperating = false;
     int curr = 0;
 
-    int motors = 2;
     std::shared_ptr<okapi::AsyncPositionController<double, double>> controllerl;
     std::shared_ptr<okapi::AsyncPositionController<double, double>> controllerr;
 
@@ -24,11 +22,9 @@ public:
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
         //const okapi::IterativePosPIDController::Gains gains = {0.0015, 0.0007, 0.00004};
         //const okapi::IterativePosPIDController::Gains gains = {0.0072,0.008,0.00007 };
-        const okapi::IterativePosPIDController::Gains gains = {0.00002,0.008,0.00007 };
+        const okapi::IterativePosPIDController::Gains gains = {0.00002, 0.008, 0.00007};
         controllerl = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR2).withGains(gains).withSensor(HARDWARE::POTL).build();
-        controllerl->setMaxVelocity(20);
         controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains(gains).withSensor(HARDWARE::POTR).build();
-        controllerr->setMaxVelocity(20);
 
         ArmSet(3);
     };
@@ -48,44 +44,23 @@ public:
         printf("CLAW: TOGGLE\n");
         return !this->piston.toggle();
     }
-    void Motor2Hold(bool t)
-    {
-        auto mtr = HARDWARE::CLAW_ARM_MOTOR2;
-        if (t)
-        {
-            mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
-            motors = 2;
-        }
-        else
-        {
-            mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
-            motors = 1;
-        }
-    }
 
     void ArmSet(double v)
     {
-        //int code;
-        //okapi::Motor mttr = HARDWARE::CLAW_ARM_MOTOR1;
-        //        if (motors == 1)
-        //            code = mttr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
-        //        else
-        //            code = mtr.moveAbsolute(v / HARDWARE::claw_arm_gear_ratio, 0.5 * CLAW_CONF::arm_top_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio);
-        //
-
         double val = v;
-        double val2 = (val * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90)) + HARDWARE::LMIN;
-        double val3 = (val * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90)) + HARDWARE::RMIN;
+        double valL = (val * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90)) + HARDWARE::LMIN;
+        double valR = (val * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90)) + HARDWARE::RMIN;
 
-        printf("%f %f %f\n", val, val2, val3);
+        printf("%f %f %f\n", val, valL, valR);
 
-        controllerl->setTarget(val2);
-        controllerr->setTarget(val3);
+        controllerl->setTarget(valL);
+        controllerr->setTarget(valR);
+    }
 
-        //if (code != 1)
-        //{
-        //    printf("AAAAAAAAAAAAAAAAAAA %d\n", code);
-        //}
+    void ArmSetRelative(double n)
+    {
+        controllerl->setTarget(controllerl->getTarget() + n);
+        controllerr->setTarget(controllerr->getTarget() + n);
     }
 
     void ArmUp()
@@ -108,9 +83,7 @@ public:
 
     void WaitUntilSettled()
     {
-        const auto adjustedvel = CLAW_CONF::min_zeroed_velocity.convert(1_rpm) / HARDWARE::claw_arm_gear_ratio;
-        printf("%f\n", adjustedvel);
-        while (mtr.getActualVelocity() < -adjustedvel || mtr.getActualVelocity() > adjustedvel)
+        while (!(controllerl->isSettled() && controllerr->isSettled()))
         {
             pros::delay(10);
         }
@@ -125,20 +98,8 @@ public:
         }
     }
 
-    void ArmSoftStop()
-    {
-        //printf("ArmSoft Stop: %d\n", CLAW_CONF::armPos[curr]);
-        //if (!currentlyLTOperating)
-        //maybe not needed now that things r only called on change???
-        //ArmMove(0);
-    }
-
     void ArmTop(bool await = false)
     {
-        ArmSet(CLAW_CONF::armPos[CLAW_CONF::ARM_POS_LEN - 1]);
-        //lets just try relying on protect to take care of this for once
-        //        mtr.moveAbsolute(HARDWARE::claw_max_angle.convert(1_deg), CLAW_CONF::arm_top_velocity.convert(1_rpm));
-        //if (await)
+        ArmSetNum(CLAW_CONF::ARM_POS_LEN - 1);
     };
-
 };

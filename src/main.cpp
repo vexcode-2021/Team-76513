@@ -29,13 +29,6 @@ void opctrl_drivetrain()
 	}
 }
 
-void claw_bail()
-{
-	claw.Motor2Hold(false);
-	pros::delay(300);
-	claw.Motor2Hold(true);
-}
-
 const uint32_t claw_task_up = 1 << 0;
 const uint32_t claw_task_down = 1 << 1;
 const uint32_t claw_task_toggle = 1 << 2;
@@ -56,16 +49,14 @@ void opctrl_claw()
 
 		if (pros::competition::is_autonomous())
 			continue;
-		if (!((val & claw_task_up) ^ (val & claw_task_down)))
-			claw.ArmSoftStop();
-		else if (val & claw_task_up)
+		if (val & claw_task_up)
 			claw.ArmUp();
 		else if (val & claw_task_down)
 			claw.ArmDown();
 
 		if (val & claw_task_toggle)
 		{
-			claw.Toggle() ;
+			claw.Toggle() ? claw.ArmSetRelative(5) : claw.ArmSetRelative(-5);
 		}
 	}
 }
@@ -122,8 +113,6 @@ void initialize()
 	//pros::Task _1 = pros::Task(calibratearm);
 }
 
-
-
 /**
  * Runs while the robot is in the disabled state of Field Management System or
  * the VEX Competition Switch, following either autonomous or opcontrol. When
@@ -173,7 +162,6 @@ void autonomous()
 
 	claw.Leave();
 	pros::delay(100);
-	claw.Motor2Hold(false);
 
 	claw.ArmSetNum(0);
 	pros::delay(100);
@@ -200,12 +188,10 @@ void autonomous()
 	else
 		;
 
-	claw.Motor2Hold(true);
 }
 
 void opcontrol()
 {
-	claw.Motor2Hold(true);
 
 	printf("opinited\n");
 	while (true)
@@ -251,14 +237,6 @@ void opcontrol()
 				drive_task->resume();
 				claw_task->resume();
 			}
-		}
-
-		//TODO add claw bail button
-		static okapi::ControllerButton bail_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_bail);
-		if (bail_button.changedToPressed())
-		{
-
-			auto t = pros::Task(claw_bail);
 		}
 
 		static okapi::ControllerButton back_claw_up_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_up);
