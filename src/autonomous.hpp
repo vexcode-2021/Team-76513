@@ -1,9 +1,9 @@
-double vision_init() {
+void vision_init()
+{
 
 	visionsensor = new pros::Vision(6);
 
-
-pros::vision_signature_s_t sig1 = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
+	pros::vision_signature_s_t sig1 = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
 	pros::vision_signature_s_t sig2 = pros::Vision::signature_from_utility(2, -3229, -1431, -2330, 4031, 13055, 8542, 1.100, 0);
 	pros::vision_signature_s_t sig3 = pros::Vision::signature_from_utility(3, 2239, 9421, 5830, -1119, 221, -448, 1.000, 0);
 	visionsensor->set_signature(1, &sig1);

@@ -5,18 +5,6 @@
 
 #include "auton_screen.hpp"
 
-void claw_monitor()
-{
-	if (HARDWARE::LIMIT_SWITCHES.size() > 0)
-		while (true)
-		{
-			claw.Protect();
-			// 5 millis is a fraction of a degree of arm movement, it's fine to wait that long between checks
-			// its not says broken limit switch arms
-			pros::delay(1);
-		}
-}
-
 void opctrl_drivetrain()
 {
 
@@ -122,7 +110,6 @@ void initialize()
 	pros::lcd::initialize();
 
 	claw.init();
-	auto t = pros::Task(claw_monitor);
 
 	drive.init();
 	drive_task = new pros::Task(opctrl_drivetrain);
