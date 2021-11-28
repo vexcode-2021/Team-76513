@@ -10,7 +10,7 @@ namespace HARDWARE
 
     const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11.5_in}, okapi::imev5GreenTPR};
 
-    const std::initializer_list<okapi::Motor> drive_motors_left = {6, 7};
+    const std::initializer_list<okapi::Motor> drive_motors_left = {6, 7, 5};
     const std::initializer_list<okapi::Motor> drive_motors_right = {-8, -4};
 
     const double claw_arm_gear_ratio = 12.0 / 84.0;
@@ -46,9 +46,9 @@ namespace HARDWARE
 
 
     const auto BACK_CLAW_MOTOR = okapi::Motor(10, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
-    const double BACK_CLAW_RATIO = 12.0/36.;
+    const double BACK_CLAW_RATIO = 12.0/60.;
 
-    const char BACK_CLAW_PORT = 'A';
+    const char BACK_CLAW_PORT = 'H';
     const bool BACK_CLAW_REVERSED = false;
 
 
