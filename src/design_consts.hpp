@@ -41,8 +41,8 @@ namespace HARDWARE
     const int LMIN = 456;
     const int LMAX = 2252;
 
-    static int RMIN = 416;
-    static int RMAX = 2224;
+    const int RMIN = 416;
+    const int RMAX = 2224;
 
 
     const auto BACK_CLAW_MOTOR = okapi::Motor(10, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);

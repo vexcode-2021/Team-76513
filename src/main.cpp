@@ -110,20 +110,6 @@ void print()
 	}
 }
 
-void calibratearm()
-{
-	pros::delay(500);
-	double lproportion = HARDWARE::POTL->get() / (HARDWARE::LMIN - HARDWARE::LMAX);
-	double rproportion_shouldbe = lproportion * (HARDWARE::RMIN - HARDWARE::RMAX);
-	double r_is = HARDWARE::POTR->controllerGet();
-
-	HARDWARE::RMIN -= r_is - rproportion_shouldbe;
-	HARDWARE::RMAX -= r_is - rproportion_shouldbe;
-
-	printf("R-ARM adjust %f %f %f\n", r_is - rproportion_shouldbe, lproportion, r_is);
-	printf("%f\n", HARDWARE::POTR->controllerGet());
-}
-
 void initialize()
 {
 	printf("init\n");
@@ -141,7 +127,6 @@ void initialize()
 
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
-	//pros::Task _1 = pros::Task(calibratearm);
 }
 
 /**
