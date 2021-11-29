@@ -2,6 +2,7 @@
 #include "subsystems/claw.hpp"
 #include "subsystems/backclaw.hpp"
 #include "subsystems/drivetrain.hpp"
+#include "subsystems/vision.hpp"
 
 #pragma once
 
