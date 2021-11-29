@@ -106,10 +106,11 @@ void print()
 	while (true)
 	{
 		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
+		printf("BACK_CLAW %f\n", back_claw.ArmGet());
 		printf("FRONT:\n%s", Vision.status(Vision.FRONT).c_str());
 		printf("BACK:\n%s", Vision.status(Vision.BACK).c_str());
 
-		pros::delay(500);
+		pros::delay(1000);
 	}
 }
 

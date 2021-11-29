@@ -47,7 +47,12 @@ public:
     {
         //TODO change impl to something like that of front claw soon, this behavior is to stay compatible with legacy relative behavior
 
-        ArmSet((controller->getProcessValue() * HARDWARE::BACK_CLAW_RATIO)+ v);
+        ArmSet((controller->getProcessValue() * HARDWARE::BACK_CLAW_RATIO) + v);
+    }
+
+    double ArmGet()
+    {
+        return (controller->getProcessValue() * HARDWARE::BACK_CLAW_RATIO);
     }
 
     void ArmUp()
@@ -67,5 +72,4 @@ public:
             ArmSet(BACK_CLAW_CONF::armPos[--curr]);
         }
     }
-
 };
