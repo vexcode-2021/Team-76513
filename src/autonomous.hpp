@@ -5,29 +5,9 @@ void vision_init()
 
 double vision(int sig)
 {
+	auto c = sig == 1 ? Vision.YELLOW : Vision.ALLIANCE;
 
-	auto f = okapi::MedianFilter<5>();
-	for (int i = 0; i < 5; i++)
-	{
-		int16_t n;
-		if (sig == 1)
-			n = visionsensor->get_by_sig(0, sig).x_middle_coord;
-		else
-		{
-			auto a1 = visionsensor->get_by_code(0, 3).x_middle_coord;
-			auto a2 = visionsensor->get_by_sig(0, 2).x_middle_coord;
-			if (abs(a1 - 158) < abs(a2 - 158))
-			{
-				n = a1;
-			}
-			else
-				n = a2;
-		}
-		printf("vision %d\n", n);
-		f.filter(n);
-	}
-	printf("vision final %f\n", f.getOutput());
-	return f.getOutput() - VISION_FOV_WIDTH / 2.0;
+	return std::get<0>(Vision.get_mogo_target_diff(c, Vision.FRONT, VISION_FOV_WIDTH / 2, 0));
 }
 void auton_awp()
 {

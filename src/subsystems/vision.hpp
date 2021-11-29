@@ -8,9 +8,9 @@ private:
 public:
     enum MOGO
     {
-        RED = 1,
+        YELLOW = 0,
         BLUE = 2,
-        YELLOW = 3,
+        RED = 3,
         ALLIANCE,
         ANY
     };
@@ -29,16 +29,16 @@ public:
         pros::vision_signature_s_t sig;
 
         sig = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
+        visions[FRONT]->set_signature(YELLOW, &sig);
+        visions[BACK]->set_signature(YELLOW, &sig);
+
+        sig = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
         visions[FRONT]->set_signature(RED, &sig);
         visions[BACK]->set_signature(RED, &sig);
 
-        sig = pros::Vision::signature_from_utility(1, 45, 2667, 1356, -4103, -1023, -2562, 1.000, 0);
+        sig = pros::Vision::signature_from_utility(3, 2239, 9421, 5830, -1119, 221, -448, 1.000, 0);
         visions[FRONT]->set_signature(BLUE, &sig);
         visions[BACK]->set_signature(BLUE, &sig);
-
-        sig = pros::Vision::signature_from_utility(3, 2239, 9421, 5830, -1119, 221, -448, 1.000, 0);
-        visions[FRONT]->set_signature(YELLOW, &sig);
-        visions[BACK]->set_signature(YELLOW, &sig);
     }
 
     pros::vision_object_s_t get_mogo(MOGO n, DIR d)
