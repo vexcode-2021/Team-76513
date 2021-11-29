@@ -20,7 +20,7 @@ public:
         mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 
-        const okapi::IterativePosPIDController::Gains gains = {0.00002, 0.008, 0.00007};
+        const okapi::IterativePosPIDController::Gains gains = {0.00992, 0.008, 0.00000};
         controller = okapi::AsyncPosControllerBuilder().withMotor(mtr).withGains(gains).build();
     }
 
@@ -47,7 +47,7 @@ public:
     {
         //TODO change impl to something like that of front claw soon, this behavior is to stay compatible with legacy relative behavior
 
-        controller->setTarget(controller->getProcessValue() + v);
+        ArmSet((controller->getProcessValue() * HARDWARE::BACK_CLAW_RATIO)+ v);
     }
 
     void ArmUp()

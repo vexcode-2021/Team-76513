@@ -72,11 +72,13 @@ void opctrl_back_claw()
 
 		if (val == 2)
 		{
-			claw.ArmSetRelative(30);
+			back_claw.ArmSetRelative(15);
 		}
 		else if (val == 1)
 		{
-			claw.ArmSetRelative(-30);
+			back_claw.ArmSetRelative(-15);
+		} else {
+			printf("AAA\n");
 		}
 
 		//todo uncommen, keeping legacy compat rn
