@@ -85,7 +85,8 @@ void opctrl_back_claw()
 			claw.ArmUp();
 		else if (val == 1)
 			claw.ArmDown();
-		else printf("AAA back claw wrong number\n");
+		else
+			printf("AAA back claw wrong number\n");
 	}
 }
 
@@ -202,7 +203,8 @@ void autonomous()
 	else if (SELECTED_AUTON_ROUTINE == neumogo_mid)
 		auton_yellow_mid();
 	else
-		;
+	{
+	}
 }
 
 void opcontrol()

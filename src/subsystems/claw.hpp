@@ -98,7 +98,7 @@ public:
         }
     }
 
-    void ArmTop(bool await = false)
+    void ArmTop()
     {
         ArmSetNum(CLAW_CONF::ARM_POS_LEN - 1);
     };
