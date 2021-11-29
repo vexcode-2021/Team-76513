@@ -59,8 +59,11 @@ public:
 
     void ArmSetRelative(double n)
     {
-        controllerl->setTarget(controllerl->getTarget() + n);
-        controllerr->setTarget(controllerr->getTarget() + n);
+
+        double valL = (n * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90));
+        double valR = (n * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90));
+        controllerl->setTarget(controllerl->getTarget() + valL);
+        controllerr->setTarget(controllerr->getTarget() + valR);
     }
 
     void ArmUp()

@@ -56,7 +56,7 @@ void opctrl_claw()
 
 		if (val & claw_task_toggle)
 		{
-			claw.Toggle() ? claw.ArmSetRelative(5) : claw.ArmSetRelative(-5);
+			claw.Toggle() ? claw.ArmSetRelative(-3) : claw.ArmSetRelative(3);
 		}
 	}
 }
@@ -82,9 +82,9 @@ void opctrl_back_claw()
 		//}
 
 		if (val == 2)
-			claw.ArmUp();
+			back_claw.ArmUp();
 		else if (val == 1)
-			claw.ArmDown();
+			back_claw.ArmDown();
 		else
 			printf("AAA back claw wrong number\n");
 	}
