@@ -21,7 +21,7 @@ void Drivetrain::init()
 
 double curve(double n)
 {
-    return n * n;
+    return n * fabs(n) ;
 }
 
 void Drivetrain::drive(Controller m_c)
