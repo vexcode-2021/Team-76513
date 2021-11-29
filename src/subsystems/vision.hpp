@@ -82,6 +82,8 @@ public:
             return r;
         case BLUE:
             return b;
+        default:
+            printf("AAAA crazy input to Vision::get_mogo\n");
         };
     }
 
@@ -103,4 +105,18 @@ public:
     {
         return std::to_string(a) + "," + std::to_string(b);
     }
+
+    //returns x,y
+    std::tuple<int, int> get_mogo_target_diff(MOGO n, DIR d, int x_t, int y_t)
+    {
+        auto m = get_mogo(n, d);
+        return std::make_tuple(m.x_middle_coord - x_t, m.y_middle_coord - y_t);
+    }
+    std::tuple<int, int> get_mogo_target_diff(MOGO n, DIR d, std::tuple<int, int> target)
+    {
+
+        auto [x_t, y_t] = target;
+        return get_mogo_target_diff(n, d, x_t, y_t);
+    }
+
 } Vision;

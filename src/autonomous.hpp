@@ -6,7 +6,6 @@ void vision_init()
 double vision(int sig)
 {
 
-	auto alliancemogo = visionsensor->create_color_code(2, 3);
 	auto f = okapi::MedianFilter<5>();
 	for (int i = 0; i < 5; i++)
 	{
