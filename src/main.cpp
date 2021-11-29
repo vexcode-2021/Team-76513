@@ -70,28 +70,22 @@ void opctrl_back_claw()
 		if (pros::competition::is_autonomous())
 			continue;
 
-		if (val == 2)
-		{
-			back_claw.ArmSetRelative(15);
-		}
-		else if (val == 1)
-		{
-			back_claw.ArmSetRelative(-15);
-		} else {
-			printf("AAA\n");
-		}
-
-		//todo uncommen, keeping legacy compat rn
 		//if (val == 2)
-		//	claw.ArmUp();
-		//else if (val == 1)
-		//	claw.ArmDown();
-
-		//back_claw only gonna be toggled in auton
-		//if (val & claw_task_toggle)
 		//{
-		//	claw.Toggle() ? claw.ArmSetRelative(5) : claw.ArmSetRelative(-5);
+		//	back_claw.ArmSetRelative(15);
 		//}
+		//else if (val == 1)
+		//{
+		//	back_claw.ArmSetRelative(-15);
+		//} else {
+		//	printf("AAA\n");
+		//}
+
+		if (val == 2)
+			claw.ArmUp();
+		else if (val == 1)
+			claw.ArmDown();
+		else printf("AAA back claw wrong number\n");
 	}
 }
 
