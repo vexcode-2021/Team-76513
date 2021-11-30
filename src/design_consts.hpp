@@ -51,8 +51,8 @@ namespace HARDWARE
     const char BACK_CLAW_PORT = 'H';
     const bool BACK_CLAW_REVERSED = false;
 
-    const int VISION_FRONT = 5;
-    const int VISION_BACK = 6;
+    const int VISION_FRONT = 20;
+    const int VISION_BACK = 21;
 
 
 }

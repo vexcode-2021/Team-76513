@@ -74,12 +74,12 @@ namespace BACK_CLAW_CONF
     using namespace okapi;
     const QAngularSpeed arm_top_velocity = 90_deg / 0.001_s;
 
-    const int armPos[] = {113 - 85, 113 - 45, 113 - 20, 113 - 0};
+    const int armPos[] = {105 - 85, 105 - 45, 105 - 20, 105 - 0};
     const int ARM_POS_LEN = 4;
 }
 
 
 namespace CONF_AUTON
 {
-    const bool autonButton = false;
+    const bool autonButton = true;
 }
