@@ -9,6 +9,53 @@ double vision(int sig)
 
 	return std::get<0>(Vision.get_mogo_target_diff(c, Vision.FRONT, VISION_FOV_WIDTH / 2, 0));
 }
+
+void back_up()
+{
+	printf("RUNNING\n");
+	//back_intake();
+	//pathfinder();
+	printf("RUNNIGENEDED\n");
+}
+
+void pathfinder() {
+	std::shared_ptr<okapi::AsyncMotionProfileController> profileController =
+		okapi::AsyncMotionProfileControllerBuilder()
+			.withLimits({
+				1.0, // Maximum linear velocity of the Chassis in m/s
+				2.0, // Maximum linear acceleration of the Chassis in m/s/s
+				10.0 // Maximum linear jerk of the Chassis in m/s/s/s
+			})
+			.withOutput(drive.chassis)
+			.buildMotionProfileController();
+	profileController->generatePath(
+		{{0_ft, 0_ft, 0_deg}, {4_ft, 1_ft, 0_deg} }, "A");
+	profileController->setTarget("A");
+	profileController->waitUntilSettled();
+}
+
+void back_intake() {
+back_claw.ArmSetNum(BACK_CLAW_CONF::ARM_POS_LEN - 1);
+	back_claw.WaitUntilSettled();
+
+	auto distancecontroller = okapi::IterativeControllerFactory::posPID(0.0017, 0.029, 0.001);
+	auto anglecontroller = okapi::IterativeControllerFactory::posPID(0.0001, 0, 0);
+
+	distancecontroller.setTarget(40);
+	anglecontroller.setTarget(4);
+	do
+	{
+		auto distvel = distancecontroller.step(ultrasonic.get());
+		auto yawvel = anglecontroller.step(Vision.get_mogo(Vision.ANY, Vision.BACK).x_middle_coord);
+		yawvel = 0;
+
+		drive.chassis->getModel()->driveVector(distvel, yawvel);
+
+		pros::delay(30);
+		printf("LOP %f\n", 55 - ultrasonic.get());
+	} while (!distancecontroller.isSettled());
+}
+
 void auton_awp()
 {
 	drive.chassis->setMaxVelocity(40);
