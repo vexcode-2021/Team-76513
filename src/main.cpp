@@ -15,16 +15,11 @@ void opctrl_drivetrain()
 		// if button is pressed
 		if (pros::Task::notify_take(true, 0))
 			drive.toggleMode();
-		static int count = 0;
-		count++;
 
-		if (pros::competition::is_autonomous())
+		if (drive.current_drive_mode == DRIVER_CONTROLLER)
 		{
-			pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
-			continue;
+			drive.drive(c);
 		}
-		drive.drive(c);
-
 		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
 	}
 }
@@ -180,8 +175,7 @@ void competition_initialize()
 void autonomous()
 {
 
-	claw.Leave();
-	pros::delay(100);
+	drive.current_drive_mode = DRIVER_NONE;
 
 	claw.ArmSetNum(0);
 	pros::delay(100);
@@ -208,6 +202,8 @@ void autonomous()
 	else
 	{
 	}
+
+	drive.current_drive_mode = DRIVER_CONTROLLER;
 }
 
 void opcontrol()
@@ -250,12 +246,12 @@ void opcontrol()
 			static okapi::ControllerButton awp_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::auton_run);
 			if (awp_button.changedToPressed())
 			{
-				drive_task->suspend();
-				claw_task->suspend();
-				competition_initialize();
-				autonomous();
-				drive_task->resume();
-				claw_task->resume();
+				//competition_initialize();
+				//autonomous();
+				drive.current_drive_mode = DRIVER_NONE;
+				printf("STARTING_BACK_UP");
+				back_up();
+				drive.current_drive_mode = DRIVER_CONTROLLER;
 			}
 		}
 
