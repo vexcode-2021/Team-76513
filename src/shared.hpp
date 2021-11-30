@@ -10,6 +10,6 @@ Claw claw;
 BackClaw back_claw;
 Drivetrain drive;
 
+
 okapi::ADIUltrasonic ultrasonic = okapi::ADIUltrasonic(HARDWARE::ULTRASONIC_FRONT_OUTPUT, HARDWARE::ULTRASONIC_FRONT_INPUT, std::make_unique<okapi::MedianFilter<5>>());
 
-pros::Vision *visionsensor = nullptr;

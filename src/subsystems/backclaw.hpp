@@ -49,6 +49,27 @@ public:
 
         ArmSet((controller->getProcessValue() * HARDWARE::BACK_CLAW_RATIO) + v);
     }
+    void ArmSetNum(const int n)
+    {
+        if (n >= 0 && n < BACK_CLAW_CONF::ARM_POS_LEN)
+        {
+            curr = n;
+            ArmSet(BACK_CLAW_CONF::armPos[n]);
+        }
+    }
+    void WaitUntilSettled()
+    {
+        pros::delay(50);
+        controller->waitUntilSettled();
+        //pros::delay(10);
+        //while (!controller->isSettled())
+        //{
+
+        //    pros::delay(10);
+        //}
+
+        printf("SETTLED %f %f %f %d\n",  controller->getError(), controller->getTarget(), controller->getProcessValue(), controller->isSettled());
+    }
 
     double ArmGet()
     {

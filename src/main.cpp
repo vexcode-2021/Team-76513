@@ -183,17 +183,9 @@ void autonomous()
 	printf("arm SETTLED\n");
 
 	if (SELECTED_AUTON_ROUTINE == awp_right)
-	{
-		claw.ArmSetNum(1);
-		claw.ArmSetNum(0);
 		auton_awp();
-	}
 	else if (SELECTED_AUTON_ROUTINE == awp_left)
-	{
-		claw.ArmSetNum(1);
-		claw.ArmSetNum(0);
 		auton_awp2();
-	}
 	else if (SELECTED_AUTON_ROUTINE == neumogo_front)
 		auton_yellow();
 
@@ -212,7 +204,6 @@ void opcontrol()
 	printf("opinited\n");
 	while (true)
 	{
-
 		static okapi::ControllerButton drive_mode_button = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
 
 		if (drive_mode_button.changedToPressed())
