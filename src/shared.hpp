@@ -28,3 +28,15 @@ namespace okapi
         }
     }
 }
+
+void monitored_task(pros::Task a)
+{
+    drive.current_drive_mode = DRIVER_NONE;
+    pros::delay(10);
+    do
+        pros::delay(10);
+    while (drive.current_drive_mode != DRIVER_CONTROLLER && a.get_state() <= pros::E_TASK_STATE_BLOCKED);
+
+    a.remove();
+    drive.current_drive_mode = DRIVER_CONTROLLER;
+}

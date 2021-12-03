@@ -19,7 +19,7 @@ namespace CONFIG_DRIVE
 
     const QTime delay = 10_ms;
 
-    const bool SLOW_MODE = true;
+    const bool SLOW_MODE = false;
 
 }
 

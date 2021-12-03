@@ -71,20 +71,13 @@ public:
 
     void ArmUp()
     {
-        ;
-        if (curr < CLAW_CONF::ARM_POS_LEN - 1)
-        {
             printf("ArmUp\n");
-            ArmSet(CLAW_CONF::armPos[++curr]);
-        }
+            ArmSetNum(curr +1);
     }
     void ArmDown()
     {
-        if (curr > 0)
-        {
             printf("ArmDown\n");
-            ArmSet(CLAW_CONF::armPos[--curr]);
-        }
+            ArmSetNum(curr -1);
     }
 
     void WaitUntilSettled()

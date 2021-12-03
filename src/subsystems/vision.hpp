@@ -50,11 +50,12 @@ public:
         //visions[BACK]->set_signature(BLUE, &sig);
 
         sensor->set_zero_point(pros::E_VISION_ZERO_TOPLEFT);
+        sensor ->set_exposure(35);
         sensor->set_led(0x000088);
     }
 
     //LEFT, TOP, X_MID, Y_MID
-    std::tuple<double, double, double, double> get_mogo(MOGO n)
+    std::tuple<double, double, double, double, int> get_mogo(MOGO n)
     {
         errno = 0;
 
@@ -89,10 +90,10 @@ public:
         case RED:
         case BLUE:
             errno = err[n];
-            return std::make_tuple(x_cor[n].getOutput(), y_cor[n].getOutput(), x_mid[n].getOutput(), y_mid[n].getOutput());
+            return std::make_tuple(x_cor[n].getOutput(), y_cor[n].getOutput(), x_mid[n].getOutput(), y_mid[n].getOutput(), n);
         default:
             printf("AAAA crazy input to Vision::get_mogo\n");
-            return std::make_tuple(0, 0, 0, 0);
+            return std::make_tuple(0, 0, 0, 0, 99);
         };
     }
 
@@ -117,7 +118,7 @@ public:
         {
             a += color_name((MOGO)i);
 
-            auto [LEFT, TOP, XMID, YMID] = get_mogo((MOGO)i);
+            auto [LEFT, TOP, XMID, YMID, _] = get_mogo((MOGO)i);
             a += errno == 0 ? " edge: " + status_pair(LEFT, TOP) + "; mid: " + status_pair(XMID, YMID) : " ERR: " + std::to_string(err[i]);
 
             a += "\t";

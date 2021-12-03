@@ -180,20 +180,37 @@ void autonomous()
 	claw.WaitUntilSettled();
 	printf("arm SETTLED\n");
 
-	if (SELECTED_AUTON_ROUTINE == awp_right)
-		auton_awp();
+	if (SELECTED_AUTON_ROUTINE == solo_awp)
+		solo_awp_f();
 	else if (SELECTED_AUTON_ROUTINE == awp_left)
 		auton_awp2();
 	else if (SELECTED_AUTON_ROUTINE == neumogo_front)
-		auton_yellow();
+		neumogo();
 
-	else if (SELECTED_AUTON_ROUTINE == neumogo_mid)
+	else if (SELECTED_AUTON_ROUTINE == skills)
 		auton_yellow_mid();
 	else
 	{
 	}
 
 	drive.current_drive_mode = DRIVER_CONTROLLER;
+}
+
+void awp_t()
+{
+	back_up();
+	pros::Task::current().suspend();
+}
+void fi_t()
+{
+	front_intake(7, 2.5, 50);
+	pros::Task::current().suspend();
+}
+void fi2_t()
+{
+	drive.chassis->setMaxVelocity(75);
+	drive.chassis->turnAngle(2 * 360_deg);
+	pros::Task::current().suspend();
 }
 
 void opcontrol()
@@ -234,23 +251,16 @@ void opcontrol()
 		{
 			static okapi::ControllerButton awp_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::auton_run);
 			if (awp_button.changedToPressed())
-			{
-				//competition_initialize();
-				//autonomous();
-				drive.current_drive_mode = DRIVER_NONE;
-				printf("STARTING_BACK_UP");
-				back_up();
-				drive.current_drive_mode = DRIVER_CONTROLLER;
-			}
+				monitored_task(pros::Task(awp_t));
 		}
 
 		static okapi::ControllerButton fi_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::auto_front_intake);
 		if (fi_button.changedToPressed())
-		{
-			drive.current_drive_mode = DRIVER_NONE;
-			front_intake();
-			drive.current_drive_mode = DRIVER_CONTROLLER;
-		}
+			monitored_task(pros::Task(fi_t));
+
+		static okapi::ControllerButton fi2_button = okapi::ControllerButton(ButtonMapping::claw_controller, okapi::ControllerDigital::right);
+		if (fi2_button.changedToPressed())
+			monitored_task(pros::Task(fi2_t));
 
 		static okapi::ControllerButton back_claw_up_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_up);
 		static okapi::ControllerButton back_claw_down_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_down);
