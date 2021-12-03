@@ -5,19 +5,10 @@
 //	return std::get<0>(Vision.get_mogo_target_diff(c, Vision.FRONT, VISION_FOV_WIDTH / 2, 0));
 //}
 
-void front_intake()
+void front_line_up(double timeout_seconds = 4)
 {
-
-	claw.ArmSetNum(0);
-	claw.ArmSetRelative(-1);
-	claw.Leave();
-	claw.WaitUntilSettled();
-
 	auto distancecontroller = okapi::IterativePosPIDController({0.0007, 0.003, 0.000001}, okapi::TimeUtilFactory().withSettledUtilParams(7, 5, 150_ms));
 	auto anglecontroller = okapi::IterativePosPIDController({0.0005, 0, 0}, okapi::TimeUtilFactory().withSettledUtilParams(6, 5, 150_ms));
-
-
-
 
 	distancecontroller.setTarget(190);
 	anglecontroller.setTarget(149);
@@ -27,14 +18,28 @@ void front_intake()
 		count++;
 		auto [_, top, x_mid, y_mid] = Visions[Vision::FRONT]->get_mogo(Vision::ANY);
 		auto distvel = distancecontroller.step(y_mid);
-		auto yawvel = anglecontroller.step(x_mid);
+		auto yawvel = -anglecontroller.step(x_mid);
 		//distvel = 0;
 
-		drive.chassis->getModel()->driveVector(distvel, -yawvel);
+		drive.chassis->getModel()->driveVector(distvel, yawvel);
 
 		pros::delay(50);
-		printf("LOP: %f %d %f\n", anglecontroller.getProcessValue(), x_mid, -yawvel);
-	} while (!((anglecontroller.isSettled() && distancecontroller.isSettled()) || drive.current_drive_mode == DRIVER_CONTROLLER || count > 4 * 1000.0 / 50.0));
+		printf("LOP: %f %d %f\n", anglecontroller.getProcessValue(), x_mid, yawvel);
+		printf("LOP: %f %d %f\n", distancecontroller.getProcessValue(), y_mid, distvel);
+	} while (!((anglecontroller.isSettled() && distancecontroller.isSettled()) || drive.current_drive_mode == DRIVER_CONTROLLER || count > timeout_seconds * 1000.0 / 50.0));
+
+	anglecontroller.flipDisable();
+	distancecontroller.flipDisable();
+}
+void front_intake()
+{
+
+	claw.ArmSetNum(0);
+	claw.ArmSetRelative(-1);
+	claw.Leave();
+	claw.WaitUntilSettled();
+
+	front_line_up(9);
 
 	claw.Clasp();
 	drive.chassis->getModel()->driveVector(0, 0);
@@ -84,12 +89,48 @@ void back_intake()
 	} while (!((anglecontroller.isSettled() && distancecontroller.isSettled()) || drive.current_drive_mode == DRIVER_CONTROLLER));
 }
 
+void test_thing()
+{
+	drive.chassis->setState(okapi::OdomState{x : 12_in, y : 24_in - 5.5_in, theta : -90_deg});
+	drive.chassis->setMaxVelocity(100);
+	drive.chassis->moveDistance(-3.0_in);
+	drive.chassis->moveDistance(3_in);
+
+	drive.chassis->setMaxVelocity(050);
+	drive.chassis->turnToAngle(0_deg);
+	drive.chassis->setMaxVelocity(100);
+	drive.chassis->moveDistance(1_tile);
+	drive.chassis->setMaxVelocity(50);
+	drive.chassis->turnToAngle(90_deg);
+
+	claw.ArmSet(CLAW_CONF::armPos[2] + 8);
+	drive.chassis->setMaxVelocity(150);
+	drive.chassis->driveToPoint(okapi::Point{x : 1.5_tile, y : 4.5_tile});
+
+	front_line_up();
+	drive.chassis->setMaxVelocity(100);
+	drive.chassis->moveDistance(6_in);
+	claw.Clasp();
+	pros::delay(150);
+
+	claw.ArmSetNum(0);
+	drive.chassis->moveDistance(-4_in);
+	front_intake();
+
+	drive.chassis->turnToAngle(200_deg);
+
+	//drive.chassis->turnToPoint(okapi::Point{1_tile, 1_tile});
+
+	//drive.chassis->moveDistance(11_in);
+}
+
 void back_up()
 {
 	printf("RUNNING\n");
 	//back_intake();
 	//pathfinder();
-	front_intake();
+	//front_intake();
+	test_thing();
 	printf("RUNNIGENEDED\n");
 }
 

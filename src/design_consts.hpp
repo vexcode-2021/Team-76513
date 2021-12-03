@@ -8,7 +8,7 @@ namespace HARDWARE
 
     const auto drive_gearset = okapi::AbstractMotor::gearset::green;
 
-    const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11.5_in}, okapi::imev5GreenTPR};
+    const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11_in}, okapi::imev5GreenTPR};
 
     const std::initializer_list<okapi::Motor> drive_motors_left = {16, 7};
     const std::initializer_list<okapi::Motor> drive_motors_right = {-12, -8};

@@ -97,11 +97,9 @@ public:
 
     void ArmSetNum(const int n)
     {
-        if (n >= 0 && n < CLAW_CONF::ARM_POS_LEN)
-        {
-            curr = n;
-            ArmSet(CLAW_CONF::armPos[n]);
-        }
+
+        curr = std::clamp(n, 0, CLAW_CONF::ARM_POS_LEN - 1);
+        ArmSet(CLAW_CONF::armPos[curr]);
     }
 
     void ArmTop()

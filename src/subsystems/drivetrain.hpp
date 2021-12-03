@@ -16,7 +16,7 @@ DRIVER current_drive_mode = DRIVER_CONTROLLER;
     Drivetrain();
     void init();
 
-    std::shared_ptr<okapi::ChassisController> chassis;
+    std::shared_ptr<okapi::OdomChassisController> chassis;
 
     void drive(okapi::Controller driver_controller);
 

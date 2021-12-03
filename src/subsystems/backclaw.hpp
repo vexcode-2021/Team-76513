@@ -51,11 +51,8 @@ public:
     }
     void ArmSetNum(const int n)
     {
-        if (n >= 0 && n < BACK_CLAW_CONF::ARM_POS_LEN)
-        {
-            curr = n;
-            ArmSet(BACK_CLAW_CONF::armPos[n]);
-        }
+        curr = std::clamp(n, 0, BACK_CLAW_CONF::ARM_POS_LEN - 1);
+        ArmSet(BACK_CLAW_CONF::armPos[curr]);
     }
     void WaitUntilSettled()
     {
@@ -68,7 +65,7 @@ public:
         //    pros::delay(10);
         //}
 
-        printf("SETTLED %f %f %f %d\n",  controller->getError(), controller->getTarget(), controller->getProcessValue(), controller->isSettled());
+        printf("SETTLED %f %f %f %d\n", controller->getError(), controller->getTarget(), controller->getProcessValue(), controller->isSettled());
     }
 
     double ArmGet()
