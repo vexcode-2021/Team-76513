@@ -230,7 +230,7 @@ void opcontrol()
 		//	}
 		//count++;
 
-		if (CONF_AUTON::autonButton)
+		if constexpr (CONF_AUTON::autonButton)
 		{
 			static okapi::ControllerButton awp_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::auton_run);
 			if (awp_button.changedToPressed())
@@ -242,6 +242,14 @@ void opcontrol()
 				back_up();
 				drive.current_drive_mode = DRIVER_CONTROLLER;
 			}
+		}
+
+		static okapi::ControllerButton fi_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::auto_front_intake);
+		if (fi_button.changedToPressed())
+		{
+			drive.current_drive_mode = DRIVER_NONE;
+			front_intake();
+			drive.current_drive_mode = DRIVER_CONTROLLER;
 		}
 
 		static okapi::ControllerButton back_claw_up_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_up);

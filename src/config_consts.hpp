@@ -57,6 +57,8 @@ namespace ButtonMapping
     const ControllerDigital back_claw_up = ControllerDigital::L2;
     const ControllerDigital back_claw_down = ControllerDigital::L1;
 
+    const ControllerDigital auto_front_intake = ControllerDigital::up;
+
 }
 
 namespace CLAW_CONF
@@ -80,8 +82,6 @@ namespace BACK_CLAW_CONF
     const int armPos[] = {n - 75, n - 45, n - 20, n - 0};
     const int ARM_POS_LEN = 4;
 }
-
-
 
 namespace CONF_AUTON
 {
