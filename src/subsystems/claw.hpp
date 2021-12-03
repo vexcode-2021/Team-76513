@@ -22,11 +22,12 @@ public:
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
         //const okapi::IterativePosPIDController::Gains gains = {0.0015, 0.0007, 0.00004};
         //const okapi::IterativePosPIDController::Gains gains = {0.0072,0.008,0.00007 };
-        const okapi::IterativePosPIDController::Gains gains = {0.00002, 0.008, 0.00007};
+        const okapi::IterativePosPIDController::Gains gains = {0.00002, 0.008, 0.00014};
         controllerl = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR2).withGains(gains).withSensor(HARDWARE::POTL).build();
         controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains(gains).withSensor(HARDWARE::POTR).build();
 
-        ArmSet(3);
+        ArmSetNum(0);
+        Leave();
     };
     void Clasp()
     {
@@ -59,11 +60,13 @@ public:
 
     void ArmSetRelative(double n)
     {
+        const double minvalL = (CLAW_CONF::armPos[0] * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90)) + HARDWARE::LMIN;
+        const double minvalR = (CLAW_CONF::armPos[0] * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90)) + HARDWARE::RMIN;
 
         double valL = (n * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90));
         double valR = (n * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90));
-        controllerl->setTarget(controllerl->getTarget() + valL);
-        controllerr->setTarget(controllerr->getTarget() + valR);
+        controllerl->setTarget(max(controllerl->getTarget() + valL, minvalL));
+        controllerr->setTarget(max(controllerr->getTarget() + valR, minvalR));
     }
 
     void ArmUp()
@@ -104,5 +107,11 @@ public:
     void ArmTop()
     {
         ArmSetNum(CLAW_CONF::ARM_POS_LEN - 1);
+    };
+    double max(double a, double b)
+    {
+        if (a >= b)
+            return a;
+        return b;
     };
 };

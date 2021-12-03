@@ -16,10 +16,7 @@ void opctrl_drivetrain()
 		if (pros::Task::notify_take(true, 0))
 			drive.toggleMode();
 
-		if (drive.current_drive_mode == DRIVER_CONTROLLER)
-		{
-			drive.drive(c);
-		}
+		drive.drive(c);
 		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
 	}
 }
@@ -102,8 +99,8 @@ void print()
 	{
 		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
 		printf("BACK_CLAW %f\n", back_claw.ArmGet());
-		//printf("FRONT:\n%s", Vision.status(Vision.FRONT).c_str());
-		//printf("BACK:\n%s", Vision.status(Vision.BACK).c_str());
+		printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
+		//printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
 		printf("back ultrasonic: %f\n", ultrasonic.get());
 
 		pros::delay(1000);

@@ -4,23 +4,23 @@ namespace HARDWARE
 {
 
     const char CLAW_PORT = 'F';
-    const bool CLAW_REVERSED = false;
+    const bool CLAW_REVERSED = true;
 
     const auto drive_gearset = okapi::AbstractMotor::gearset::green;
 
     const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11.5_in}, okapi::imev5GreenTPR};
 
-    const std::initializer_list<okapi::Motor> drive_motors_left = {6, 7, 5};
-    const std::initializer_list<okapi::Motor> drive_motors_right = {-8, -4};
+    const std::initializer_list<okapi::Motor> drive_motors_left = {16, 7};
+    const std::initializer_list<okapi::Motor> drive_motors_right = {-12, -8};
 
     const double claw_arm_gear_ratio = 12.0 / 84.0;
     const okapi::QAngle claw_max_angle = 95_deg; //auangle from the ground to the angle that is high enough to drop the MOGO on the platform
                                                  //TODO
 
     //right
-    const auto CLAW_ARM_MOTOR1 = okapi::Motor(2, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
+    const auto CLAW_ARM_MOTOR1 = okapi::Motor(1, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
     //left
-    const auto CLAW_ARM_MOTOR2 = okapi::Motor(9, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
+    const auto CLAW_ARM_MOTOR2 = okapi::Motor(19, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
     //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
     const auto CLAW_ARM_MOTORS = {
         CLAW_ARM_MOTOR1,
@@ -51,8 +51,8 @@ namespace HARDWARE
     const char BACK_CLAW_PORT = 'H';
     const bool BACK_CLAW_REVERSED = false;
 
-    const int VISION_FRONT = 20;
-    const int VISION_BACK = 21;
+    const int VISION_FRONT = 5;
+    const int VISION_BACK = 3;
 
 
 }
