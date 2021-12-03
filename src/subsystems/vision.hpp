@@ -50,8 +50,7 @@ public:
         //visions[BACK]->set_signature(BLUE, &sig);
 
         sensor->set_zero_point(pros::E_VISION_ZERO_TOPLEFT);
-        sensor->set_led(0x0000ff);
-	sensor->set_exposure(20);
+        sensor->set_led(0x000088);
     }
 
     //LEFT, TOP, X_MID, Y_MID
@@ -153,7 +152,7 @@ public:
         {
             errno = 0;
             auto y = sensor->get_by_code(0, i + 1);
-	    printf("%d %d %d\n", y.left_coord, y.top_coord, errno);
+	    //printf("%d %d %d\n", y.left_coord, y.top_coord, errno);
             err[i] = errno;
 
             y = deepVision(y);
@@ -166,7 +165,7 @@ public:
             width[i].filter(errno == 0 ? y.width : 0);
             errno = 0;
         }
-	printf("\n");
+	//printf("\n");
     }
 
     pros::vision_object_s_t deepVision(pros::vision_object_s_t i)
@@ -212,9 +211,9 @@ public:
         finalo.x_middle_coord = finalo.left_coord + finalo.width / 2;
         finalo.y_middle_coord = finalo.top_coord + finalo.height / 2;
 
-        printf("running DEEPVISION %s\n", color_name((MOGO)(i.signature - 1)).c_str());
-        printf("HOR: %d %d %d %d %d %d %d \n", objects[0].left_coord, objects[0].width, objects[1].left_coord, objects[1].width, finalo.left_coord, finalo.width, finalo.x_middle_coord);
-        printf("VERT: %d %d %d %d %d %d %d \n", objects[0].top_coord, objects[0].height, objects[1].top_coord, objects[1].height, finalo.top_coord, finalo.height, finalo.y_middle_coord);
+        //printf("running DEEPVISION %s\n", color_name((MOGO)(i.signature - 1)).c_str());
+        //printf("HOR: %d %d %d %d %d %d %d \n", objects[0].left_coord, objects[0].width, objects[1].left_coord, objects[1].width, finalo.left_coord, finalo.width, finalo.x_middle_coord);
+        //printf("VERT: %d %d %d %d %d %d %d \n", objects[0].top_coord, objects[0].height, objects[1].top_coord, objects[1].height, finalo.top_coord, finalo.height, finalo.y_middle_coord);
         return finalo;
     }
 };
@@ -227,7 +226,7 @@ void vision_init_loop()
     {
         Visions[Vision::BACK]->init();
         Visions[Vision::FRONT]->init();
-        pros::delay(1000);
+        pros::delay(500);
     }
 }
 void vision_poll_loop()

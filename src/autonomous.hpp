@@ -13,10 +13,13 @@ void front_intake()
 	claw.Leave();
 	claw.WaitUntilSettled();
 
-	auto distancecontroller = okapi::IterativePosPIDController({0.0007, 0.003, 0.000001}, okapi::TimeUtilFactory().withSettledUtilParams(7));
-	auto anglecontroller = okapi::IterativePosPIDController({0.0005, 0, 0}, okapi::TimeUtilFactory().withSettledUtilParams(6));
+	auto distancecontroller = okapi::IterativePosPIDController({0.0007, 0.003, 0.000001}, okapi::TimeUtilFactory().withSettledUtilParams(7, 5, 150_ms));
+	auto anglecontroller = okapi::IterativePosPIDController({0.0005, 0, 0}, okapi::TimeUtilFactory().withSettledUtilParams(6, 5, 150_ms));
 
-	distancecontroller.setTarget(173);
+
+
+
+	distancecontroller.setTarget(190);
 	anglecontroller.setTarget(149);
 	int count = 0;
 	do
