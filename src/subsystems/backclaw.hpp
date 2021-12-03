@@ -20,7 +20,7 @@ public:
         mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
 
-        const okapi::IterativePosPIDController::Gains gains = {0.00992, 0.008, 0.00028};
+        const okapi::IterativePosPIDController::Gains gains = {0.00692, 0.008, 0.00020};
         controller = okapi::AsyncPosControllerBuilder().withMotor(mtr).withGains(gains).build();
     }
 
