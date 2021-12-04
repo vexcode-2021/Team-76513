@@ -85,5 +85,5 @@ namespace BACK_CLAW_CONF
 
 namespace CONF_AUTON
 {
-    const bool autonButton = true;
+    const bool autonButton = false;
 }

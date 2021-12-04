@@ -183,12 +183,11 @@ void autonomous()
 	if (SELECTED_AUTON_ROUTINE == solo_awp)
 		solo_awp_f();
 	else if (SELECTED_AUTON_ROUTINE == awp_left)
-		auton_awp2();
+		auton_awp_left();
 	else if (SELECTED_AUTON_ROUTINE == neumogo_front)
 		neumogo();
-
 	else if (SELECTED_AUTON_ROUTINE == skills)
-		auton_yellow_mid();
+		auto_skills();
 	else
 	{
 	}

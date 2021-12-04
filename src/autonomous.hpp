@@ -147,6 +147,24 @@ void solo_awp_f()
 	//drive.chassis->moveDistance(11_in);
 }
 
+void auton_awp_left()
+{
+	drive.chassis->setState(okapi::OdomState{x : 12_in, y : 24_in - 5.5_in, theta : -90_deg});
+	drive.chassis->setMaxVelocity(75);
+	back_claw.ArmSetNum(2);
+	back_claw.WaitUntilSettled();
+	drive.chassis->moveDistance(6_in);
+	pros::delay(200);
+	back_claw.ArmSetNum(0);
+	back_claw.WaitUntilSettled();
+
+	drive.chassis->setMaxVelocity(90);
+	drive.chassis->turnAngle(101_deg);
+	drive.chassis->setMaxVelocity(100);
+
+	neumogo();
+}
+
 void neumogo()
 {
 	claw.Leave();
@@ -158,12 +176,13 @@ void neumogo()
 void auto_skills()
 {
 	claw.Leave();
-	drive.chassis->setMaxVelocity(100);
+	drive.chassis->setMaxVelocity(120);
 
 	front_intake(6, 2, 2, false, Vision::ALLIANCE);
 	drive.chassis->moveDistance(3.5_tile);
 	claw.Leave();
 	pros::delay(300);
+	drive.chassis->turnAngle(5_deg);
 	drive.chassis->moveDistance(-3.5_tile);
 
 	drive.chassis->turnAngle(-90_deg);
@@ -176,10 +195,29 @@ void auto_skills()
 	pros::delay(300);
 	drive.chassis->moveDistance(-3_tile);
 
-//	drive.chassis->driveToPoint(okapi::Point{x : 3_tile, y : 0.5_tile});
-//	front_intake(6, 2, 2, false, Vision::YELLOW);
-//	drive.chassis->driveToPoint(okapi::Point{x : 0_tile, y : 0_tile});
-//	claw.Leave();
+	drive.chassis->turnAngle(-90_deg);
+	drive.chassis->moveDistance(1.5_tile);
+	drive.chassis->turnAngle(90_deg);
+
+	front_intake(6, 2, 2, false, Vision::YELLOW);
+	drive.chassis->moveDistance(1.5_tile);
+	claw.Leave();
+	pros::delay(300);
+	drive.chassis->moveDistance(-2.5_tile);
+
+	drive.chassis->turnAngle(-90_deg);
+	drive.chassis->moveDistance(1.5_tile);
+	drive.chassis->turnAngle(90_deg);
+
+	front_intake(6, 2, 2, false, Vision::YELLOW);
+	drive.chassis->moveDistance(2_tile);
+	claw.Leave();
+	pros::delay(300);
+	drive.chassis->moveDistance(-3_tile);
+	//	drive.chassis->driveToPoint(okapi::Point{x : 3_tile, y : 0.5_tile});
+	//	front_intake(6, 2, 2, false, Vision::YELLOW);
+	//	drive.chassis->driveToPoint(okapi::Point{x : 0_tile, y : 0_tile});
+	//	claw.Leave();
 }
 void back_up()
 {
