@@ -38,11 +38,11 @@ namespace HARDWARE
 
     const auto POTL = std::make_shared<okapi::Potentiometer>('B');
     const auto POTR = std::make_shared<okapi::Potentiometer>('A');
-    const int LMIN = 456;
+    const int LMIN = 420;
     const int LMAX = 2252;
 
-    const int RMIN = 416;
-    const int RMAX = 2224;
+    const int RMIN = 250;
+    const int RMAX = 1800;
 
 
     const auto BACK_CLAW_MOTOR = okapi::Motor(10, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);

@@ -23,8 +23,8 @@ public:
         //const okapi::IterativePosPIDController::Gains gains = {0.0015, 0.0007, 0.00004};
         //const okapi::IterativePosPIDController::Gains gains = {0.0072,0.008,0.00007 };
         const okapi::IterativePosPIDController::Gains gains = {0.00002, 0.008, 0.00014};
-        controllerl = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR2).withGains(gains).withSensor(HARDWARE::POTL).build();
-        controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains(gains).withSensor(HARDWARE::POTR).build();
+        controllerl = okapi::AsyncPosControllerBuilder().withMotor(mtr).withGains(gains).withSensor(HARDWARE::POTL).build();
+        //controllerr = okapi::AsyncPosControllerBuilder().withMotor(mtr).withGains(gains).withSensor(HARDWARE::POTR).build();
 
         ArmSetNum(0);
         Leave();
@@ -55,7 +55,7 @@ public:
         printf("%f %f %f\n", val, valL, valR);
 
         controllerl->setTarget(valL);
-        controllerr->setTarget(valR);
+        //controllerr->setTarget(valR);
     }
 
     void ArmSetRelative(double n)
@@ -66,23 +66,23 @@ public:
         double valL = (n * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90));
         double valR = (n * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90));
         controllerl->setTarget(max(controllerl->getTarget() + valL, minvalL));
-        controllerr->setTarget(max(controllerr->getTarget() + valR, minvalR));
+        //controllerr->setTarget(max(controllerr->getTarget() + valR, minvalR));
     }
 
     void ArmUp()
     {
-            printf("ArmUp\n");
-            ArmSetNum(curr +1);
+        printf("ArmUp\n");
+        ArmSetNum(curr + 1);
     }
     void ArmDown()
     {
-            printf("ArmDown\n");
-            ArmSetNum(curr -1);
+        printf("ArmDown\n");
+        ArmSetNum(curr - 1);
     }
 
     void WaitUntilSettled()
     {
-        while (!(controllerl->isSettled() && controllerr->isSettled()))
+        while (!(controllerl->isSettled()))
         {
             pros::delay(10);
         }

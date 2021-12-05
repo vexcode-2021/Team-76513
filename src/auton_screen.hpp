@@ -8,7 +8,7 @@ enum AUTON_ROUTINES
 	skills,
 	auton_routine_none
 };
-static AUTON_ROUTINES SELECTED_AUTON_ROUTINE = skills;
+static AUTON_ROUTINES SELECTED_AUTON_ROUTINE = neumogo_front;
 
 void on_screen_button()
 {
