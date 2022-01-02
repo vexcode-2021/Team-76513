@@ -4,7 +4,7 @@ namespace HARDWARE
 {
 
     const char CLAW_PORT = 'F';
-    const bool CLAW_REVERSED = false;
+    const bool CLAW_REVERSED = true;
 
     const auto drive_gearset = okapi::AbstractMotor::gearset::green;
 

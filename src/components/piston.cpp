@@ -37,7 +37,7 @@ bool Piston::toggle()
 }
 void Piston::apply()
 {
-    int err = 1;// this->port.set_value(state ^ this->reversed);
+    int err =  this->port.set_value(state ^ this->reversed);
     if (err != 1)
     {
         printf("AAAAA\n");
