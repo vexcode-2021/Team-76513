@@ -79,6 +79,19 @@ void front_intake(double timeout_seconds = 4, double multiplier = 1, double dmul
 //	profileController->waitUntilSettled();
 //}
 
+void testing_routine() {
+	drive.chassis->setMaxVelocity(150);
+   //drive.chassis->moveDistance(1_tile);
+   //drive.chassis->turnAngle(90_deg);
+   //drive.chassis->moveDistance(1_tile);
+   //drive.chassis->turnAngle(90_deg);
+   //drive.chassis->moveDistance(1_tile);
+   //drive.chassis->turnAngle(90_deg);
+   //drive.chassis->moveDistance(1_tile);
+   //drive.chassis->turnAngle(360_deg * 10);
+   drive.chassis->moveDistance(1_tile);
+}
+
 void back_intake()
 {
 	back_claw.ArmSetNum(BACK_CLAW_CONF::ARM_POS_LEN - 1);

@@ -22,16 +22,26 @@ double curve(double n)
 
 void Drivetrain::init()
 {
+    Logger::setDefaultLogger(
+        std::make_shared<Logger>(
+            TimeUtilFactory::createDefault().getTimer(), // It needs a Timer
+            "/ser/sout",                                 // Output to the PROS terminal
+            Logger::LogLevel::info                       // Show errors and warnings
+            ));
+
     chassis =
         okapi::ChassisControllerBuilder()
             .withMotors(okapi::MotorGroup(HARDWARE::drive_motors_left), okapi::MotorGroup(HARDWARE::drive_motors_right))
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
+            //.withGains({0.016, 0, 0.001}, {}, {0,0,0})
+            .withGains({0.0024, 0, 0.00001 * 4}, {0.0023, 0, 0}, {0.001, 0, 0})
             .withOdometry()
             .buildOdometry();
+    // straight - kU = 0.02 pU = 0.5 at 50rpm
 
-    //for (double i = -1; i <= 1; i += 0.1)
-    //    printf("CURVE DEBUG: %f = %f\n", i, curve(i));
+    // for (double i = -1; i <= 1; i += 0.1)
+    //     printf("CURVE DEBUG: %f = %f\n", i, curve(i));
 }
 
 void Drivetrain::drive(Controller m_c)

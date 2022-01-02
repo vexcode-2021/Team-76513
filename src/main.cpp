@@ -196,8 +196,9 @@ void autonomous()
 }
 
 void awp_t()
+
 {
-	back_up();
+	testing_routine();
 	pros::Task::current().suspend();
 }
 void fi_t()
@@ -207,8 +208,9 @@ void fi_t()
 }
 void fi2_t()
 {
-	drive.chassis->setMaxVelocity(75);
-	drive.chassis->turnAngle(2 * 360_deg);
+	//drive.chassis->setMaxVelocity(150);
+	drive.chassis->turnAngle(360_deg);
+	pros::delay(20);
 	pros::Task::current().suspend();
 }
 
