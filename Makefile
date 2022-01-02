@@ -7,7 +7,7 @@ CXXEXTS:=cpp c++ cc
 
 CPUS ?= $(shell nproc --all  ||  echo 1)
 MAKEFLAGS += --jobs=$(CPUS)
-
+#WARNFLAGS+= -Wall -Wextra
 # probably shouldn't modify these, but you may need them below
 ROOT=.
 FWDIR:=$(ROOT)/firmware

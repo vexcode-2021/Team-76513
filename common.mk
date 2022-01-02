@@ -5,7 +5,7 @@ MFLAGS=-mcpu=cortex-a9 -mfpu=neon-fp16 -mfloat-abi=softfp -Os -g
 CPPFLAGS=-D_POSIX_THREADS -D_UNIX98_THREAD_MUTEX_ATTRIBUTES
 GCCFLAGS=-ffunction-sections -fdata-sections -fdiagnostics-color -funwind-tables
 
-WARNFLAGS+=-Wno-psabi -Wall -Wextra
+WARNFLAGS+=-Wno-psabi
 
 SPACE := $() $()
 COMMA := ,
@@ -236,7 +236,7 @@ $(HOT_BIN): $(HOT_ELF) $(COLD_BIN)
 
 $(HOT_ELF): $(COLD_ELF) $(ELF_DEPS)
 	$(call _pros_ld_timestamp)
-	$(call test_output_2,Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) ,$(LD) $(LDFLAGS) $(call wlprefix,-nostartfiles -R $<) $(filter-out $<,$^) $(LDTIMEOBJ) $(LIBRARIES) $(call wlprefix,-T$(FWDIR)/v5-hot.ld $(LNK_FLAGS) -o $@),$(OK_STRING))
+	$(call test_output_2,Linking hot project with $(COLD_ELF) and $(ARCHIVE_TEXT_LIST) ,$(LD) -nostartfiles $(LDFLAGS) $(call wlprefix,-R $<) $(filter-out $<,$^) $(LDTIMEOBJ) $(LIBRARIES) $(call wlprefix,-T$(FWDIR)/v5-hot.ld $(LNK_FLAGS) -o $@),$(OK_STRING))
 	@printf "%s\n" "Section sizes:"
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
 
