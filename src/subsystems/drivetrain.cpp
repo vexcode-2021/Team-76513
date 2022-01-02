@@ -35,9 +35,13 @@ void Drivetrain::init()
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
             //.withGains({0.016, 0, 0.001}, {}, {0,0,0})
-            .withGains({0.0024, 0, 0.00001 * 4}, {0.0023, 0, 0}, {0.001, 0, 0})
+            .withGains({0.0024, 0, 0.00001 * 4}, {0.0043, 0.01, 0.00001 * 9}, {0.001, 0, 0})
+            .withSlewRate( 10.0 / 400.0)
+            //.withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(1, 999, 1_s))
+
             .withOdometry()
             .buildOdometry();
+            printf("HIII\n============================\n\n\n\n\n\n");
     // straight - kU = 0.02 pU = 0.5 at 50rpm
 
     // for (double i = -1; i <= 1; i += 0.1)

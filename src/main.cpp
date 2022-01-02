@@ -208,8 +208,14 @@ void fi_t()
 }
 void fi2_t()
 {
-	//drive.chassis->setMaxVelocity(150);
+	drive.chassis->setMaxVelocity(90);
 	drive.chassis->turnAngle(360_deg);
+	//drive.chassis->turnAngle(180_deg);
+	//drive.chassis->turnAngle(180_deg);
+	//drive.chassis->turnAngle(180_deg);
+	//drive.chassis->turnAngle(180_deg);
+	//drive.chassis->turnAngle(180_deg);
+	//drive.chassis->turnAngle(180_deg);
 	pros::delay(20);
 	pros::Task::current().suspend();
 }

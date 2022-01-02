@@ -37,7 +37,7 @@ void monitored_task(pros::Task a)
         pros::delay(10);
     while (drive.current_drive_mode != DRIVER_CONTROLLER && a.get_state() <= pros::E_TASK_STATE_BLOCKED);
 
-    //drive.chassis->stop();
+    drive.chassis->stop();
     a.remove();
     drive.current_drive_mode = DRIVER_CONTROLLER;
 }
