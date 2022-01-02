@@ -1,7 +1,8 @@
 #include "main.h"
 #include "../config_consts.hpp"
 
-enum DRIVER {
+enum DRIVER
+{
     DRIVER_CONTROLLER,
     DRIVER_NONE
 };
@@ -12,7 +13,7 @@ private:
     CONFIG_DRIVE::MODE mode = CONFIG_DRIVE::DEFAULT_MODE;
 
 public:
-DRIVER current_drive_mode = DRIVER_CONTROLLER;
+    DRIVER current_drive_mode = DRIVER_CONTROLLER;
     Drivetrain();
     void init();
 
@@ -21,4 +22,16 @@ DRIVER current_drive_mode = DRIVER_CONTROLLER;
     void drive(okapi::Controller driver_controller);
 
     void toggleMode();
+
+    void moveDistance(okapi::QLength itarget)
+    {
+
+        chassis->setMaxVelocity(150);
+        chassis->moveDistance(itarget);
+    };
+    void turnAngle(okapi::QAngle itarget)
+    {
+        chassis->setMaxVelocity(90);
+        chassis->turnAngle(itarget);
+    };
 };
