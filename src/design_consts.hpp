@@ -49,8 +49,8 @@ namespace HARDWARE
     const auto BACK_CLAW_MOTOR = okapi::Motor(10, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);
     const double BACK_CLAW_RATIO = 12.0/60.;
 
-    const char BACK_CLAW_PORT = 'H';
-    const bool BACK_CLAW_REVERSED = false;
+    const char BACK_CLAW_PORT = 'E';
+    const bool BACK_CLAW_REVERSED = true;
 
     const int VISION_FRONT = 5;
     const int VISION_BACK = 3;

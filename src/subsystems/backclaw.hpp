@@ -5,7 +5,6 @@
 class BackClaw
 {
 private:
-    Piston piston = Piston(HARDWARE::BACK_CLAW_PORT, HARDWARE::BACK_CLAW_REVERSED);
 
     okapi::Motor mtr = HARDWARE::BACK_CLAW_MOTOR;
 
@@ -14,6 +13,7 @@ private:
     std::shared_ptr<okapi::AsyncPositionController<double, double>> controller;
 
 public:
+    Piston piston = Piston(HARDWARE::BACK_CLAW_PORT, HARDWARE::BACK_CLAW_REVERSED, false);
     BackClaw() {}
     void init()
     {

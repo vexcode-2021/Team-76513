@@ -4,13 +4,13 @@ Piston::Piston()
 {
 }
 
-Piston::Piston(const char port, bool reversed)
+Piston::Piston(const char port, bool reversed, bool initstate)
 {
-    init(port, reversed);
+    init(port, reversed, initstate);
 }
-void Piston::init(const char port, bool reversed)
+void Piston::init(const char port, bool reversed, bool initstate)
 {
-    state = true;
+    state = initstate;
     this->port = pros::ADIDigitalOut(port, state ^ this->reversed);
     this->reversed = reversed;
 }
@@ -37,7 +37,7 @@ bool Piston::toggle()
 }
 void Piston::apply()
 {
-    int err =  this->port.set_value(state ^ this->reversed);
+    int err = this->port.set_value(state ^ this->reversed);
     if (err != 1)
     {
         printf("AAAAA\n");
