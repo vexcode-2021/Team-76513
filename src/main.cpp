@@ -29,7 +29,7 @@ void opctrl_claw()
 	while (true)
 	{
 		uint32_t val = pros::Task::notify_take(true, TIMEOUT_MAX);
-		//if (val != 0)
+		// if (val != 0)
 		//{
 		//	printf("%x %x %x %x\n", val, claw_task_up, claw_task_down, claw_task_toggle);
 		//	printf("%x\n", val & claw_task_up);
@@ -37,7 +37,7 @@ void opctrl_claw()
 		//	printf("%x\n", val & claw_task_toggle);
 		//	//printf("%x\n", false * 0b010);
 		//	//printf("%x\n", true * 0b010);
-		//}
+		// }
 
 		if (pros::competition::is_autonomous())
 			continue;
@@ -62,16 +62,16 @@ void opctrl_back_claw()
 		if (pros::competition::is_autonomous())
 			continue;
 
-		//if (val == 2)
+		// if (val == 2)
 		//{
 		//	back_claw.ArmSetRelative(15);
-		//}
-		//else if (val == 1)
+		// }
+		// else if (val == 1)
 		//{
 		//	back_claw.ArmSetRelative(-15);
-		//} else {
+		// } else {
 		//	printf("AAA\n");
-		//}
+		// }
 
 		if (val == 2)
 			back_claw.ArmUp();
@@ -100,7 +100,7 @@ void print()
 		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
 		printf("BACK_CLAW %f\n", back_claw.ArmGet());
 		printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
-		//printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
+		// printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
 		printf("back ultrasonic: %f\n", ultrasonic.get());
 
 		pros::delay(1000);
@@ -138,7 +138,7 @@ void disabled()
 
 	while (true)
 	{
-		//pros::lcd::clear();
+		// pros::lcd::clear();
 		printAutonRoutines();
 		pros::delay(100);
 	}
@@ -160,7 +160,7 @@ void competition_initialize()
 
 	while (true)
 	{
-		//pros::lcd::clear();
+		// pros::lcd::clear();
 		printAutonRoutines();
 		pros::delay(100);
 	}
@@ -209,13 +209,13 @@ void fi_t()
 void fi2_t()
 {
 	drive.chassis->setMaxVelocity(90);
-	drive.chassis->turnAngle(360_deg);
-	//drive.chassis->turnAngle(180_deg);
-	//drive.chassis->turnAngle(180_deg);
-	//drive.chassis->turnAngle(180_deg);
-	//drive.chassis->turnAngle(180_deg);
-	//drive.chassis->turnAngle(180_deg);
-	//drive.chassis->turnAngle(180_deg);
+	drive.chassis->turnAngle(4 * 360_deg);
+	// drive.chassis->turnAngle(180_deg);
+	// drive.chassis->turnAngle(180_deg);
+	// drive.chassis->turnAngle(180_deg);
+	// drive.chassis->turnAngle(180_deg);
+	// drive.chassis->turnAngle(180_deg);
+	// drive.chassis->turnAngle(180_deg);
 	pros::delay(20);
 	pros::Task::current().suspend();
 }
@@ -245,14 +245,14 @@ void opcontrol()
 					claw_down_button.isPressed() * claw_task_down,
 				pros::E_NOTIFY_ACTION_BITS, NULL);
 
-		//static int count = 0;
+		// static int count = 0;
 		//	if (count % 40 == 0)
 		//	{
 		//		printf("%x\n", claw_hook_button.changedToPressed() * claw_task_toggle |
 		//						 claw_up_button.changedToPressed() * claw_task_up |
 		//						 claw_down_button.changedToPressed() * claw_task_down);
 		//	}
-		//count++;
+		// count++;
 
 		if constexpr (CONF_AUTON::autonButton)
 		{

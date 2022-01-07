@@ -1,9 +1,9 @@
-//double vision(int sig)
+// double vision(int sig)
 //{
 //	auto c = sig == 1 ? Vision.YELLOW : Vision.ALLIANCE;
 //
 //	return std::get<0>(Vision.get_mogo_target_diff(c, Vision.FRONT, VISION_FOV_WIDTH / 2, 0));
-//}
+// }
 
 void front_line_up(double timeout_seconds = 4, double multiplier = 1, double dmult = 1, bool loose = false, Vision::MOGO type = Vision::ANY)
 {
@@ -38,8 +38,8 @@ void front_line_up(double timeout_seconds = 4, double multiplier = 1, double dmu
 		drive.chassis->getModel()->driveVector(distvel, yawvel);
 
 		pros::delay(20);
-		//printf("LOP: %f %d %f\n", anglecontroller.getProcessValue(), x_mid, yawvel);
-		//printf("LOP: %f %d %f\n", distancecontroller.getProcessValue(), y_mid, distvel);
+		// printf("LOP: %f %d %f\n", anglecontroller.getProcessValue(), x_mid, yawvel);
+		// printf("LOP: %f %d %f\n", distancecontroller.getProcessValue(), y_mid, distvel);
 	} while (!((anglecontroller.isSettled() && distancecontroller.isSettled()) || count > timeout_seconds * 1000.0 / 20.0));
 
 	anglecontroller.flipDisable();
@@ -62,7 +62,7 @@ void front_intake(double timeout_seconds = 4, double multiplier = 1, double dmul
 	printf("FINISHED\n");
 }
 
-//void pathfinder()
+// void pathfinder()
 //{
 //	std::shared_ptr<okapi::AsyncMotionProfileController> profileController =
 //		okapi::AsyncMotionProfileControllerBuilder()
@@ -202,14 +202,14 @@ void auton_awp_left()
 	drive.chassis->turnAngle(101_deg);
 	drive.chassis->setMaxVelocity(100);
 
-	//neumogo();
+	// neumogo();
 }
 
 void auto_skills()
 {
 	claw.Leave();
 
-	//front_intake(6, 2, 2, false, Vision::BLUE);
+	// front_intake(6, 2, 2, false, Vision::BLUE);
 
 	drive.chassis->setMaxVelocity(70);
 	drive.chassis->moveDistance(1_tile);
@@ -261,11 +261,11 @@ void auto_skills()
 void back_up()
 {
 	printf("RUNNING\n");
-	//back_intake();
-	//pathfinder();
-	//front_intake();
+	// back_intake();
+	// pathfinder();
+	// front_intake();
 	solo_awp_f();
-	//neumogo();
+	// neumogo();
 	printf("RUNNIGENEDED\n");
 }
 
@@ -367,7 +367,7 @@ void auton_yellow()
 	//	claw.Leave();
 }
 
-void auton_yellow_mid() //TODO
+void auton_yellow_mid() // TODO
 {
 	//	printf("AUTON_YELLOW_MID\n");
 	//	drive.chassis->setMaxVelocity(120);
