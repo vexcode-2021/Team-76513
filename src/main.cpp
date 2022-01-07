@@ -17,7 +17,7 @@ void opctrl_drivetrain()
 			drive.toggleMode();
 
 		drive.drive(c);
-		pros::delay(CONFIG_DRIVE::delay.convert(1_ms));
+		pros::delay(CONFIG_DRIVE::delay.convert(10_ms));
 	}
 }
 
