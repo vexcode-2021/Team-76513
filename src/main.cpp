@@ -121,6 +121,7 @@ void initialize()
 	back_claw_task = new pros::Task(opctrl_back_claw);
 
 	vision_init();
+	auton_init();
 
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
@@ -173,7 +174,7 @@ void competition_initialize()
 void autonomous()
 {
 
-	drive.current_drive_mode = DRIVER_NONE;
+	pre_auton();
 
 	claw.ArmSetNum(0);
 	pros::delay(100);
@@ -192,22 +193,30 @@ void autonomous()
 	{
 	}
 
-	drive.current_drive_mode = DRIVER_CONTROLLER;
+	post_auton();
 }
 
 void awp_t()
 
 {
+
+	pre_auton();
 	testing_routine();
 	pros::Task::current().suspend();
 }
 void fi_t()
 {
-	front_intake(7, 2.5, 50);
+	pre_auton();
+
+	drive.chassis->setMaxVelocity(88);
+	drive.chassis->turnToAngle(270_deg);
+	//	front_intake(7, 2.5, 50);
+	post_auton();
 	pros::Task::current().suspend();
 }
 void fi2_t()
 {
+	pre_auton();
 	drive.chassis->setMaxVelocity(90);
 	drive.chassis->turnAngle(4 * 360_deg);
 	// drive.chassis->turnAngle(180_deg);
@@ -217,6 +226,7 @@ void fi2_t()
 	// drive.chassis->turnAngle(180_deg);
 	// drive.chassis->turnAngle(180_deg);
 	pros::delay(20);
+	post_auton();
 	pros::Task::current().suspend();
 }
 
