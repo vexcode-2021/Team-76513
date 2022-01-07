@@ -77,24 +77,7 @@ void front_intake(double timeout_seconds = 4, double multiplier = 1, double dmul
 //		{{0_ft, 0_ft, 0_deg}, {4_ft, 1_ft, 0_deg}}, "A");
 //	profileController->setTarget("A");
 //	profileController->waitUntilSettled();
-//}
-
-void testing_routine() {
-	drive.chassis->setMaxVelocity(150);
-   //drive.chassis->moveDistance(1_tile);
-   //drive.chassis->turnAngle(90_deg);
-   //drive.chassis->moveDistance(1_tile);
-   //drive.chassis->turnAngle(90_deg);
-   //drive.chassis->moveDistance(1_tile);
-   //drive.chassis->turnAngle(90_deg);
-   //drive.chassis->moveDistance(1_tile);
-   //drive.chassis->turnAngle(360_deg * 10);
-   drive.chassis->moveDistance(4_tile);
-
-
-
-}
-
+// }
 
 void back_intake()
 {
@@ -119,52 +102,81 @@ void back_intake()
 		printf("LOP %f\n", yawvel);
 	} while (!((anglecontroller.isSettled() && distancecontroller.isSettled())));
 }
+void drop_left_awp()
+{
+	//	drive.chassis->setMaxVelocity(200);
+	//	const double v = 0.3;
+	//	const int time = 250;
+	//	drive.chassis->getModel()->driveVector(-v, 0);
+	//	pros::delay(time);
+	//	drive.chassis->getModel()->driveVector(v, 0);
+	//	pros::delay(time);
+	//	drive.chassis->getModel()->driveVector(0, 0);
+	//	pros::delay(time);
+	back_claw.piston.extend();
+	pros::delay(400);
+	back_claw.piston.retract();
+};
 
 void solo_awp_f()
 {
-	claw.ArmSet(30);
+
+	drive.chassis->setState(okapi::OdomState{x : 0_in, y : 0_in, theta : 0_deg});
+
+	drop_left_awp();
+
+	drive.chassis->setMaxVelocity(95);
+	drive.chassis->turnAngle(90_deg, okapi::ChassisController::swing::left);
+			printf("%s\n", drive.chassis->getState().str().c_str());
+	drive.chassis->setMaxVelocity(100);
+	drive.chassis->moveDistance(.5_tile);
+			printf("%s\n", drive.chassis->getState().str().c_str());
+	claw.ArmSetNum(2);
+
+	drive.chassis->setMaxVelocity(135);
+	auto x = -(4.5_tile - 4_in);
+	auto y = 1.50_tile;
+	drive.chassis->driveToPoint(okapi::Point{x : x, y : y});
+			printf("%s\n", drive.chassis->getState().str().c_str());
+
+	drive.chassis->turnToAngle(270_deg);
+			printf("%s\n", drive.chassis->getState().str().c_str());
+	return;
+
+	drive.chassis->setMaxVelocity(80);
+	// drive.chassis->turnToPoint(okapi::Point{x : x, y : y - 1_tile});
+
+	drive.chassis->setMaxVelocity(120);
+	drive.chassis->driveToPoint(okapi::Point{x : x, y : y - 1_tile}, false, 4_in);
+
 	claw.Clasp();
-	drive.chassis->moveDistance(12_in);
-	//drive.chassis->setState(okapi::OdomState{x : 12_in, y : 24_in - 5.5_in, theta : -90_deg});
-	//drive.chassis->setMaxVelocity(75);
-	//back_claw.ArmSetNum(2);
-	//back_claw.WaitUntilSettled();
-	//drive.chassis->moveDistance(6_in);
-	//pros::delay(200);
-	//back_claw.ArmSetNum(0);
-	//back_claw.WaitUntilSettled();
+	drive.chassis->setMaxVelocity(200);
+	drive.chassis->moveDistance(.6_tile);
+}
 
-	//drive.chassis->setMaxVelocity(90);
-	//drive.chassis->turnAngle(101_deg);
-	//drive.chassis->setMaxVelocity(100);
-	//drive.chassis->moveDistance(1_tile);
-	//drive.chassis->setMaxVelocity(90);
-	//drive.chassis->turnAngle(107_deg);
+void right_awp()
+{
+}
 
-	//drive.chassis->setMaxVelocity(100);
-	//claw.ArmSet(CLAW_CONF::armPos[2]);
-	////drive.chassis->driveToPoint(okapi::Point{x : 1.5_tile, y : 4.5_tile});
-	//drive.chassis->moveDistance(3_tile);
+void testing_routine()
+{
 
-	//front_line_up(4, 2.5, 50, true);
-	//printf("FRONTLINEDUP\n");
-	//drive.chassis->getModel()->driveVector(0, 0);
-	//pros::delay(150);
+	solo_awp_f();
+	return;
 
-	//drive.chassis->setMaxVelocity(100);
-	//drive.chassis->moveDistance(1_in);
-	//claw.Clasp();
-	//pros::delay(350);
+	// profileController->moveTo({{1_tile, 0_tile + 18_in, 90_deg}, {1_tile, 1_tile + 18_in, 90_deg}, {3_tile, 3_tile, 45_deg}}, false, false);
 
-	//drive.chassis->moveDistance(-3_in);
-	//front_intake(3, 2);
+	drive.chassis->setState(okapi::OdomState{x : 5_tile, y : 18_in, theta : 90_deg});
+	drive.moveDistance(12_in);
+	drive.chassis->setMaxVelocity(100);
+	drive.chassis->driveToPoint(okapi::Point{x : 3_tile, y : 3_tile}, false, 4_in);
 
-	//pros::delay(100);
-	//drive.chassis->turnAngle(180_deg);
+	front_line_up(2, 2, 2, false, Vision::YELLOW);
+	drive.moveDistance(2_in);
 
-	//drive.chassis->turnToPoint(okapi::Point{1_tile, 1_tile});
-
-	//drive.chassis->moveDistance(11_in);
+	claw.Clasp();
+	drive.chassis->driveToPoint(okapi::Point{x : 3_tile, y : 2_tile});
+	claw.Leave();
 }
 
 void neumogo()

@@ -35,8 +35,8 @@ void Drivetrain::init()
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
             //.withGains({0.016, 0, 0.001}, {}, {0,0,0})
-            .withGains({0.0024, 0, 0.00001 * 4}, {0.0043, 0.01, 0.00001 * 9}, {0.001, 0, 0})
-            .withSlewRate( 10.0 / 400.0)
+            .withGains({0.0024, 0, 0.00001 * 4}, {0.0038, 0.01, 0.00001 * 25}, {0.001, 0, 0})
+            .withSlewRate(10.0 / 400.0)
             //.withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(1, 999, 1_s))
 
             .withOdometry()
