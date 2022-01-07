@@ -61,9 +61,34 @@ void Drivetrain::drive(Controller m_c)
                 curve(b1),
                 curve(b2));
         else if (mode == DRIVE_MODE_ARCADE)
-            chassis->getModel()->arcade(
-                curve(b3),
-                curve(b4));
+        {
+            //printf("%f %f\n", b3, b4);
+            static std::valarray<int32_t> prev = std::valarray<std::int32_t>{0, 0};
+            static std::valarray<int32_t> prev2 = std::valarray<std::int32_t>{0, 0};
+            //if (fabs(b3) > 0.05 || fabs(b4) > 0.05)
+            //{
+                prev = {0, 0};
+                prev2 = chassis->getModel()->getSensorVals();
+                chassis->getModel()->arcade(curve(b3), curve(b4));
+            //}
+            //else
+            //{
+                //TODO
+                //const double MYCONST = 0.01;
+                //auto v = chassis->getModel()->getSensorVals();
+
+                //prev[0] = ((double)prev2[0] - v[0]) + prev[0] * 0.8;
+                //prev[1] = ((double) prev2[1] - v[1]) + prev[1] * 0.8;
+
+                //printf("%d-%d\n", prev2[0], v[0]);
+                //printf("%d-%d\n", prev2[1], v[1]);
+                //printf("%f %f\n", prev[0], prev[1]);
+
+                ////prev2 = v;
+
+                //chassis->getModel()->tank(prev[0] * MYCONST, prev[1] * MYCONST);
+            //}
+        }
         else
             toggleMode();
     }
