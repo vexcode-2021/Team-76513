@@ -292,6 +292,11 @@ void opcontrol()
 		{
 			back_claw_task->notify_ext(1, pros::E_NOTIFY_ACTION_OWRITE, NULL);
 		}
+		static auto printf_state_button = okapi::ControllerButton(ButtonMapping::claw_controller, okapi::ControllerDigital::X);
+		if (printf_state_button.changedToPressed())
+		{
+			printf("%s\n", drive.chassis->getState().str().c_str());
+		};
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));
 	}
