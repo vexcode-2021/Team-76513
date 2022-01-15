@@ -42,6 +42,9 @@ TEMPLATE_FILES=$(INCDIR)/**/*.h $(INCDIR)/**/*.hpp
 
 .DEFAULT_GOAL=quick
 
+upload:
+	until pros mu; do sleep 0.5; done;
+
 ################################################################################
 ################################################################################
 ########## Nothing below this line should be edited by typical users ###########

@@ -9,6 +9,7 @@
 Claw claw;
 BackClaw back_claw;
 Drivetrain drive;
+okapi::IMU myIMU(HARDWARE::IMUPORT);
 
 std::shared_ptr<okapi::AsyncMotionProfileController> profileController;
 
@@ -36,6 +37,7 @@ void pre_auton()
 
     drive.chassis->getModel()->setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
     drive.current_drive_mode = DRIVER_NONE;
+
 }
 void post_auton()
 {

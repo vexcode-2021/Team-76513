@@ -50,7 +50,7 @@ public:
         //visions[BACK]->set_signature(BLUE, &sig);
 
         sensor->set_zero_point(pros::E_VISION_ZERO_TOPLEFT);
-        sensor ->set_exposure(35);
+        //sensor ->set_exposure(35);
         sensor->set_led(0x000088);
     }
 

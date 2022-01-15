@@ -14,6 +14,7 @@ private:
 
 public:
     DRIVER current_drive_mode = DRIVER_CONTROLLER;
+    std::shared_ptr<okapi::IMU> myIMU ;
     Drivetrain();
     void init();
 
@@ -32,6 +33,6 @@ public:
     void turnAngle(okapi::QAngle itarget)
     {
         chassis->setMaxVelocity(90);
-        chassis->turnAngle(itarget);
+        chassis->turnAngle(itarget * HARDWARE::TURNFACTOR);
     };
 };

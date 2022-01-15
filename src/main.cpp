@@ -98,12 +98,13 @@ void print()
 	while (true)
 	{
 		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
-		printf("BACK_CLAW %f\n", back_claw.ArmGet());
+		//printf("BACK_CLAW %f\n", back_claw.ArmGet());
 		printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
-		// printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
-		printf("back ultrasonic: %f\n", ultrasonic.get());
+		//// printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
+		//printf("back ultrasonic: %f\n", ultrasonic.get());
+		printf("MYIMU %f\n", myIMU.get());
 
-		pros::delay(1000);
+		pros::delay(100);
 	}
 }
 
@@ -115,6 +116,8 @@ void initialize()
 	claw.init();
 	back_claw.init();
 
+	myIMU.calibrate();
+	drive.myIMU = std::make_shared<okapi::IMU>(myIMU);
 	drive.init();
 	drive_task = new pros::Task(opctrl_drivetrain);
 	claw_task = new pros::Task(opctrl_claw);
@@ -176,22 +179,7 @@ void autonomous()
 
 	pre_auton();
 
-	claw.ArmSetNum(0);
-	pros::delay(100);
-	claw.WaitUntilSettled();
-	printf("arm SETTLED\n");
-
-	if (SELECTED_AUTON_ROUTINE == solo_awp)
-		solo_awp_f();
-	else if (SELECTED_AUTON_ROUTINE == awp_left)
-		auton_awp_left();
-	else if (SELECTED_AUTON_ROUTINE == neumogo_front)
-		neumogo();
-	else if (SELECTED_AUTON_ROUTINE == skills)
-		auto_skills();
-	else
-	{
-	}
+	main_auton();
 
 	post_auton();
 }

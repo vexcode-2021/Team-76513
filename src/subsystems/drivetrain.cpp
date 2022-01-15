@@ -29,15 +29,18 @@ void Drivetrain::init()
             Logger::LogLevel::info                       // Show errors and warnings
             ));
 
+    auto l = okapi::MotorGroup(HARDWARE::drive_motors_left);
+    auto r = okapi::MotorGroup(HARDWARE::drive_motors_right);
     chassis =
         okapi::ChassisControllerBuilder()
-            .withMotors(okapi::MotorGroup(HARDWARE::drive_motors_left), okapi::MotorGroup(HARDWARE::drive_motors_right))
+            .withMotors(l, r)
+            .withSensors(l.getEncoder(), r.getEncoder(), (shared_ptr<ContinuousRotarySensor>) myIMU)
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
             //.withGains({0.016, 0, 0.001}, {}, {0,0,0})
             .withGains({0.0024, 0, 0.00001 * 4}, {0.0038, 0.01, 0.00001 * 25}, {0.001, 0, 0})
             .withSlewRate(10.0 / 400.0)
-            //.withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(1, 999, 1_s))
+            //.withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(1, 999, 3.2_s))
 
             .withOdometry()
             .buildOdometry();
@@ -62,31 +65,31 @@ void Drivetrain::drive(Controller m_c)
                 curve(b2));
         else if (mode == DRIVE_MODE_ARCADE)
         {
-            //printf("%f %f\n", b3, b4);
+            // printf("%f %f\n", b3, b4);
             static std::valarray<int32_t> prev = std::valarray<std::int32_t>{0, 0};
             static std::valarray<int32_t> prev2 = std::valarray<std::int32_t>{0, 0};
-            //if (fabs(b3) > 0.05 || fabs(b4) > 0.05)
+            // if (fabs(b3) > 0.05 || fabs(b4) > 0.05)
             //{
-                prev = {0, 0};
-                prev2 = chassis->getModel()->getSensorVals();
-                chassis->getModel()->arcade(curve(b3), curve(b4));
+            prev = {0, 0};
+            prev2 = chassis->getModel()->getSensorVals();
+            chassis->getModel()->arcade(curve(b3), curve(b4));
             //}
-            //else
+            // else
             //{
-                //TODO
-                //const double MYCONST = 0.01;
-                //auto v = chassis->getModel()->getSensorVals();
+            // TODO
+            // const double MYCONST = 0.01;
+            // auto v = chassis->getModel()->getSensorVals();
 
-                //prev[0] = ((double)prev2[0] - v[0]) + prev[0] * 0.8;
-                //prev[1] = ((double) prev2[1] - v[1]) + prev[1] * 0.8;
+            // prev[0] = ((double)prev2[0] - v[0]) + prev[0] * 0.8;
+            // prev[1] = ((double) prev2[1] - v[1]) + prev[1] * 0.8;
 
-                //printf("%d-%d\n", prev2[0], v[0]);
-                //printf("%d-%d\n", prev2[1], v[1]);
-                //printf("%f %f\n", prev[0], prev[1]);
+            // printf("%d-%d\n", prev2[0], v[0]);
+            // printf("%d-%d\n", prev2[1], v[1]);
+            // printf("%f %f\n", prev[0], prev[1]);
 
-                ////prev2 = v;
+            ////prev2 = v;
 
-                //chassis->getModel()->tank(prev[0] * MYCONST, prev[1] * MYCONST);
+            // chassis->getModel()->tank(prev[0] * MYCONST, prev[1] * MYCONST);
             //}
         }
         else
