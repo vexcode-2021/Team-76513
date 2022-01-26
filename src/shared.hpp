@@ -9,7 +9,7 @@
 Claw claw;
 BackClaw back_claw;
 Drivetrain drive;
-okapi::IMU myIMU(HARDWARE::IMUPORT);
+std::shared_ptr<okapi::IMU> myIMU = std::make_shared<okapi::IMU>(okapi::IMU(HARDWARE::IMUPORT));
 
 std::shared_ptr<okapi::AsyncMotionProfileController> profileController;
 
@@ -37,7 +37,6 @@ void pre_auton()
 
     drive.chassis->getModel()->setBrakeMode(okapi::AbstractMotor::brakeMode::hold);
     drive.current_drive_mode = DRIVER_NONE;
-
 }
 void post_auton()
 {
@@ -48,7 +47,7 @@ void post_auton()
 
 void auton_init()
 {
-    profileController=
+    profileController =
         okapi::AsyncMotionProfileControllerBuilder()
             .withLimits({
                 1.0 / 39.0 * 12.0, // Maximum linear velocity of the Chassis in m/s
@@ -68,7 +67,7 @@ void monitored_task(pros::Task a)
     do
     {
         pros::delay(10);
-        //printf("%d %d\n", drive.current_drive_mode, DRIVER_CONTROLLER);
+        // printf("%d %d\n", drive.current_drive_mode, DRIVER_CONTROLLER);
     } while (drive.current_drive_mode != DRIVER_CONTROLLER && a.get_state() <= pros::E_TASK_STATE_BLOCKED && start > pros::millis());
 
     profileController->reset();

@@ -5,7 +5,7 @@
 class Claw
 {
 private:
-    Piston piston = Piston(HARDWARE::CLAW_PORT, HARDWARE::CLAW_REVERSED);
+    Piston piston = Piston(HARDWARE::CLAW_PORT, HARDWARE::CLAW_REVERSED, true);
 
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
@@ -27,7 +27,6 @@ public:
         controllerr = okapi::AsyncPosControllerBuilder().withMotor(HARDWARE::CLAW_ARM_MOTOR1).withGains(gains).withSensor(HARDWARE::POTR).build();
 
         ArmSetNum(0);
-        Leave();
     };
     void Clasp()
     {
@@ -65,8 +64,8 @@ public:
 
         double valL = (n * ((HARDWARE::LMAX - HARDWARE::LMIN) / 90));
         double valR = (n * ((HARDWARE::RMAX - HARDWARE::RMIN) / 90));
-        controllerl->setTarget(max(controllerl->getTarget() + valL, minvalL));
-        controllerr->setTarget(max(controllerr->getTarget() + valR, minvalR));
+        controllerl->setTarget(std::max(controllerl->getTarget() + valL, minvalL));
+        controllerr->setTarget(std::max(controllerr->getTarget() + valR, minvalR));
     }
 
     void ArmUp()
@@ -83,9 +82,10 @@ public:
     void WaitUntilSettled()
     {
         if (HARDWARE::PROTO) return;
-        do
-            pros::delay(10);
-        while (!(controllerl->isSettled()));
+
+pros::delay(25);
+        controllerr->waitUntilSettled();
+        controllerl->waitUntilSettled();
     }
 
     void ArmSetNum(const int n)
@@ -98,11 +98,5 @@ public:
     void ArmTop()
     {
         ArmSetNum(CLAW_CONF::ARM_POS_LEN - 1);
-    };
-    double max(double a, double b)
-    {
-        if (a >= b)
-            return a;
-        return b;
     };
 };

@@ -55,7 +55,7 @@ public:
     }
 
     //LEFT, TOP, X_MID, Y_MID
-    std::tuple<double, double, double, double, int> get_mogo(MOGO n)
+    std::tuple<double, double, double, double, MOGO> get_mogo(MOGO n)
     {
         errno = 0;
 
@@ -93,7 +93,7 @@ public:
             return std::make_tuple(x_cor[n].getOutput(), y_cor[n].getOutput(), x_mid[n].getOutput(), y_mid[n].getOutput(), n);
         default:
             printf("AAAA crazy input to Vision::get_mogo\n");
-            return std::make_tuple(0, 0, 0, 0, 99);
+            return std::make_tuple(0, 0, 0, 0, (MOGO) 99);
         };
     }
 

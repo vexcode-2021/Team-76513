@@ -31,6 +31,7 @@ namespace ButtonMapping
     const QTime delay = 20_ms;
 
     const ControllerId drive_controller = ControllerId::master;
+    const ControllerId backup_controller = ControllerId::partner;
 
     const ControllerAnalog tank_drive[] = {
         ControllerAnalog::leftY,
@@ -78,7 +79,7 @@ namespace BACK_CLAW_CONF
     using namespace okapi;
     const QAngularSpeed arm_top_velocity = 90_deg / 0.001_s;
 
-    const int n = 121;
+    const int n = 120;
     const int armPos[] = {n - 90,  n - 25, n - 0};
     const int ARM_POS_LEN = 3;
 }

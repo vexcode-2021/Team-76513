@@ -8,7 +8,8 @@
 void opctrl_drivetrain()
 {
 
-	okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
+	static okapi::Controller c = okapi::Controller(ButtonMapping::drive_controller);
+	static okapi::Controller c2 = okapi::Controller(ButtonMapping::backup_controller);
 	while (true)
 	{
 
@@ -16,7 +17,7 @@ void opctrl_drivetrain()
 		if (pros::Task::notify_take(true, 0))
 			drive.toggleMode();
 
-		drive.drive(c);
+		drive.drive(c, c2);
 		pros::delay(CONFIG_DRIVE::delay.convert(10_ms));
 	}
 }
@@ -98,13 +99,14 @@ void print()
 	while (true)
 	{
 		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
-		//printf("BACK_CLAW %f\n", back_claw.ArmGet());
-		printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
-		//// printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
-		//printf("back ultrasonic: %f\n", ultrasonic.get());
-		printf("MYIMU %f\n", myIMU.get());
+		// printf("BACK_CLAW %f\n", back_claw.ArmGet());
+		//	printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
+		printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
+		// printf("back ultrasonic: %f\n", ultrasonic.get());
+		printf("MYIMU %f %d\n", myIMU->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
+		printf("ODOMSTATE: %s\n", drive.chassis->getState().str().c_str());
 
-		pros::delay(100);
+		pros::delay(500);
 	}
 }
 
@@ -116,8 +118,8 @@ void initialize()
 	claw.init();
 	back_claw.init();
 
-	myIMU.calibrate();
-	drive.myIMU = std::make_shared<okapi::IMU>(myIMU);
+	myIMU->calibrate();
+	drive.myIMU = myIMU;
 	drive.init();
 	drive_task = new pros::Task(opctrl_drivetrain);
 	claw_task = new pros::Task(opctrl_claw);
@@ -184,21 +186,30 @@ void autonomous()
 	post_auton();
 }
 
+void down_butt() {
+pre_auton();
+back_line_up();
+post_auton();
+	pros::Task::current().suspend();
+}
+
 void awp_t()
 
 {
 
 	pre_auton();
 	testing_routine();
+post_auton();
 	pros::Task::current().suspend();
 }
 void fi_t()
 {
 	pre_auton();
 
-	drive.chassis->setMaxVelocity(88);
-	drive.chassis->turnToAngle(270_deg);
-	//	front_intake(7, 2.5, 50);
+	front_line_up(50_s, Vision::ANY);
+	claw.Clasp();
+	claw.ArmSetRelative(3);
+
 	post_auton();
 	pros::Task::current().suspend();
 }
@@ -206,7 +217,7 @@ void fi2_t()
 {
 	pre_auton();
 	drive.chassis->setMaxVelocity(90);
-	drive.chassis->turnAngle(4 * 360_deg);
+	while (true) drive.chassis->turnAngle(90_deg);
 	// drive.chassis->turnAngle(180_deg);
 	// drive.chassis->turnAngle(180_deg);
 	// drive.chassis->turnAngle(180_deg);
@@ -283,8 +294,13 @@ void opcontrol()
 		static auto printf_state_button = okapi::ControllerButton(ButtonMapping::claw_controller, okapi::ControllerDigital::X);
 		if (printf_state_button.changedToPressed())
 		{
-			printf("%s\n", drive.chassis->getState().str().c_str());
+			back_claw.Toggle();
 		};
+
+		static auto back_button = okapi::ControllerButton(ButtonMapping::claw_controller, okapi::ControllerDigital::down);
+		if (back_button.changedToPressed())
+			monitored_task(pros::Task(down_butt));
+		;
 
 		pros::delay(ButtonMapping::delay.convert(1_ms));
 	}

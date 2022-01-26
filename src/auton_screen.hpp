@@ -9,7 +9,7 @@ enum AUTON_ROUTINES
 	skills,
 	auton_routine_none
 };
-static AUTON_ROUTINES SELECTED_AUTON_ROUTINE = awp_left;
+static AUTON_ROUTINES SELECTED_AUTON_ROUTINE = skills;
 
 void main_auton()
 {

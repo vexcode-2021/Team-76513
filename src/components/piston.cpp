@@ -13,6 +13,8 @@ void Piston::init(const char port, bool reversed, bool initstate)
     state = initstate;
     this->port = pros::ADIDigitalOut(port, state ^ this->reversed);
     this->reversed = reversed;
+    apply();
+    apply();
 }
 
 void Piston::retract()

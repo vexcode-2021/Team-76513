@@ -5,13 +5,27 @@
 
 void testing_routine()
 {
+
+	//solo_awp_f();
+	auton_skils();
+	return;
+	drive.chassis->setMaxVelocity(50);
+	drive.chassis->moveDistance(-13_in);
 	//	right_awp();
-	//drop_left_awp();
-    //front_line_up(1.8, 3, 3, false, Vision::YELLOW);
-	//return;
-	grab_tallneu();
-	//drop_left_awp();
-	//auton_skils();
+	// drop_left_awp();
+
+	  //front_line_up(50, 1, 1, true, Vision::YELLOW);
+//		claw.Clasp();
+//		claw.ArmSetRelative(3);
+//		
+//		drive.turnAngle(180_deg);
+//		drive.moveDistance(10_in);
+//		claw.Leave();
+
+	// return;
+	// grab_tallneu();
+	// drop_left_awp();
+	// auton_skils();
 
 	return;
 
@@ -22,11 +36,10 @@ void testing_routine()
 	drive.chassis->setMaxVelocity(100);
 	drive.chassis->driveToPoint(okapi::Point{x : 3_tile, y : 3_tile}, false, 4_in);
 
-	front_line_up(2, 2, 2, false, Vision::YELLOW);
+	//front_line_up(2, 2, 2, false, Vision::YELLOW);
 	drive.moveDistance(2_in);
 
 	claw.Clasp();
 	drive.chassis->driveToPoint(okapi::Point{x : 3_tile, y : 2_tile});
 	claw.Leave();
 }
-

@@ -16,11 +16,12 @@ public:
     DRIVER current_drive_mode = DRIVER_CONTROLLER;
     std::shared_ptr<okapi::IMU> myIMU ;
     Drivetrain();
+    std::shared_ptr<Drive> chassis2;
     void init();
 
     std::shared_ptr<okapi::OdomChassisController> chassis;
 
-    void drive(okapi::Controller driver_controller);
+    void drive(okapi::Controller driver_controller, okapi::Controller c_backup);
 
     void toggleMode();
 
@@ -32,7 +33,7 @@ public:
     };
     void turnAngle(okapi::QAngle itarget)
     {
-        chassis->setMaxVelocity(90);
+        chassis->setMaxVelocity(120);
         chassis->turnAngle(itarget * HARDWARE::TURNFACTOR);
     };
 };

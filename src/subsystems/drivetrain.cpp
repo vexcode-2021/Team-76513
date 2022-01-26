@@ -34,16 +34,19 @@ void Drivetrain::init()
     chassis =
         okapi::ChassisControllerBuilder()
             .withMotors(l, r)
-            .withSensors(l.getEncoder(), r.getEncoder(), (shared_ptr<ContinuousRotarySensor>) myIMU)
+            .withSensors(l.getEncoder(), r.getEncoder(), (shared_ptr<ContinuousRotarySensor>)myIMU)
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
             //.withGains({0.016, 0, 0.001}, {}, {0,0,0})
-            .withGains({0.0024, 0, 0.00001 * 4}, {0.0038, 0.01, 0.00001 * 25}, {0.001, 0, 0})
+            .withGains({0.0024 * 2, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2.95 *2, 0.00005 * 2, 0.00001 * 1 *2}, {0.0001 * 2.5 *2, 0.00005 * 2, 0.00001 * 1 *2})
             .withSlewRate(10.0 / 400.0)
-            //.withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(1, 999, 3.2_s))
+            .withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(50, 5, .2_s))
 
             .withOdometry()
             .buildOdometry();
+
+    // chassis2 = std::make_shared<Drive>(Drive(HARDWARE::drive_motors_left2, HARDWARE::drive_motors_right2, HARDWARE::IMUPORT, HARDWARE::drive_chassis_scale.wheelDiameter.convert(1_in), 200, 1));
+
     printf("HIII\n============================\n\n\n\n\n\n");
     // straight - kU = 0.02 pU = 0.5 at 50rpm
 
@@ -51,19 +54,23 @@ void Drivetrain::init()
     //     printf("CURVE DEBUG: %f = %f\n", i, curve(i));
 }
 
-void Drivetrain::drive(Controller m_c)
+void Drivetrain::drive(Controller m_c, Controller m_d)
 {
-    auto b1 = m_c.getAnalog(ButtonMapping::tank_drive[0]);
-    auto b2 = m_c.getAnalog(ButtonMapping::tank_drive[1]);
     auto b3 = m_c.getAnalog(ButtonMapping::arcade_drive[0]);
     auto b4 = m_c.getAnalog(ButtonMapping::arcade_drive[1]);
+
+    auto c3 = m_d.getAnalog(ButtonMapping::arcade_drive[0]);
+    auto c4 = m_d.getAnalog(ButtonMapping::arcade_drive[1]);
+    if (fabs(c3) > 0.02 || fabs(c4) > 0.02)
+        b3 = c3, b4 = c4;
+
     if (current_drive_mode == DRIVER_CONTROLLER)
     {
-        if (mode == DRIVE_MODE_TANK)
-            chassis->getModel()->tank(
-                curve(b1),
-                curve(b2));
-        else if (mode == DRIVE_MODE_ARCADE)
+        // if (mode == DRIVE_MODE_TANK)
+        // chassis->getModel()->tank(
+        // curve(b1),
+        // curve(b2));
+        if (mode == DRIVE_MODE_ARCADE)
         {
             // printf("%f %f\n", b3, b4);
             static std::valarray<int32_t> prev = std::valarray<std::int32_t>{0, 0};
@@ -97,7 +104,7 @@ void Drivetrain::drive(Controller m_c)
     }
 
     static int ct = 0;
-    if (fabs(b1) > 0.2 || fabs(b2) > 0.2 || fabs(b3) > 0.2 || fabs(b4) > 0.2)
+    if (fabs(b3) > 0.2 || fabs(b4) > 0.2)
         ct++;
     else
         ct = 0;
