@@ -5,7 +5,6 @@
 class Vision
 {
 private:
-    pros::Vision *sensor;
     int err[3];
     okapi::MedianFilter<3> height[3];
     okapi::MedianFilter<3> width[3];
@@ -15,6 +14,7 @@ private:
     okapi::MedianFilter<5> y_cor[3]; // top
 
 public:
+    pros::Vision *sensor;
     Vision(const int port)
     {
         sensor = new pros::Vision(port);

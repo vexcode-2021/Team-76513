@@ -100,9 +100,9 @@ void print()
 	{
 		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
 		// printf("BACK_CLAW %f\n", back_claw.ArmGet());
-		//	printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
+			printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
 		printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
-		// printf("back ultrasonic: %f\n", ultrasonic.get());
+		 printf("ultrasonic: %f\n", ultrasonic.get());
 		printf("MYIMU %f %d\n", myIMU->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
 		printf("ODOMSTATE: %s\n", drive.chassis->getState().str().c_str());
 
@@ -186,10 +186,11 @@ void autonomous()
 	post_auton();
 }
 
-void down_butt() {
-pre_auton();
-back_line_up();
-post_auton();
+void down_butt()
+{
+	pre_auton();
+	back_line_up();
+	post_auton();
 	pros::Task::current().suspend();
 }
 
@@ -199,31 +200,27 @@ void awp_t()
 
 	pre_auton();
 	testing_routine();
-post_auton();
+	post_auton();
 	pros::Task::current().suspend();
 }
 void fi_t()
 {
 	pre_auton();
 
-	front_line_up(50_s, Vision::ANY);
-	claw.Clasp();
-	claw.ArmSetRelative(3);
-
+	front_intake(50_s, Vision::ANY);
 	post_auton();
 	pros::Task::current().suspend();
 }
 void fi2_t()
 {
 	pre_auton();
-	drive.chassis->setMaxVelocity(90);
-	while (true) drive.chassis->turnAngle(90_deg);
-	// drive.chassis->turnAngle(180_deg);
-	// drive.chassis->turnAngle(180_deg);
-	// drive.chassis->turnAngle(180_deg);
-	// drive.chassis->turnAngle(180_deg);
-	// drive.chassis->turnAngle(180_deg);
-	// drive.chassis->turnAngle(180_deg);
+
+	skillsn::currently_carrying = skillsn::NO_GOAL;
+	while (true)
+	{
+		skillsn::turnAngle(90_deg);
+		skillsn::moveDistance(10_in);
+	}
 	pros::delay(20);
 	post_auton();
 	pros::Task::current().suspend();

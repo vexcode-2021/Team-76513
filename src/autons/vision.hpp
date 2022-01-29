@@ -5,7 +5,7 @@
 void front_line_up(okapi::QTime timeout = 4_s, Vision::MOGO type = Vision::ANY, bool otherline = false)
 {
 
-	auto distancecontroller = okapi::IterativePosPIDController({0.0003, 0.00009, 0.000005}, okapi::TimeUtilFactory().withSettledUtilParams(15, 5, 150_ms));
+	auto distancecontroller = okapi::IterativePosPIDController({0.0003, 0.00019, 0.000005}, okapi::TimeUtilFactory().withSettledUtilParams(15, 9999, 150_ms));
 	auto anglecontroller = okapi::IterativePosPIDController({0.00020 * 2, 0, 0.000001}, okapi::TimeUtilFactory().withSettledUtilParams(15, 5, 150_ms));
 
 	auto [_, _1, _2, _3, w] = Visions[Vision::FRONT]->get_mogo(type);

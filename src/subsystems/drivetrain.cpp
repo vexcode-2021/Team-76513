@@ -1,5 +1,6 @@
 #include "drivetrain.hpp"
 #include "../design_consts.hpp"
+#include "../config_consts.hpp"
 
 using namespace CONFIG_DRIVE;
 using namespace okapi;
@@ -20,6 +21,14 @@ double curve(double n)
     return n * fabs(n);
 }
 
+double curve2(double x)
+{
+    x *= 127;
+
+    x =  (powf(2.718, -(CONFIG_DRIVE::right_curve / 10)) + powf(2.718, (fabs(x) - 127) / 10) * (1 - powf(2.718, -(CONFIG_DRIVE::right_curve / 10)))) * x;
+    return x / 127.0;
+}
+
 void Drivetrain::init()
 {
     Logger::setDefaultLogger(
@@ -38,7 +47,7 @@ void Drivetrain::init()
             // Green gearset, 4 in wheel diam, 11.5 in wheel track
             .withDimensions(HARDWARE::drive_gearset, HARDWARE::drive_chassis_scale)
             //.withGains({0.016, 0, 0.001}, {}, {0,0,0})
-            .withGains({0.0024 * 2, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2.95 *2, 0.00005 * 2, 0.00001 * 1 *2}, {0.0001 * 2.5 *2, 0.00005 * 2, 0.00001 * 1 *2})
+            .withGains({0.0024 * 2, 0 * 2, 0.00001 * 5 * 2}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2})
             .withSlewRate(10.0 / 400.0)
             .withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(50, 5, .2_s))
 
@@ -79,7 +88,7 @@ void Drivetrain::drive(Controller m_c, Controller m_d)
             //{
             prev = {0, 0};
             prev2 = chassis->getModel()->getSensorVals();
-            chassis->getModel()->arcade(curve(b3), curve(b4));
+            chassis->getModel()->arcade(curve(b3), curve2(b4));
             //}
             // else
             //{

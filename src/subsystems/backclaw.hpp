@@ -5,7 +5,6 @@
 class BackClaw
 {
 private:
-
     okapi::Motor mtr = HARDWARE::BACK_CLAW_MOTOR;
 
     int curr = 0;
@@ -13,7 +12,7 @@ private:
     std::shared_ptr<okapi::AsyncPositionController<double, double>> controller;
 
 public:
-    Piston piston = Piston(HARDWARE::BACK_CLAW_PORT, HARDWARE::BACK_CLAW_REVERSED, false);
+    Piston piston = Piston(HARDWARE::BACK_CLAW_PORT, HARDWARE::BACK_CLAW_REVERSED, true);
     BackClaw() {}
     void init()
     {
@@ -53,6 +52,11 @@ public:
     {
         curr = std::clamp(n, 0, BACK_CLAW_CONF::ARM_POS_LEN - 1);
         ArmSet(BACK_CLAW_CONF::armPos[curr]);
+    }
+    void ArmSetNumWait(const int n)
+    {
+        ArmSetNum(n);
+        WaitUntilSettled();
     }
     void WaitUntilSettled()
     {

@@ -5,7 +5,7 @@
 class Claw
 {
 private:
-    Piston piston = Piston(HARDWARE::CLAW_PORT, HARDWARE::CLAW_REVERSED, true);
+    Piston piston = Piston(HARDWARE::CLAW_PORT, HARDWARE::CLAW_REVERSED, false);
 
     okapi::MotorGroup mtr = okapi::MotorGroup(HARDWARE::CLAW_ARM_MOTORS);
 
@@ -94,7 +94,11 @@ pros::delay(25);
         curr = std::clamp(n, 0, CLAW_CONF::ARM_POS_LEN - 1);
         ArmSet(CLAW_CONF::armPos[curr]);
     }
-
+ void ArmSetNumWait(const int n)
+    {
+        ArmSetNum(n);
+        WaitUntilSettled();
+    }
     void ArmTop()
     {
         ArmSetNum(CLAW_CONF::ARM_POS_LEN - 1);

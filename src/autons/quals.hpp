@@ -3,6 +3,7 @@
 #include "basics.hpp"
 #include "../config_consts.hpp"
 #include "vision.hpp"
+#include "skills.hpp"
 
 void fancy_left_awp()
 {
@@ -17,9 +18,10 @@ void fancy_left_awp()
 };
 
 void solo_awp_f()
+
 {
     //											4.5 tiles will be tip + 22 for back claw centerish
-     drive.chassis->setState(okapi::OdomState{x : 4.5_tile + 22_in, y : 0.5_tile, theta : 0_deg});
+    drive.chassis->setState(okapi::OdomState{x : 4.5_tile + 22_in, y : 0.5_tile, theta : 0_deg});
 
     fancy_left_awp();
 
@@ -31,7 +33,7 @@ void solo_awp_f()
     drive.moveDistance(-14_in);
     drive.turnAngle(90_deg);
     drive.chassis->setMaxVelocity(150);
-    drive.chassis->moveDistance(-3.5_tile );
+    drive.chassis->moveDistance(-3.5_tile);
 
     back_piston_extend_retract_seq();
 
@@ -52,92 +54,123 @@ void solo_awp_f()
     // drive.chassis->turnToAngle(270_deg);
     // back_claw.ArmSetNum(1);
 }
-void grab_tallneu_base(okapi::QLength a, okapi::QLength b, okapi::QLength c)
-{
-    back_claw.ArmSetNum(1);
-
-    drive.moveDistance(-a);
-
-    back_claw.ArmSetNum(2);
-    //front_line_up(1.3, 3, 3, false, Vision::YELLOW);
-    drive.chassis->setMaxVelocity(50);
-    drive.chassis->moveDistance(-b);
-
-    back_claw.ArmSetNum(1);
-
-    // TODO vision
-
-    pros::delay(100);
-
-    drive.moveDistance(c);
-    back_claw.ArmSetNum(2);
-}
 
 void drop_left_awp()
 {
-    //back_piston_extend_retract_seq();
-    //back_piston_extend_retract_seq();
+    myIMU->setOffset(0);
+    claw.ArmSetNum(1);
+    claw.Leave();
+    back_piston_extend_retract_seq();
 
-    //drive.chassis->setSwing(okapi::ChassisController::swing::right);
-    //drive.chassis->turnAngle(-83_deg);
-    //drive.chassis->setSwing(okapi::ChassisController::swing::none);
-
-    back_claw.ArmSetNum(1);
-
-    drive.moveDistance(-1_tile);
-    back_claw.ArmSetNum(2);
-    //front_line_up(1.3, 3, 3, false, Vision::YELLOW);
-
-    drive.chassis->setMaxVelocity(75);
-    drive.chassis->moveDistance(-22_in);
-
-    back_claw.ArmSetNum(1);
-
-    // TODO vision
-
-    pros::delay(100);
-
-    drive.moveDistance(60_in);
-    back_claw.ArmSetNum(2);
+    using namespace skillsn;
+    // if it starts getting stuck //moveDistance(5_in);
+    currently_carrying = NO_GOAL;
+    turnToAngle(100_deg, okapi::ChassisController::swing::left);
+    front_intake(4_s, Vision::YELLOW);
+    currently_carrying = ONE_GOAL;
+    drive.moveDistance(-2_tile);
 }
 void grab_tallneu()
 {
-    grab_tallneu_base(55_in, 27_in, 65_in);
-    //drive.moveDistance(1.5_tile);
+    // grab_tallneu_base(55_in, 27_in, 65_in);
+    // drive.moveDistance(1.5_tile);
 
-    //drive.chassis->setMaxVelocity(75);
-    //drive.chassis->moveDistance(.5_tile);
-    //claw.Clasp();
+    // drive.chassis->setMaxVelocity(75);
+    // drive.chassis->moveDistance(.5_tile);
+    // claw.Clasp();
 
-    //back_claw.ArmSetNum(999);
-    //back_claw.WaitUntilSettled();
+    // back_claw.ArmSetNum(999);
+    // back_claw.WaitUntilSettled();
 
-    //drive.turnAngle(90_deg);
-    //front_line_up(1.3, 3, 3, false, Vision::YELLOW);
+    // drive.turnAngle(90_deg);
+    // front_line_up(1.3, 3, 3, false, Vision::YELLOW);
 
-
-    //back_claw.ArmSetNum(1);
-    //drive.turnAngle(30_deg);
-    //drive.moveDistance(2_tile);
-
-
-
+    // back_claw.ArmSetNum(1);
+    // drive.turnAngle(30_deg);
+    // drive.moveDistance(2_tile);
 }
 void right_awp()
 {
 
-    drive.chassis->setMaxVelocity(50);
-    drive.chassis->moveDistance(-20_in);
+    using namespace skillsn;
+
+    myIMU->setOffset(-45);
+
+    back_claw.ArmSetNum(2);
+    pros::delay(500);
+    currently_carrying = SLOW_BC;
+    moveDistance(-22_in);
 
     back_piston_extend_retract_seq();
+    currently_carrying = NO_GOAL;
 
-    drive.moveDistance(20_in);
-    back_claw.ArmSetNum(999);
+    moveDistance(10_in);
+    back_claw.ArmSetNum(0);
 
-    back_claw.WaitUntilSettled();
+    turnToAngle(45_deg);
+    moveDistance(1_tile);
 
-    drive.moveDistance(-20_in);
-    back_claw.ArmSet(BACK_CLAW_CONF::n - 35);
+    front_intake(2_s, Vision::YELLOW);
+    turnToAngle(45_deg);
+    moveDistance(-3_tile);
+}
 
-    // grab_tallneu();
+void grab_neuu(bool right = true)
+{
+    if (true)
+    {
+        myIMU->setOffset(-90);
+        back_claw.ArmSetNum(2);
+        pros::delay(300);
+
+        drive.chassis->setMaxVelocity(200);
+        drive.chassis->moveDistance(-1.8_tile);
+
+        drive.chassis->setMaxVelocity(90);
+        drive.chassis->moveDistance(-7_in);
+
+        back_claw.ArmSetNum(0);
+        using namespace skillsn;
+        currently_carrying = ONE_GOAL;
+
+        turnToAngle(30_deg, okapi::ChassisController::swing::left);
+        turnToAngle(45_deg);
+        front_intake(3_s, Vision::YELLOW);
+        currently_carrying = TWO_GOAL;
+
+        turnToAngle(45_deg);
+        moveDistance(-3_tile);
+        return;
+    }
+
+    myIMU->setOffset(45);
+
+    drive.chassis->moveDistance(2.4_tile);
+    front_intake(3_s, Vision::YELLOW);
+
+    drive.chassis->setMaxVelocity(90);
+
+    drive.chassis->turnToAngle(90_deg);
+    drive.chassis->moveDistance(-2_tile);
+//
+//
+//   myIMU->setOffset(90);
+//
+//    front_intake(4_s, Vision::YELLOW);
+//
+//
+//    drive.chassis->setMaxVelocity(90);
+//
+//    drive.chassis->turnToAngle(90_deg);
+//    drive.chassis->moveDistance(-2_tile);
+
+
+
+
+    //    claw.ArmSetNum(1);
+    //    turnToAngle(150_deg - 2 * 360_deg, okapi::ChassisController::swing::right);
+    //    front_intake(3_s, Vision::YELLOW);
+    //    currently_carrying = TWO_GOAL;
+    //
+    //    moveDistance(-3_tile);
 }

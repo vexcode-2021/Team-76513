@@ -20,6 +20,7 @@ namespace CONFIG_DRIVE
     const QTime delay = 10_ms;
 
     const bool SLOW_MODE = false;
+    const double right_curve = 5;
 
 }
 
@@ -79,7 +80,7 @@ namespace BACK_CLAW_CONF
     using namespace okapi;
     const QAngularSpeed arm_top_velocity = 90_deg / 0.001_s;
 
-    const int n = 120;
+    const int n = 119;
     const int armPos[] = {n - 90,  n - 25, n - 0};
     const int ARM_POS_LEN = 3;
 }
