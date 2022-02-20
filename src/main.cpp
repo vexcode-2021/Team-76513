@@ -251,6 +251,14 @@ void opcontrol()
 					claw_down_button.isPressed() * claw_task_down,
 				pros::E_NOTIFY_ACTION_BITS, NULL);
 
+		static okapi::ControllerButton claw_up_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::claw_arm_up);
+		if (claw_up_button_pt.changedToPressed())
+			claw.ArmSetRelative(1);
+
+		static okapi::ControllerButton claw_down_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::claw_arm_down);
+		if (claw_down_button_pt.changedToPressed())
+			claw.ArmSetRelative(-1);
+
 		// static int count = 0;
 		//	if (count % 40 == 0)
 		//	{
