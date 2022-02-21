@@ -1,6 +1,7 @@
 #pragma once
 #include "basics.hpp"
 #include "vision.hpp"
+#include "../pid_consts.hpp"
 
 namespace skillsn
 {
@@ -26,18 +27,9 @@ namespace skillsn
 
     void setPID()
     {
-        const int speeds[] = {130, 110, 90, 60, 600};
-        drive.chassis->setMaxVelocity(speeds[currently_carrying]);
-        const okapi::IterativePosPIDController::Gains mygains[][3] = {
-            {{0.0024 * 2, 0 * 2, 0.00001 * 4.3 * 2}, {0.0001 * 2.8 * 2, 0.00005 * 2, 0.00001 * 1.2 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
+        drive.chassis->setMaxVelocity(PID_CONSTS::AUTO_DRIVE_SPEEDS[currently_carrying]);
 
-            {{0.0024 * 1.6, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
-
-            {{0.0024 * 1.4, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2 * 2, 0.00005 * 2, 0.00001 * 1.35 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
-
-            {{0.0024 * 2, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
-            {{1, 0, 0}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
-        };
+        auto mygains = PID_CONSTS::AUTO_DRIVE_GAINS;
 
         std::static_pointer_cast<okapi::ChassisControllerPID>(std::static_pointer_cast<okapi::DefaultOdomChassisController>(drive.chassis)->getChassisController())->setGains(mygains[currently_carrying][0], mygains[currently_carrying][1], mygains[currently_carrying][2]);
     }
