@@ -17,7 +17,7 @@ public:
     Claw() {}
     void init()
     {
-        mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::brake);
+        mtr.setBrakeMode(okapi::AbstractMotor::brakeMode::coast);
         mtr.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
         const okapi::IterativePosPIDController::Gains gains = {0.00002, 0.008, 0.00014};
         controller = okapi::AsyncPosControllerBuilder().withMotor(mtr).withGains(gains).withSensor(HARDWARE::POTL).build();
