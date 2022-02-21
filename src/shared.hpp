@@ -10,6 +10,7 @@ Claw claw;
 BackClaw back_claw;
 Drivetrain drive;
 std::shared_ptr<okapi::IMU> myIMU = std::make_shared<okapi::IMU>(okapi::IMU(HARDWARE::IMUPORT));
+std::shared_ptr<okapi::IMU> myIMUy = std::make_shared<okapi::IMU>(okapi::IMU(HARDWARE::IMUPORT, okapi::IMUAxes::y));
 
 std::shared_ptr<okapi::AsyncMotionProfileController> profileController;
 
