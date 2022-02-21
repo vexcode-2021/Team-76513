@@ -10,7 +10,8 @@ namespace skillsn
         ONE_GOAL,
         TWO_GOAL,
 
-        SLOW_BC
+        SLOW_BC,
+        FAST_AF
 
     } currently_carrying;
 
@@ -25,7 +26,7 @@ namespace skillsn
 
     void setPID()
     {
-        const int speeds[] = {130, 110, 90, 60};
+        const int speeds[] = {130, 110, 90, 60, 600};
         drive.chassis->setMaxVelocity(speeds[currently_carrying]);
         const okapi::IterativePosPIDController::Gains mygains[][3] = {
             {{0.0024 * 2, 0 * 2, 0.00001 * 4.3 * 2}, {0.0001 * 2.8 * 2, 0.00005 * 2, 0.00001 * 1.2 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
@@ -35,6 +36,7 @@ namespace skillsn
             {{0.0024 * 1.4, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2 * 2, 0.00005 * 2, 0.00001 * 1.35 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
 
             {{0.0024 * 2, 0 * 2, 0.00001 * 4 * 2}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
+            {{1, 0, 0}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2}},
         };
 
         std::static_pointer_cast<okapi::ChassisControllerPID>(std::static_pointer_cast<okapi::DefaultOdomChassisController>(drive.chassis)->getChassisController())->setGains(mygains[currently_carrying][0], mygains[currently_carrying][1], mygains[currently_carrying][2]);
