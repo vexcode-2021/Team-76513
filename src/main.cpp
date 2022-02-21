@@ -95,16 +95,23 @@ pros::Task *back_claw_task = nullptr;
  */
 void print()
 {
-
+	pros::Imu imu_sensor(HARDWARE::IMUPORT);
 	while (true)
 	{
-		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
-		// printf("BACK_CLAW %f\n", back_claw.ArmGet());
-			printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
-		printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
-		 printf("ultrasonic: %f\n", ultrasonic.get());
+		// printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
+		//  printf("BACK_CLAW %f\n", back_claw.ArmGet());
+		// printf("FRONT:\n%s", Visions[Vision::FRONT]->status().c_str());
+		// printf("BACK:\n%s", Visions[Vision::BACK]->status().c_str());
+		// printf("ultrasonic: %f\n", ultrasonic.get());
 		printf("MYIMU %f %d\n", myIMU->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
-		printf("ODOMSTATE: %s\n", drive.chassis->getState().str().c_str());
+		printf("MYIMUy %f %d\n", myIMUy->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
+
+		printf("temp, torq, power arm: %f %f %f\n", pros::c::motor_get_temperature(HARDWARE::CLAW_ARM_MOTOR1.getPort()),pros::c::motor_get_torque(HARDWARE::CLAW_ARM_MOTOR1.getPort()), pros::c::motor_get_power(HARDWARE::CLAW_ARM_MOTOR1.getPort()));
+		printf("drive power %f %f %f %f %f %f\n", pros::c::motor_get_power(12), pros::c::motor_get_power(13), pros::c::motor_get_power(15), pros::c::motor_get_power(17), pros::c::motor_get_power(18), pros::c::motor_get_power(19));
+
+		pros::Controller(pros::E_CONTROLLER_MASTER).clear_line(2);
+		pros::Controller(pros::E_CONTROLLER_MASTER).print<double>(2, 0, "%3f   ", claw.Get());
+		// printf("ODOMSTATE: %s\n", drive.chassis->getState().str().c_str());
 
 		pros::delay(500);
 	}
