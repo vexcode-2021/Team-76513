@@ -24,13 +24,7 @@ namespace HARDWARE
 
     //right
     const auto CLAW_ARM_MOTOR1 = okapi::Motor(1, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
-    //left
-    const auto CLAW_ARM_MOTOR2 = okapi::Motor(5, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
     //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
-    const auto CLAW_ARM_MOTORS = {
-        CLAW_ARM_MOTOR1,
-        CLAW_ARM_MOTOR2,
-    };
 
     //there needs to be one per motor above
     const std::initializer_list<std::pair<char, int>> LIMIT_SWITCHES = {
