@@ -76,7 +76,7 @@ namespace skillsn
 void auton_skils()
 {
     using namespace skillsn;
-    Visions[Vision::FRONT]->sensor->set_exposure(43); // TODO remove
+    Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
 
     drive.chassis->setState(okapi::OdomState{x : .5_tile, y : 6_in});
     myIMU->setOffset(-90);
@@ -118,7 +118,7 @@ void auton_skils()
     turnToAngle(180_deg);
     back_line_up(2_s, Vision::RED);
     back_claw.ArmSetNumWait(2);    // set down
-    moveDistance(-1_tile - 13_in); // intake the red
+    moveDistance(-1_tile - 14_in); // intake the red
     back_claw.ArmSetNum(0);        // start lifting the red
     // red intake
     currently_carrying = ONE_GOAL;
@@ -135,7 +135,7 @@ void auton_skils()
     claw.ArmSetNum(3);
     turnToAngle(240_deg - 0.3_deg);
 
-    moveDistance(66_in);
+    moveDistance(65_in);
     claw.ArmSetNumWait(2);
     claw.Leave(); // unhook yellow
     currently_carrying = ONE_GOAL;

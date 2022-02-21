@@ -104,28 +104,27 @@ void right_awp()
     back_piston_extend_retract_seq();
     currently_carrying = NO_GOAL;
 
-    moveDistance(10_in);
+    moveDistance(20_in);
     back_claw.ArmSetNum(0);
 
-    turnToAngle(45_deg);
-    moveDistance(1_tile);
+    turnToAngle(-90_deg);
+    moveDistance(-2_tile);
 
-    front_intake(2_s, Vision::YELLOW);
-    turnToAngle(45_deg);
-    moveDistance(-3_tile);
+    moveDistance(3_tile);
 }
 
 void grab_neuu(bool right = true)
 {
-    if (true)
+    if (right)
     {
         myIMU->setOffset(-90);
         back_claw.ArmSetNum(2);
-        pros::delay(300);
+        pros::delay(200);
 
         drive.chassis->setMaxVelocity(200);
-        drive.chassis->moveDistance(-1.8_tile);
+        drive.chassis->moveDistance(-1.9_tile);
 
+        back_claw.ArmSetNum(0);
         drive.chassis->setMaxVelocity(90);
         drive.chassis->moveDistance(-7_in);
 
@@ -133,39 +132,37 @@ void grab_neuu(bool right = true)
         using namespace skillsn;
         currently_carrying = ONE_GOAL;
 
-        turnToAngle(30_deg, okapi::ChassisController::swing::left);
-        turnToAngle(45_deg);
-        front_intake(3_s, Vision::YELLOW);
-        currently_carrying = TWO_GOAL;
+       // turnToAngle(30_deg, okapi::ChassisController::swing::left);
+       // turnToAngle(45_deg);
+       // front_intake(3_s, Vision::YELLOW);
+       // currently_carrying = TWO_GOAL;
 
-        turnToAngle(45_deg);
-        moveDistance(-3_tile);
+       // turnToAngle(45_deg);
+        moveDistance(3_tile);
         return;
     }
 
-    myIMU->setOffset(45);
+    //  myIMU->setOffset(45);
 
-    drive.chassis->moveDistance(2.4_tile);
-    front_intake(3_s, Vision::YELLOW);
+    //  drive.chassis->moveDistance(2.4_tile);
+    //  front_intake(3_s, Vision::YELLOW);
+
+    //  drive.chassis->setMaxVelocity(90);
+
+    //  drive.chassis->turnToAngle(90_deg);
+    //  drive.chassis->moveDistance(-2_tile);
+
+    myIMU->setOffset(90);
+
+    drive.chassis->setMaxVelocity(130);
+    drive.chassis->moveDistance(2_tile);
+    drive.chassis->setMaxVelocity(90);
+    front_intake(0.5_s, Vision::YELLOW);
 
     drive.chassis->setMaxVelocity(90);
 
-    drive.chassis->turnToAngle(90_deg);
+    //drive.chassis->turnToAngle(90_deg);
     drive.chassis->moveDistance(-2_tile);
-//
-//
-//   myIMU->setOffset(90);
-//
-//    front_intake(4_s, Vision::YELLOW);
-//
-//
-//    drive.chassis->setMaxVelocity(90);
-//
-//    drive.chassis->turnToAngle(90_deg);
-//    drive.chassis->moveDistance(-2_tile);
-
-
-
 
     //    claw.ArmSetNum(1);
     //    turnToAngle(150_deg - 2 * 360_deg, okapi::ChassisController::swing::right);
