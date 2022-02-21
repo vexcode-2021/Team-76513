@@ -25,7 +25,7 @@ double curve2(double x)
 {
     x *= 127;
 
-    x =  (powf(2.718, -(CONFIG_DRIVE::right_curve / 10)) + powf(2.718, (fabs(x) - 127) / 10) * (1 - powf(2.718, -(CONFIG_DRIVE::right_curve / 10)))) * x;
+    x = (powf(2.718, -(CONFIG_DRIVE::right_curve / 10)) + powf(2.718, (fabs(x) - 127) / 10) * (1 - powf(2.718, -(CONFIG_DRIVE::right_curve / 10)))) * x;
     return x / 127.0;
 }
 
@@ -75,6 +75,7 @@ void Drivetrain::drive(Controller m_c, Controller m_d)
 
     if (current_drive_mode == DRIVER_CONTROLLER)
     {
+        chassis->setMaxVelocity(600);
         // if (mode == DRIVE_MODE_TANK)
         // chassis->getModel()->tank(
         // curve(b1),
