@@ -14,7 +14,7 @@ private:
 
 public:
     DRIVER current_drive_mode = DRIVER_CONTROLLER;
-    std::shared_ptr<okapi::IMU> myIMU ;
+    std::shared_ptr<okapi::IMU> myIMU;
     Drivetrain();
     std::shared_ptr<Drive> chassis2;
     void init();
