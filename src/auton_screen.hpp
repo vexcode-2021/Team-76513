@@ -8,7 +8,9 @@ void main_auton()
 	claw.Leave();
 	claw.WaitUntilSettled();
 
-    Visions[Vision::FRONT]->sensor->set_exposure(71); //TODO
+	ez::as::auton_selector.call_selected_auton();
+	return;
+	Visions[Vision::FRONT]->sensor->set_exposure(71); // TODO
 	printf("arm SETTLED\n");
 
 	if (SELECTED_AUTON_ROUTINE == awp_right)
@@ -24,6 +26,18 @@ void main_auton()
 	else
 	{
 	}
+}
+void addAutons()
+{
+	ez::as::auton_selector.add_autons({
+		Auton("RIGHT AWP\n\nDesc.", right_awp),
+		Auton("LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
+		Auton("3LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
+		Auton("4LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
+		Auton("5RIGHT AWP\n\nDesc.", right_awp),
+		Auton("6RIGHT AWP\n\nDesc.", right_awp),
+		Auton("7RIGHT AWP\n\nDesc.", right_awp),
+	});
 }
 void on_screen_button()
 {

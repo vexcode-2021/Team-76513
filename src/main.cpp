@@ -129,11 +129,11 @@ void screen_stuff()
 
 void sg3_warn()
 {
-	//competition_get_status returns ENABLED,AUTONOMOUS,CONNECTED bits
-	//the xor (^) function negates bits, i.e. 1 ^ 1 = 0
-	// Here, 0b101, ENABLED,NO_AUTON,CONNECTED is my wanted state
-	// when it reaches the wanted state (i.e.) status returned is 0b101, the answer is 0
-	//until the answer is 0 (i.e. while ans != 0), it loops and waits
+	// competition_get_status returns ENABLED,AUTONOMOUS,CONNECTED bits
+	// the xor (^) function negates bits, i.e. 1 ^ 1 = 0
+	//  Here, 0b101, ENABLED,NO_AUTON,CONNECTED is my wanted state
+	//  when it reaches the wanted state (i.e.) status returned is 0b101, the answer is 0
+	// until the answer is 0 (i.e. while ans != 0), it loops and waits
 	while (pros::c::competition_get_status() ^ (0b101) != 0)
 	{
 		pros::delay(1000);
@@ -143,7 +143,7 @@ void sg3_warn()
 	// we need to wait for 1:45 - 0:40 = 1:05 (65s) and then buzz at 40s
 	pros::delay((1_min + 5_s).convert(1_ms));
 
-	//first rumble partner to pre-warn, then rumble main controller, then re-rumble partner to remind
+	// first rumble partner to pre-warn, then rumble main controller, then re-rumble partner to remind
 	pros::c::controller_rumble(pros::E_CONTROLLER_PARTNER, "-");
 	pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".. - -");
 	pros::c::controller_rumble(pros::E_CONTROLLER_PARTNER, "-");
@@ -152,7 +152,9 @@ void sg3_warn()
 void initialize()
 {
 	printf("init\n");
-	pros::lcd::initialize();
+	// pros::lcd::initialize();
+	addAutons();
+	ez::as::initialize();
 
 	claw.init();
 	back_claw.init();
@@ -181,12 +183,12 @@ void initialize()
 void disabled()
 {
 
-	pros::lcd::register_btn0_cb(on_screen_button);
+	// pros::lcd::register_btn0_cb(on_screen_button);
 
 	while (true)
 	{
 		// pros::lcd::clear();
-		printAutonRoutines();
+		// printAutonRoutines();
 		pros::delay(100);
 	}
 }
@@ -203,16 +205,16 @@ void disabled()
 void competition_initialize()
 {
 	printf("COMPINITSTART\n");
-	pros::lcd::register_btn0_cb(on_screen_button);
+	// pros::lcd::register_btn0_cb(on_screen_button);
 
 	while (true)
 	{
 		// pros::lcd::clear();
-		printAutonRoutines();
+		// printAutonRoutines();
 		pros::delay(100);
 	}
 
-	pros::lcd::clear();
+	// pros::lcd::clear();
 
 	printf("COMPINIT\n");
 }
