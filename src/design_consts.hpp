@@ -6,11 +6,10 @@ namespace HARDWARE
     const char CLAW_PORT = 'F';
     const bool CLAW_REVERSED = true;
 
-    const auto drive_gearset = okapi::AbstractMotor::gearset::green;
+    // motor rotation to wheel rotation
+    const okapi::AbstractMotor::GearsetRatioPair drive_gearset = {okapi::AbstractMotor::gearset::blue, 7 / 3};
 
-    //const static okapi::ChassisScales &drive_chassis_scale = {{4.125_in, 12.85_in}, okapi::imev5GreenTPR};
-    const static okapi::ChassisScales &drive_chassis_scale = {{4.125_in, 12.45_in}, okapi::imev5GreenTPR};
-    //const static okapi::ChassisScales &drive_chassis_scale = {{4_in, 11_in }, okapi::imev5GreenTPR};
+    const static okapi::ChassisScales &drive_chassis_scale = {{4.125_in, 12.45_in}, okapi::imev5BlueTPR};
     const double TURNFACTOR = 1.00;
 
     const std::initializer_list<okapi::Motor> drive_motors_left = {-17, 18, -19};
