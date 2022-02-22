@@ -126,6 +126,28 @@ void screen_stuff()
 	}
 }
 
+void sg3_warn()
+{
+	//competition_get_status returns ENABLED,AUTONOMOUS,CONNECTED bits
+	//the xor (^) function negates bits, i.e. 1 ^ 1 = 0
+	// Here, 0b101, ENABLED,NO_AUTON,CONNECTED is my wanted state
+	// when it reaches the wanted state (i.e.) status returned is 0b101, the answer is 0
+	//until the answer is 0 (i.e. while ans != 0), it loops and waits
+	while (pros::c::competition_get_status() ^ (0b101) != 0)
+	{
+		pros::delay(1000);
+	}
+
+	// after it finishes looping, i.e. when driver control starts
+	// we need to wait for 1:45 - 0:40 = 1:05 (65s) and then buzz at 40s
+	pros::delay((1_min + 5_s).convert(1_ms));
+
+	//first rumble partner to pre-warn, then rumble main controller, then re-rumble partner to remind
+	pros::c::controller_rumble(pros::E_CONTROLLER_PARTNER, "-");
+	pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ".. - -");
+	pros::c::controller_rumble(pros::E_CONTROLLER_PARTNER, "-");
+}
+
 void initialize()
 {
 	printf("init\n");
@@ -147,6 +169,7 @@ void initialize()
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
 	pros::Task _ = pros::Task(screen_stuff);
+	pros::Task _ = pros::Task(sg3_warn);
 }
 
 /**
