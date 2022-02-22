@@ -3,7 +3,7 @@
 class
 {
 private:
-    pros::Controller master();
+    pros::Controller master = pros::Controller(pros::E_CONTROLLER_MASTER);
     pros::Controller partner = pros::Controller(pros::E_CONTROLLER_PARTNER);
 
     bool curr_brake = false;
@@ -18,7 +18,7 @@ private:
         drive.brake(curr_brake);
     }
 
-    const bool PID_TUNING = true;
+    const bool PID_TUNING = false;
     int index = 0;
     std::valarray<double> myvals = {1, 1, 1};
     std::valarray<double> factors = {1e-4, 2, 1};
@@ -48,13 +48,18 @@ private:
 
     void statusPrint()
     {
-        std::string printing = curr_brake ? "br" : "co";
 
-        partner.print(1, 0, "%2s", printing.c_str());
+        partner.print(2, 0, "%3.0f", claw.Get());
 
+        pros::delay(55);
         if (PID_TUNING)
         {
-            partner.print(2, 0, "%4.0f %4.0f, %4.0f ", myvals[0], myvals[1], myvals[2]);
+            master.print(2, 0, "%4.0f %4.0f, %4.0f ", myvals[0], myvals[1], myvals[2]);
+        }
+        else
+        {
+            std::string printing = curr_brake ? "br" : "co";
+            master.print(2, 0, "%2s", printing);
         }
     }
 
