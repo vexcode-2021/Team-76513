@@ -4,6 +4,7 @@
 #include "autonomous.hpp"
 
 #include "auton_screen.hpp"
+#include "display.hpp"
 
 void opctrl_drivetrain()
 {
@@ -168,8 +169,8 @@ void initialize()
 
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
-	pros::Task _ = pros::Task(screen_stuff);
-	pros::Task _ = pros::Task(sg3_warn);
+	pros::Task _1 = pros::Task(screen_stuff);
+	pros::Task _2 = pros::Task(sg3_warn);
 }
 
 /**

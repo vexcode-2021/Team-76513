@@ -18,14 +18,14 @@ namespace HARDWARE
     const std::initializer_list<int> drive_motors_right2 = {12, -13, 15};
 
     const double claw_arm_gear_ratio = 12.0 / 84.0;
-    const okapi::QAngle claw_max_angle = 95_deg; //auangle from the ground to the angle that is high enough to drop the MOGO on the platform
-                                                 //TODO
+    const okapi::QAngle claw_max_angle = 95_deg; // auangle from the ground to the angle that is high enough to drop the MOGO on the platform
+                                                 // TODO
 
-    //right
+    // right
     const auto CLAW_ARM_MOTOR1 = okapi::Motor(1, false, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::rotations);
-    //encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
+    // encoderUnits don't matter since they're overriden anyway; gearset has to be set correctly
 
-    //there needs to be one per motor above
+    // there needs to be one per motor above
     const std::initializer_list<std::pair<char, int>> LIMIT_SWITCHES = {
         {'H', 2},
         {'G', -9},
@@ -39,7 +39,7 @@ namespace HARDWARE
     const int LMIN = 409;
     const int LMAX = 2050;
 
-    const int RMIN = 333 ;
+    const int RMIN = 333;
     const int RMAX = 1969;
 
     const auto BACK_CLAW_MOTOR = okapi::Motor(16, true, okapi::AbstractMotor::gearset::red, okapi::AbstractMotor::encoderUnits::degrees);

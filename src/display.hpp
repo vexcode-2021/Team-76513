@@ -1,3 +1,5 @@
+#include "shared.hpp"
+#pragma once
 class
 {
 private:
