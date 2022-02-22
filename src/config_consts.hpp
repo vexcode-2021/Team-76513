@@ -61,6 +61,8 @@ namespace ButtonMapping
 
     const ControllerDigital auto_front_intake = ControllerDigital::up;
 
+    const pros::controller_digital_e_t drive_brake_toggle = pros::E_CONTROLLER_DIGITAL_Y;
+
 }
 
 namespace CLAW_CONF

@@ -3,6 +3,7 @@
 #include "subsystems/backclaw.hpp"
 #include "subsystems/drivetrain.hpp"
 #include "subsystems/vision.hpp"
+#include "subsystems/display.hpp"
 
 #pragma once
 

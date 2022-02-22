@@ -36,4 +36,14 @@ public:
         chassis->setMaxVelocity(120);
         chassis->turnAngle(itarget * HARDWARE::TURNFACTOR);
     };
+
+    void setBrakeMode(okapi::AbstractMotor::brakeMode b)
+    {
+        chassis->getModel()->setBrakeMode(b);
+    }
+    void brake(bool on)
+    {
+        if (current_drive_mode == DRIVER_CONTROLLER)
+            chassis->getModel()->setBrakeMode(on ? okapi::AbstractMotor::brakeMode::hold : okapi::AbstractMotor::brakeMode::coast);
+    }
 };

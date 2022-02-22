@@ -116,6 +116,15 @@ void print()
 		pros::delay(500);
 	}
 }
+void screen_stuff()
+{
+	auto rate = okapi::Rate();
+	while (true)
+	{
+		ControllerScreen.oneLoop();
+		rate.delayUntil(200_ms);
+	}
+}
 
 void initialize()
 {
@@ -137,6 +146,7 @@ void initialize()
 
 	printf("inited\n");
 	pros::Task _ = pros::Task(print);
+	pros::Task _ = pros::Task(screen_stuff);
 }
 
 /**
