@@ -6,6 +6,8 @@ private:
     pros::Controller master = pros::Controller(pros::E_CONTROLLER_MASTER);
     pros::Controller partner = pros::Controller(pros::E_CONTROLLER_PARTNER);
 
+    bool needupdate = false;
+
     bool curr_brake = false;
 
     void brakeStuff()
@@ -13,6 +15,7 @@ private:
         if (pros::c::controller_get_digital_new_press(pros::E_CONTROLLER_PARTNER, ButtonMapping::drive_brake_toggle))
         {
             curr_brake ^= 1;
+            needupdate = true;
             // xor equals 1 means toggle a boolean
         }
         drive.brake(curr_brake);
@@ -22,6 +25,7 @@ private:
     int index = 0;
     std::valarray<double> myvals = {1, 1, 1};
     std::valarray<double> factors = {1e-4, 2, 1};
+    okapi::Timer claw_t;
 
     void pidTune()
     {
@@ -33,11 +37,13 @@ private:
         {
             myvals[index] *= 1.1;
             mysetpid();
+            needupdate = true;
         }
         else if (pros::c::controller_get_digital_new_press(pros::E_CONTROLLER_PARTNER, pros::E_CONTROLLER_DIGITAL_DOWN))
         {
             myvals[index] /= 1.1;
             mysetpid();
+            needupdate = true;
         }
     }
     void mysetpid()
@@ -48,9 +54,11 @@ private:
 
     void statusPrint()
     {
+        if (claw_t.repeat(1_s))
+            partner.print(2, 0, "%3.0f", claw.Get());
 
-        partner.print(2, 0, "%3.0f", claw.Get());
-
+        if (!needupdate)
+            return;
         pros::delay(55);
         if (PID_TUNING)
         {
@@ -61,6 +69,7 @@ private:
             std::string printing = curr_brake ? "br" : "co";
             master.print(2, 0, "%2s", printing);
         }
+        needupdate = false;
     }
 
 public:

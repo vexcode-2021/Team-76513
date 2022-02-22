@@ -123,7 +123,7 @@ void screen_stuff()
 	while (true)
 	{
 		ControllerScreen.oneLoop();
-		rate.delayUntil(200_ms);
+		rate.delayUntil(100_ms);
 	}
 }
 
