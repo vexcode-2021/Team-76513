@@ -44,7 +44,7 @@ public:
     void brake(bool on)
     {
         if (current_drive_mode == DRIVER_CONTROLLER)
-            chassis->getModel()->setBrakeMode(on ? okapi::AbstractMotor::brakeMode::brake : okapi::AbstractMotor::brakeMode::coast);
+            chassis->getModel()->setBrakeMode(on ? okapi::AbstractMotor::brakeMode::hold : okapi::AbstractMotor::brakeMode::coast);
     }
 
     void setMaxVelocity(double rpm)
