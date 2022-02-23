@@ -50,9 +50,9 @@ void Drivetrain::init()
             .withGains({0.0024 * 2, 0 * 2, 0.00001 * 5 * 2}, {0.0001 * 2.95 * 2, 0.00005 * 2, 0.00001 * 1 * 2}, {0.0001 * 2.5 * 2, 0.00005 * 2, 0.00001 * 1 * 2})
             .withSlewRate(10.0 / 400.0)
             .withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(50, 5, .2_s))
-
             .withOdometry()
             .buildOdometry();
+
 
     // chassis2 = std::make_shared<Drive>(Drive(HARDWARE::drive_motors_left2, HARDWARE::drive_motors_right2, HARDWARE::IMUPORT, HARDWARE::drive_chassis_scale.wheelDiameter.convert(1_in), 200, 1));
 

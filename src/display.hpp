@@ -21,10 +21,10 @@ private:
         drive.brake(curr_brake);
     }
 
-    const bool PID_TUNING = false;
+    const bool PID_TUNING = true;
     int index = 0;
-    std::valarray<double> myvals = {1, 1, 1};
-    std::valarray<double> factors = {1e-4, 2, 1};
+    std::valarray<double> myvals = {15, 22, 1};
+    std::valarray<double> factors = {1e-4, 1e-4, 1e-6};
     okapi::Timer claw_t;
 
     void pidTune()
@@ -35,14 +35,12 @@ private:
         }
         if (pros::c::controller_get_digital_new_press(pros::E_CONTROLLER_PARTNER, pros::E_CONTROLLER_DIGITAL_UP))
         {
-            myvals[index] *= 1.1;
-            mysetpid();
+            myvals[index] *= 1.25;
             needupdate = true;
         }
         else if (pros::c::controller_get_digital_new_press(pros::E_CONTROLLER_PARTNER, pros::E_CONTROLLER_DIGITAL_DOWN))
         {
-            myvals[index] /= 1.1;
-            mysetpid();
+            myvals[index] /= 1.25;
             needupdate = true;
         }
     }
@@ -69,6 +67,7 @@ private:
             std::string printing = curr_brake ? "br" : "co";
             master.print(2, 0, "%2s", printing);
         }
+        mysetpid();
         needupdate = false;
     }
 

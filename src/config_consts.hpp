@@ -72,8 +72,8 @@ namespace CLAW_CONF
     const QAngularSpeed arm_top_velocity = 90_deg / 0.001_s;
     const QAngularSpeed min_zeroed_velocity = 8_deg / 1_s;
 
-    const int armPos[] = {2, 15, 53, 77};
-    const int ARM_POS_LEN = 4;
+    const int armPos[] = {2, 15, 47, 60, 80};
+    const int ARM_POS_LEN = 5;
     const bool PRINT = false;
 }
 
