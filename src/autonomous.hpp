@@ -42,3 +42,23 @@ void testing_routine()
 
 	// drop_left_awp();
 }
+
+void basic_goal_grab()
+{
+	claw.Leave();
+	drive.chassis->setState(okapi::OdomState{x : 4.5_tile, y : 8_in});
+	myIMU->setOffset(90);
+
+	drive.setMaxVelocity(600);
+	drive.chassis->model().tank(1, 1);
+	while (drive.chassis->getState().y < 3_tile - 8_in)
+		pros::delay(10);
+
+	drive.chassis->model().tank(0, 0);
+	claw.Clasp();
+	claw.ArmSetRelative(4);
+
+	drive.chassis->model().tank(-1, -1);
+	pros::delay(1200);
+	drive.chassis->model().tank(0, 0);
+}
