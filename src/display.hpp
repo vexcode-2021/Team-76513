@@ -6,7 +6,7 @@ private:
     pros::Controller master = pros::Controller(pros::E_CONTROLLER_MASTER);
     pros::Controller partner = pros::Controller(pros::E_CONTROLLER_PARTNER);
 
-    bool needupdate = false;
+    bool needupdate = true;
 
     bool curr_brake = false;
 
