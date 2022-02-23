@@ -108,7 +108,7 @@ void print()
 		printf("MYIMUy %f %d\n", myIMUy->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
 
 		printf("temp, torq, power arm: %f %f %f\n", pros::c::motor_get_temperature(HARDWARE::CLAW_ARM_MOTOR1.getPort()), pros::c::motor_get_torque(HARDWARE::CLAW_ARM_MOTOR1.getPort()), pros::c::motor_get_power(HARDWARE::CLAW_ARM_MOTOR1.getPort()));
-		printf("drive temperature %f %f %f %f %f %f\n", pros::c::motor_get_temperature(12), pros::c::motor_get_temperature(13), pros::c::motor_get_temperature(15), pros::c::motor_get_temperature(17), pros::c::motor_get_temperature(18), pros::c::motor_get_temperature(19));
+		printf("drive temperature %f %f %f %f %f %f tq:%f N\n", pros::c::motor_get_temperature(12), pros::c::motor_get_temperature(13), pros::c::motor_get_temperature(15), pros::c::motor_get_temperature(17), pros::c::motor_get_temperature(18), pros::c::motor_get_temperature(19), drive.getForce().convert(1_n));
 
 		printf("ODOMSTATE: %s\n", drive.chassis->getState().str().c_str());
 

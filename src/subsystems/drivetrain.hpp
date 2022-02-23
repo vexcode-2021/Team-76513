@@ -52,13 +52,13 @@ public:
         chassis->setMaxVelocity(rpm * HARDWARE::drive_gearset.ratio);
     }
 
-    okapi::QTorque getTorque()
+    okapi::QForce getForce()
     {
         double sum = 0;
         for (auto i : HARDWARE::drive_motors_left)
             sum += i.getTorque();
         for (auto i : HARDWARE::drive_motors_right)
             sum += i.getTorque();
-        return sum * HARDWARE::drive_gearset.ratio * okapi::newton * okapi::meter;
+        return sum * HARDWARE::drive_gearset.ratio * okapi::newton * okapi::meter / HARDWARE::drive_chassis_scale.middleWheelDiameter;
     }
 };

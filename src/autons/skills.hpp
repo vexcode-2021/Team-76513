@@ -65,6 +65,26 @@ namespace skillsn
         setPID();
         drive.chassis->moveDistance(length);
     }
+
+    void monitorStuckage()
+    {
+        int count = 0;
+        while (!drive.chassis->isSettled())
+        {
+            int count = 0;
+            if (drive.getForce() > 20_n)
+                count++;
+            else
+                count -= 2;
+
+            // 1 sec of stuck
+            if (count > 20)
+                drive.chassis->stop();
+            // stop will cause return on next loop
+
+            pros::delay(100);
+        }
+    }
 }
 
 void auton_skils()
