@@ -7,9 +7,9 @@ namespace HARDWARE
     const bool CLAW_REVERSED = true;
 
     // motor rotation to wheel rotation
-    const okapi::AbstractMotor::GearsetRatioPair drive_gearset = {okapi::AbstractMotor::gearset::blue, 7 / 3};
+    const okapi::AbstractMotor::GearsetRatioPair drive_gearset = {okapi::AbstractMotor::gearset::blue, 7. / 3.};
 
-    const static okapi::ChassisScales &drive_chassis_scale = {{4.125_in, 12.45_in}, okapi::imev5BlueTPR};
+    const static okapi::ChassisScales &drive_chassis_scale = {{4.125_in, 12.75_in}, okapi::imev5BlueTPR * 7. / 3.};
     const double TURNFACTOR = 1.00;
 
     const std::initializer_list<okapi::Motor> drive_motors_left = {-17, 18, -19};
