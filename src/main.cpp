@@ -299,21 +299,17 @@ void opcontrol()
 
 		static okapi::ControllerButton claw_down_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::claw_arm_down);
 
-		if (claw_hook_button.changed() || claw_up_button.changed() || claw_down_button.changed())
+		static okapi::ControllerButton claw_up_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::claw_arm_up);
+
+		static okapi::ControllerButton claw_down_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::claw_arm_down);
+
+		if (claw_hook_button.changed() || claw_up_button.changed() || claw_down_button.changed() || claw_up_button_pt.changed() || claw_down_button_pt.changed())
 
 			claw_task->notify_ext(
 				claw_hook_button.isPressed() * claw_task_toggle |
-					claw_up_button.isPressed() * claw_task_up |
-					claw_down_button.isPressed() * claw_task_down,
+					(claw_up_button.isPressed() || claw_up_button_pt.isPressed()) * claw_task_up |
+					(claw_down_button.isPressed() || claw_down_button_pt.isPressed()) * claw_task_down,
 				pros::E_NOTIFY_ACTION_BITS, NULL);
-
-		static okapi::ControllerButton claw_up_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::claw_arm_up);
-		if (claw_up_button_pt.changedToPressed())
-			claw.ArmSetRelative(1);
-
-		static okapi::ControllerButton claw_down_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::claw_arm_down);
-		if (claw_down_button_pt.changedToPressed())
-			claw.ArmSetRelative(-1);
 
 		// static int count = 0;
 		//	if (count % 40 == 0)
@@ -342,13 +338,16 @@ void opcontrol()
 		static okapi::ControllerButton back_claw_up_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_up);
 		static okapi::ControllerButton back_claw_down_button = okapi::ControllerButton(ButtonMapping::claw_controller, ButtonMapping::back_claw_down);
 
+		static okapi::ControllerButton back_claw_up_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::back_claw_up);
+		static okapi::ControllerButton back_claw_down_button_pt = okapi::ControllerButton(okapi::ControllerId::partner, ButtonMapping::back_claw_down);
+
 		static auto m = HARDWARE::BACK_CLAW_MOTOR;
 		m.setEncoderUnits(okapi::AbstractMotor::encoderUnits::degrees);
-		if (back_claw_up_button.changedToPressed())
+		if (back_claw_up_button.changedToPressed() || back_claw_up_button_pt.changedToPressed())
 		{
 			back_claw_task->notify_ext(2, pros::E_NOTIFY_ACTION_OWRITE, NULL);
 		}
-		else if (back_claw_down_button.changedToPressed())
+		else if (back_claw_down_button.changedToPressed() || back_claw_down_button_pt.changedToPressed())
 		{
 			back_claw_task->notify_ext(1, pros::E_NOTIFY_ACTION_OWRITE, NULL);
 		}
