@@ -27,7 +27,7 @@ namespace skillsn
 
     void setPID()
     {
-        drive.chassis->setMaxVelocity(PID_CONSTS::AUTO_DRIVE_SPEEDS[currently_carrying]);
+        drive.setMaxVelocity(PID_CONSTS::AUTO_DRIVE_SPEEDS[currently_carrying]);
 
         auto mygains = PID_CONSTS::AUTO_DRIVE_GAINS;
 

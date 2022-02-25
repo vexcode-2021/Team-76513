@@ -53,7 +53,6 @@ void Drivetrain::init()
             .withOdometry()
             .buildOdometry();
 
-
     // chassis2 = std::make_shared<Drive>(Drive(HARDWARE::drive_motors_left2, HARDWARE::drive_motors_right2, HARDWARE::IMUPORT, HARDWARE::drive_chassis_scale.wheelDiameter.convert(1_in), 200, 1));
 
     printf("HIII\n============================\n\n\n\n\n\n");

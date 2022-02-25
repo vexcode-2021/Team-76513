@@ -274,8 +274,10 @@ void fi2_t()
 	skillsn::currently_carrying = skillsn::NO_GOAL;
 	while (true)
 	{
-		skillsn::turnAngle(90_deg);
-		skillsn::moveDistance(10_in);
+		drive.chassis->turnAngle(90_deg);
+		drive.chassis->moveDistance(10_in);
+	//	skillsn::turnAngle(90_deg);
+	//	skillsn::moveDistance(10_in);
 	}
 	pros::delay(20);
 	post_auton();

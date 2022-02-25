@@ -47,7 +47,7 @@ private:
     void mysetpid()
     {
         auto ans = (myvals * factors);
-        std::static_pointer_cast<okapi::ChassisControllerPID>(std::static_pointer_cast<okapi::DefaultOdomChassisController>(drive.chassis)->getChassisController())->setGains({ans[0], ans[1], ans[2]}, {}, {});
+        std::static_pointer_cast<okapi::ChassisControllerPID>(std::static_pointer_cast<okapi::DefaultOdomChassisController>(drive.chassis)->getChassisController())->setGains({1770e-6, 500e-8, 2465e-8}, {ans[0], ans[1], ans[2]}, {0.0002, 0, 0});
     }
 
     void statusPrint()
