@@ -68,20 +68,21 @@ namespace skillsn
 
     void monitorStuckage()
     {
+        printf("STUCKAGE\n");
         int count = 0;
         while (!drive.chassis->isSettled())
         {
-            int count = 0;
-            if (drive.getForce() > 20_n)
+            if (drive.getForce() > 40_n)
                 count++;
-            else
-                count -= 2;
+            else if (count > 0)
+                count -= 1;
 
             // 1 sec of stuck
             if (count > 20)
                 drive.chassis->stop();
             // stop will cause return on next loop
 
+            printf("STUCKCOUNT %d\n", count);
             pros::delay(100);
         }
     }

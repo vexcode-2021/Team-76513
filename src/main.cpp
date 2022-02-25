@@ -137,7 +137,7 @@ void sg3_warn()
 	{
 		pros::delay(1000);
 	}
-	//printf("SG# FINISH DELAYING\n");
+	// printf("SG# FINISH DELAYING\n");
 
 	// after it finishes looping, i.e. when driver control starts
 	// we need to wait for 1:45 - 0:40 = 1:05 (65s) and then buzz at 40s
@@ -149,7 +149,7 @@ void sg3_warn()
 	{
 		errno = 0;
 		pros::c::controller_rumble(pros::E_CONTROLLER_MASTER, ". -- .");
-		//printf("SG# err %d\n", errno);
+		// printf("SG# err %d\n", errno);
 		pros::delay(100);
 		retries++;
 	} while (errno != 0 && retries < 9);
