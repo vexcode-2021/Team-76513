@@ -2,6 +2,7 @@
 #include "basics.hpp"
 #include "vision.hpp"
 #include "../pid_consts.hpp"
+#include "../display.hpp"
 
 namespace skillsn
 {
@@ -88,78 +89,105 @@ namespace skillsn
     }
 }
 
+void climb()
+{
+    const okapi::QAngularSpeed LIMIT_ANGLE = 3_deg / 1_s;
+    const double DRIVE_SPEED = 0.6;
+    const okapi::QLength POST_MOVE_DIST = -0.5_in;
+
+    using namespace skillsn;
+    auto med = std::make_unique<okapi::MedianFilter<3>>();
+    // auto v = okapi::VelMathFactory::createPtr(360, , 60_ms);
+    currently_carrying = SLOW_BC;
+    setPID();
+    drive.setMaxVelocity(40);
+    monitorStuckage();
+    okapi::QAngularSpeed dtheta = 1_deg / 1_s;
+
+    auto pid = okapi::IterativePosPIDController({0, ControllerScreen.myvals[1] * 1e-4, ControllerScreen.myvals[2] * 1e-4}, okapi::TimeUtilFactory::withSettledUtilParams(5, 9, 999_ms));
+    pid.setIntegralLimits(-DRIVE_SPEED, DRIVE_SPEED);
+    pid.setOutputLimits(-DRIVE_SPEED, DRIVE_SPEED);
+    pid.setTarget(0);
+    pid.step(-25);
+    printf("STARTING\n");
+    while (!pid.isSettled())
+    {
+        drive.chassis->getModel()->driveVector(pid.step(med->filter(myIMUy->get())), 0);
+        static int count = 0;
+        if (!(count % 10))
+            printf("print %f %f %f\n", pid.getProcessValue(), pid.getOutput(), pid.getError());
+
+        count++;
+        pros::delay(10);
+    }
+    // while (dtheta < LIMIT_ANGLE || myIMUy->get() < -25)
+    //{
+    //     dtheta = v->step(myIMUy->get());
+    //     drive.chassis->getModel()->driveVector(DRIVE_SPEED, 0);
+    //     //moveDistance(1_in);
+    //     printf("print %f %f\n", dtheta.convert(1_deg / 1_s), myIMUy->get());
+    //     pros::delay(5);
+    // }
+
+    drive.chassis->getModel()->driveVector(0.0, 0);
+    // moveDistance(POST_MOVE_DIST);
+}
+
 void auton_skils()
 {
+    claw.Leave();
     using namespace skillsn;
     Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
 
-    drive.chassis->setState(okapi::OdomState{x : .5_tile, y : 6_in});
-    myIMU->setOffset(-90);
-    drive.chassis->setMaxVelocity(90);
-    pros::delay(20);
-    // now initialized
+    drive.chassis->setState(okapi::OdomState{x : 5_tile + 2.5_in, y : 5.5_tile});
+    myIMU->setOffset(90);
 
-    back_claw.ArmSetNumWait(2); // down claw
+    currently_carrying = NO_GOAL;
+    back_claw.ArmSetNumWait(2);
+    moveDistance(-8_in);
+
+    back_claw.ArmSetNumWait(1);
+    moveDistance(4_in);
+
+    back_claw.ArmSetNumWait(0);
+    moveDistance(4_in);
+
+    drive.chassis->setSwing(okapi::ChassisController::swing::left);
+    drive.chassis->turnToPoint({4.5_tile, 3_tile});
+    drive.chassis->setSwing(okapi::ChassisController::swing::none);
+    drive.chassis->driveToPoint({4.5_tile, 3_tile}, false, 13_in);
 
     currently_carrying = SLOW_BC;
-    moveDistance(-20_in);
-    back_claw.ArmSetNum(0); // pick up
-    currently_carrying = ONE_GOAL;
-    // blue goal is now picked up
+    moveDistance(7_in);
+    claw.Clasp();
+    claw.ArmSetNum(1);
 
-    turnToAngle(0_deg, okapi::ChassisController::swing::left);
-    moveDistance(13.5_in);
-    turnToAngle(90_deg, okapi::ChassisController::swing::left);
-    // now it's pointing to the yellow goal
-    front_intake(4_s, Vision::YELLOW);
-    // grabbed neumogo
-    currently_carrying = TWO_GOAL;
-
-    claw.ArmSetNum(3);
-    turnToAngle(60.1_deg); // turn towards platform
-    moveDistance(62_in);   // drive to platform
-    claw.ArmSetNumWait(2); // set it down on platform
-    claw.Leave();          // unhook
-    // yellow is now on the platform
-    currently_carrying = ONE_GOAL;
-
-    moveDistance(-13_in); // move away from platfom
-    turnToAngle(0_deg);
-    back_claw.ArmSetNumWait(2); // blue is now set down
     currently_carrying = NO_GOAL;
-    moveDistance(20_in); // drive away from set down blue goal
-
-    // go to pick up red goal
-    turnToAngle(180_deg);
-    back_line_up(2_s, Vision::RED);
-    back_claw.ArmSetNumWait(2);    // set down
-    moveDistance(-1_tile - 14_in); // intake the red
-    back_claw.ArmSetNum(0);        // start lifting the red
-    // red intake
-    currently_carrying = ONE_GOAL;
-
-    turnToAngle(180_deg);
-    claw.ArmSetNum(0); // to save time in the future
-    moveDistance(14_in);
-    turnToAngle(270_deg);
-
-    front_intake(4_s, Vision::YELLOW);
-    // other yellow intake
-    currently_carrying = TWO_GOAL;
-
-    claw.ArmSetNum(3);
-    turnToAngle(240_deg - 0.3_deg);
-
-    moveDistance(65_in);
-    claw.ArmSetNumWait(2);
-    claw.Leave(); // unhook yellow
-    currently_carrying = ONE_GOAL;
-
-    moveDistance(-7_in);
-    turnToAngle(360_deg);
+    setPID();
+    drive.chassis->driveToPoint({4.7_tile, 2_tile - 13_in});
     back_claw.ArmSetNumWait(2);
-    currently_carrying = NO_GOAL;
+    drive.chassis->moveDistanceAsync(15_in);
+    monitorStuckage();
+    claw.Clasp();
+    claw.ArmSetNum(1);
 
-    moveDistance(10_in);
-    retract_all();
+    drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, true, -19_in);
+    currently_carrying = SLOW_BC;
+    moveDistance(-5_in);
+    back_claw.ArmSetNum(0);
+
+    currently_carrying = NO_GOAL;
+    setPID();
+    drive.chassis->driveToPoint({5.3_tile, 1.5_tile}, true);
+
+    claw.ArmSetNum(3);
+    drive.chassis->driveToPoint({5.3_tile, 5.5_tile + 3_in}, true);
+
+    drive.chassis->driveToPoint({4.5_tile, 5.5_tile + 3_in});
+    claw.ArmSetNumWait(1);
+
+    currently_carrying = SLOW_BC;
+    moveDistance(25_in);
+
+    climb();
 }
