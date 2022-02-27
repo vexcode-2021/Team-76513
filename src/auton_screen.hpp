@@ -31,48 +31,44 @@ void addAutons()
 {
 	ez::as::auton_selector.add_autons({
 		Auton("SKills\n\nDesc.", auton_skils),
-		Auton("RIGHT AWP\n\nDesc.", right_awp),
-		Auton("LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
-		Auton("3LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
-		Auton("4LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
-		Auton("5RIGHT AWP\n\nDesc.", right_awp),
-		Auton("6RIGHT AWP\n\nDesc.", right_awp),
-		Auton("7RIGHT AWP\n\nDesc.", right_awp),
+		Auton("LEFT AWP Turn\n\ndrop ring and do the turn thing", myawp_left),
+		Auton("GO FORW GRAB\n\n", basic_goal_grab),
+		Auton("NEU GOAL GRAB\n\n", grab_tallneu),
 	});
 }
 void on_screen_button()
 {
-	switch (SELECTED_AUTON_ROUTINE)
-	{
-	case awp_right:
-		SELECTED_AUTON_ROUTINE = awp_left;
-		break;
-	case awp_left:
-		SELECTED_AUTON_ROUTINE = neumogo_from_right;
-		break;
-	case neumogo_from_right:
-		SELECTED_AUTON_ROUTINE = neumogo_left;
-		break;
-	case neumogo_left:
-		SELECTED_AUTON_ROUTINE = skills;
-		break;
-	case skills:
-		SELECTED_AUTON_ROUTINE = auton_routine_none;
-		break;
-	case auton_routine_none:
-		SELECTED_AUTON_ROUTINE = awp_right;
-		break;
-	}
+	//switch (SELECTED_AUTON_ROUTINE)
+	//{
+	//case awp_right:
+	//	SELECTED_AUTON_ROUTINE = awp_left;
+	//	break;
+	//case awp_left:
+	//	SELECTED_AUTON_ROUTINE = neumogo_from_right;
+	//	break;
+	//case neumogo_from_right:
+	//	SELECTED_AUTON_ROUTINE = neumogo_left;
+	//	break;
+	//case neumogo_left:
+	//	SELECTED_AUTON_ROUTINE = skills;
+	//	break;
+	//case skills:
+	//	SELECTED_AUTON_ROUTINE = auton_routine_none;
+	//	break;
+	//case auton_routine_none:
+	//	SELECTED_AUTON_ROUTINE = awp_right;
+	//	break;
+	//}
 }
 
 void printAutonRoutines()
 {
-	auto r = SELECTED_AUTON_ROUTINE;
+	//auto r = SELECTED_AUTON_ROUTINE;
 
-	pros::lcd::print(1, "AWP Right          %s", r == awp_right ? "yes" : "no ");
-	pros::lcd::print(2, "AWP Left           %s", r == awp_left ? "yes" : "no ");
-	pros::lcd::print(3, "Neu Tall rig MOGO  %s", r == neumogo_from_right ? "yes" : "no ");
-	pros::lcd::print(4, "Neu Tall lef MOGO  %s", r == neumogo_left ? "yes" : "no ");
-	pros::lcd::print(5, "Skills             %s", r == skills ? "yes" : "no ");
-	pros::lcd::print(6, "None               %s", r == auton_routine_none ? "yes" : "no ");
+	//pros::lcd::print(1, "AWP Right          %s", r == awp_right ? "yes" : "no ");
+	//pros::lcd::print(2, "AWP Left           %s", r == awp_left ? "yes" : "no ");
+	//pros::lcd::print(3, "Neu Tall rig MOGO  %s", r == neumogo_from_right ? "yes" : "no ");
+	//pros::lcd::print(4, "Neu Tall lef MOGO  %s", r == neumogo_left ? "yes" : "no ");
+	//pros::lcd::print(5, "Skills             %s", r == skills ? "yes" : "no ");
+	//pros::lcd::print(6, "None               %s", r == auton_routine_none ? "yes" : "no ");
 }

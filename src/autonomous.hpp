@@ -9,7 +9,7 @@ void basic_goal_grab()
 
 	drive.setMaxVelocity(600);
 	drive.chassis->model().tank(1, 1);
-	while (drive.chassis->getState().y < 2_tile )
+	while (drive.chassis->getState().y < 2_tile)
 		pros::delay(10);
 
 	drive.chassis->model().tank(0, 0);
@@ -19,9 +19,31 @@ void basic_goal_grab()
 	skillsn::monitorStuckage();
 }
 
+void myawp_left()
+{
+	using namespace skillsn;
+	back_claw.Toggle();
+	back_claw.Toggle();
+	turnAngle(100_deg, okapi::ChassisController::swing::left);
+
+	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 1_tile});
+	myIMU->setOffset(90);
+	basic_goal_grab();
+}
+
 void testing_routine()
 {
+
+	return;
+	using namespace skillsn;
+	back_claw.Toggle();
+	back_claw.Toggle();
+	turnAngle(100_deg, okapi::ChassisController::swing::left);
+
+	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 1_tile});
+	myIMU->setOffset(90);
 	basic_goal_grab();
+
 	return;
 	// auton_skils();
 	climb();

@@ -25,7 +25,7 @@ private:
         drive.brake(curr_brake);
     }
 
-    const bool PID_TUNING = true;
+    const bool PID_TUNING = false;
     int index = 0;
    okapi::Timer claw_t;
 

@@ -66,6 +66,11 @@ namespace skillsn
         setPID();
         drive.chassis->moveDistance(length);
     }
+    void moveDistanceAsync(okapi::QLength length)
+    {
+        setPID();
+        drive.chassis->moveDistanceAsync(length);
+    }
 
     void monitorStuckage()
     {
@@ -151,11 +156,16 @@ void climb()
     printf("CLIMBEEDDDD\n");
 }
 
+void custom_stuckage()
+{
+    pros::delay(500);
+    skillsn::monitorStuckage();
+}
 void auton_skils()
 {
     claw.Leave();
     using namespace skillsn;
-    Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
+    //Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
 
     drive.chassis->setState(okapi::OdomState{x : 5_tile + 2.5_in, y : 5.5_tile});
     myIMU->setOffset(90);
@@ -174,7 +184,6 @@ void auton_skils()
     drive.chassis->setSwing(okapi::ChassisController::swing::none);
     drive.chassis->driveToPoint({4.5_tile, 3_tile}, false);
 
-
     currently_carrying = NO_GOAL;
     setPID();
     drive.chassis->driveToPoint({4.7_tile, 2_tile - 13_in});
@@ -185,7 +194,7 @@ void auton_skils()
 
     drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, true, -19_in);
     currently_carrying = SLOW_BC;
-    moveDistance(-12_in);
+    moveDistanceAsync(-12_in);
     monitorStuckage();
     back_claw.ArmSetNum(0);
 
@@ -198,8 +207,9 @@ void auton_skils()
     back_claw.ArmSetNumWait(2);
 
     moveDistance(10_in);
-    drive.chassis->driveToPoint({0.5_tile, 4.5_tile + 2_in}, true, -14_in);
-    monitorStuckage();
+    auto a = pros::Task(custom_stuckage);
+    drive.chassis->driveToPoint({0.5_tile, 4.5_tile + 2_in}, true, -13_in);
+    //monitorStuckage();
     back_claw.ArmSetNum(0);
 
     drive.chassis->driveToPoint({1.5_tile, 4.5_tile}, true);
