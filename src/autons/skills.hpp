@@ -91,46 +91,64 @@ namespace skillsn
 
 void climb()
 {
-    const okapi::QAngularSpeed LIMIT_ANGLE = 3_deg / 1_s;
-    const double DRIVE_SPEED = 0.6;
-    const okapi::QLength POST_MOVE_DIST = -0.5_in;
-
     using namespace skillsn;
-    auto med = std::make_unique<okapi::MedianFilter<3>>();
-    // auto v = okapi::VelMathFactory::createPtr(360, , 60_ms);
     currently_carrying = SLOW_BC;
     setPID();
-    drive.setMaxVelocity(40);
-    monitorStuckage();
+
+    const okapi::QAngularSpeed LIMIT_ANGLE = 12_deg / 1_s;
+    const double DRIVE_SPEED = 1;
+    const okapi::QLength POST_MOVE_DIST = -0.5_in;
+
+    auto med = std::make_unique<okapi::MedianFilter<3>>();
+    auto v = okapi::VelMathFactory::createPtr(360, std::make_unique<okapi::PassthroughFilter>(okapi::PassthroughFilter()), 120_ms);
+
+    auto settled = okapi::TimeUtilFactory::withSettledUtilParams(3, 3, 2_s);
+
+    drive.setMaxVelocity(20);
+
     okapi::QAngularSpeed dtheta = 1_deg / 1_s;
 
-    auto pid = okapi::IterativePosPIDController({0, ControllerScreen.myvals[1] * 1e-4, ControllerScreen.myvals[2] * 1e-4}, okapi::TimeUtilFactory::withSettledUtilParams(5, 9, 999_ms));
-    pid.setIntegralLimits(-DRIVE_SPEED, DRIVE_SPEED);
-    pid.setOutputLimits(-DRIVE_SPEED, DRIVE_SPEED);
-    pid.setTarget(0);
-    pid.step(-25);
+    const double P = DRIVE_SPEED / 25;
+
+    med->filter(myIMUy->get());
+    med->filter(myIMUy->get());
+    med->filter(myIMUy->get());
     printf("STARTING\n");
-    while (!pid.isSettled())
+    do
     {
-        drive.chassis->getModel()->driveVector(pid.step(med->filter(myIMUy->get())), 0);
+
         static int count = 0;
+
+        auto imuval = myIMUy->get();
+        auto p = P;
+        if ((count % 20) < 10)
+            p *= 0.5;
+
+        auto val = -med->filter(imuval) * p - 0.015 * dtheta.convert(1_deg / 1_s);
+        if (dtheta.abs() > LIMIT_ANGLE)
+            val -= 0.03 * dtheta.convert(1_deg / 1_s);
+        val = std::clamp(val, -DRIVE_SPEED, DRIVE_SPEED);
+
+        drive.chassis->getModel()->driveVector(val, 0);
+
         if (!(count % 10))
-            printf("print %f %f %f\n", pid.getProcessValue(), pid.getOutput(), pid.getError());
+            printf("print %f %f %f\n", imuval, val, dtheta.convert(1_deg / 1_s));
 
         count++;
-        pros::delay(10);
-    }
-    // while (dtheta < LIMIT_ANGLE || myIMUy->get() < -25)
-    //{
-    //     dtheta = v->step(myIMUy->get());
-    //     drive.chassis->getModel()->driveVector(DRIVE_SPEED, 0);
-    //     //moveDistance(1_in);
-    //     printf("print %f %f\n", dtheta.convert(1_deg / 1_s), myIMUy->get());
-    //     pros::delay(5);
-    // }
+
+        if (!(count % 3))
+            dtheta = v->step(med->getOutput());
+        // if (!(count % 20))
+        //{
+        //     drive.chassis->getModel()->driveVector(0, 0);
+        //     pros::delay(120);
+        // }
+
+        pros::delay(20);
+    } while (!settled.getSettledUtil()->isSettled(med->getOutput()));
 
     drive.chassis->getModel()->driveVector(0.0, 0);
-    // moveDistance(POST_MOVE_DIST);
+    printf("CLIMBEEDDDD\n");
 }
 
 void auton_skils()
