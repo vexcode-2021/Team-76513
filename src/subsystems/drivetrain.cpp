@@ -52,6 +52,7 @@ void Drivetrain::init()
             .withChassisControllerTimeUtilFactory(ConfigurableTimeUtilFactory(50, 5, .2_s))
             .withOdometry()
             .buildOdometry();
+    chassis->setDefaultStateMode(okapi::StateMode::CARTESIAN);
 
     // chassis2 = std::make_shared<Drive>(Drive(HARDWARE::drive_motors_left2, HARDWARE::drive_motors_right2, HARDWARE::IMUPORT, HARDWARE::drive_chassis_scale.wheelDiameter.convert(1_in), 200, 1));
 

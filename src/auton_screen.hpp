@@ -30,6 +30,7 @@ void main_auton()
 void addAutons()
 {
 	ez::as::auton_selector.add_autons({
+		Auton("SKills\n\nDesc.", auton_skils),
 		Auton("RIGHT AWP\n\nDesc.", right_awp),
 		Auton("LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),
 		Auton("3LEFT AWP Turn\n\naaaaaaaaaaaaaaa", drop_left_awp),

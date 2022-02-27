@@ -168,44 +168,45 @@ void auton_skils()
     moveDistance(4_in);
 
     back_claw.ArmSetNumWait(0);
-    moveDistance(4_in);
 
     drive.chassis->setSwing(okapi::ChassisController::swing::left);
     drive.chassis->turnToPoint({4.5_tile, 3_tile});
     drive.chassis->setSwing(okapi::ChassisController::swing::none);
-    drive.chassis->driveToPoint({4.5_tile, 3_tile}, false, 13_in);
+    drive.chassis->driveToPoint({4.5_tile, 3_tile}, false);
 
-    currently_carrying = SLOW_BC;
-    moveDistance(7_in);
-    claw.Clasp();
-    claw.ArmSetNum(1);
 
     currently_carrying = NO_GOAL;
     setPID();
     drive.chassis->driveToPoint({4.7_tile, 2_tile - 13_in});
     back_claw.ArmSetNumWait(2);
-    drive.chassis->moveDistanceAsync(15_in);
+    drive.chassis->moveDistanceAsync(10_in);
     monitorStuckage();
-    claw.Clasp();
-    claw.ArmSetNum(1);
+    claw.Leave();
 
     drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, true, -19_in);
     currently_carrying = SLOW_BC;
-    moveDistance(-5_in);
+    moveDistance(-12_in);
+    monitorStuckage();
     back_claw.ArmSetNum(0);
 
     currently_carrying = NO_GOAL;
     setPID();
-    drive.chassis->driveToPoint({5.3_tile, 1.5_tile}, true);
+    //drive.chassis->driveToPoint({5.3_tile, 1.5_tile}, true);
 
     claw.ArmSetNum(3);
-    drive.chassis->driveToPoint({5.3_tile, 5.5_tile + 3_in}, true);
+    drive.chassis->driveToPoint({5.3_tile, 5.0_tile}, true);
+    back_claw.ArmSetNumWait(2);
 
-    drive.chassis->driveToPoint({4.5_tile, 5.5_tile + 3_in});
-    claw.ArmSetNumWait(1);
+    moveDistance(10_in);
+    drive.chassis->driveToPoint({0.5_tile, 4.5_tile + 2_in}, true, -14_in);
+    monitorStuckage();
+    back_claw.ArmSetNum(0);
 
-    currently_carrying = SLOW_BC;
-    moveDistance(25_in);
+    drive.chassis->driveToPoint({1.5_tile, 4.5_tile}, true);
+    turnToAngle(0_deg);
 
-    climb();
+    moveDistance(-75_in);
+    turnToAngle(45_deg);
+    back_claw.ArmSetNumWait(2);
+    moveDistance(90_in);
 }

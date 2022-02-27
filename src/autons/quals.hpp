@@ -72,22 +72,17 @@ void drop_left_awp()
 }
 void grab_tallneu()
 {
-    // grab_tallneu_base(55_in, 27_in, 65_in);
-    // drive.moveDistance(1.5_tile);
+    claw.Leave();
 
-    // drive.chassis->setMaxVelocity(75);
-    // drive.chassis->moveDistance(.5_tile);
-    // claw.Clasp();
+    drive.setMaxVelocity(600);
+    drive.chassis->model().tank(1, 1);
+    while (drive.chassis->getState().y < 73_in - 8_in)
+        pros::delay(10);
 
-    // back_claw.ArmSetNum(999);
-    // back_claw.WaitUntilSettled();
+    drive.chassis->model().tank(0, 0);
+    claw.Clasp();
 
-    // drive.turnAngle(90_deg);
-    // front_line_up(1.3, 3, 3, false, Vision::YELLOW);
-
-    // back_claw.ArmSetNum(1);
-    // drive.turnAngle(30_deg);
-    // drive.moveDistance(2_tile);
+    skillsn::moveDistance(-50_in);
 }
 void right_awp()
 {
@@ -132,12 +127,12 @@ void grab_neuu(bool right = true)
         using namespace skillsn;
         currently_carrying = ONE_GOAL;
 
-       // turnToAngle(30_deg, okapi::ChassisController::swing::left);
-       // turnToAngle(45_deg);
-       // front_intake(3_s, Vision::YELLOW);
-       // currently_carrying = TWO_GOAL;
+        // turnToAngle(30_deg, okapi::ChassisController::swing::left);
+        // turnToAngle(45_deg);
+        // front_intake(3_s, Vision::YELLOW);
+        // currently_carrying = TWO_GOAL;
 
-       // turnToAngle(45_deg);
+        // turnToAngle(45_deg);
         moveDistance(3_tile);
         return;
     }
@@ -161,7 +156,7 @@ void grab_neuu(bool right = true)
 
     drive.chassis->setMaxVelocity(90);
 
-    //drive.chassis->turnToAngle(90_deg);
+    // drive.chassis->turnToAngle(90_deg);
     drive.chassis->moveDistance(-2_tile);
 
     //    claw.ArmSetNum(1);

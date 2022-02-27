@@ -3,8 +3,37 @@
 #include "autons/quals.hpp"
 #include "autons/skills.hpp"
 
+void basic_goal_grab()
+{
+	claw.Leave();
+
+	drive.setMaxVelocity(600);
+	drive.chassis->model().tank(1, 1);
+	while (drive.chassis->getState().y < 2_tile )
+		pros::delay(10);
+
+	drive.chassis->model().tank(0, 0);
+	claw.Clasp();
+
+	skillsn::moveDistance(-2_tile);
+	skillsn::monitorStuckage();
+}
+
 void testing_routine()
 {
+	basic_goal_grab();
+	return;
+	// auton_skils();
+	climb();
+	return;
+
+	drive.chassis->moveDistanceAsync(3_tile);
+	skillsn::monitorStuckage();
+	drive.chassis->moveDistance(-3_in);
+	drive.chassis->moveDistance(-12_in);
+	drive.chassis->moveDistance(-24_in);
+
+	return;
 
 	const okapi::QAngularSpeed LIMIT_ANGLE = -7_deg / 1_s;
 	const double DRIVE_SPEED = 0.45;
@@ -41,24 +70,4 @@ void testing_routine()
 	// noooo//grab_neuu(false);
 
 	// drop_left_awp();
-}
-
-void basic_goal_grab()
-{
-	claw.Leave();
-	drive.chassis->setState(okapi::OdomState{x : 4.5_tile, y : 8_in});
-	myIMU->setOffset(90);
-
-	drive.setMaxVelocity(600);
-	drive.chassis->model().tank(1, 1);
-	while (drive.chassis->getState().y < 3_tile - 8_in)
-		pros::delay(10);
-
-	drive.chassis->model().tank(0, 0);
-	claw.Clasp();
-	claw.ArmSetRelative(4);
-
-	drive.chassis->model().tank(-1, -1);
-	pros::delay(1200);
-	drive.chassis->model().tank(0, 0);
 }

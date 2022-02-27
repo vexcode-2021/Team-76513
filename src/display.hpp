@@ -2,6 +2,10 @@
 #pragma once
 class
 {
+    public:
+    std::valarray<double> myvals = {130 , 225 , 89 };
+    std::valarray<double> factors = {1e-6, 1e-7, 1e-8};
+ 
 private:
     pros::Controller master = pros::Controller(pros::E_CONTROLLER_MASTER);
     pros::Controller partner = pros::Controller(pros::E_CONTROLLER_PARTNER);
@@ -23,9 +27,7 @@ private:
 
     const bool PID_TUNING = true;
     int index = 0;
-    std::valarray<double> myvals = {15, 22, 1};
-    std::valarray<double> factors = {1e-4, 1e-4, 1e-6};
-    okapi::Timer claw_t;
+   okapi::Timer claw_t;
 
     void pidTune()
     {
