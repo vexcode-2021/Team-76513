@@ -72,17 +72,24 @@ void drop_left_awp()
 }
 void grab_tallneu()
 {
-    claw.Leave();
+    //claw.Leave();
+    back_claw.ArmSetNum(2);
 
-    drive.setMaxVelocity(600);
-    drive.chassis->model().tank(1, 1);
-    while (drive.chassis->getState().y < 73_in - 8_in)
-        pros::delay(10);
+    //drive.setMaxVelocity(150);
+    //drive.chassis->model().tank(1, 1);
+    //while (drive.chassis->getState().y < 73_in - 8_in)
+    //    pros::delay(10);
 
-    drive.chassis->model().tank(0, 0);
-    claw.Clasp();
+    //drive.chassis->model().tank(0, 0);
 
-    skillsn::moveDistance(-50_in);
+    skillsn::moveDistance(-65_in);
+    skillsn::currently_carrying = skillsn::SLOW_BC;
+    skillsn::moveDistance(-7_in);
+
+    back_claw.ArmSetNumWait(1);
+
+    skillsn::currently_carrying = skillsn::NO_GOAL;
+    skillsn::moveDistance(50_in);
 }
 void right_awp()
 {

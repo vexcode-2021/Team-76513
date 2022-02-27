@@ -218,5 +218,5 @@ void auton_skils()
     moveDistance(-75_in);
     turnToAngle(45_deg);
     back_claw.ArmSetNumWait(2);
-    moveDistance(90_in);
+    moveDistance(200_in);
 }

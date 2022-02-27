@@ -8,8 +8,8 @@ void basic_goal_grab()
 	claw.Leave();
 
 	drive.setMaxVelocity(600);
-	drive.chassis->model().tank(1, 1);
-	while (drive.chassis->getState().y < 2_tile)
+	drive.chassis->model().tank(.6, .6);
+	while (drive.chassis->getState().y < 2_tile - 0_in)
 		pros::delay(10);
 
 	drive.chassis->model().tank(0, 0);
@@ -22,12 +22,12 @@ void basic_goal_grab()
 void myawp_left()
 {
 	using namespace skillsn;
-	back_claw.Toggle();
-	back_claw.Toggle();
+	back_piston_extend_retract_seq();
+	pros::delay(1200);
 	turnAngle(100_deg, okapi::ChassisController::swing::left);
 
-	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 1_tile});
-	myIMU->setOffset(90);
+	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 0_tile});
+	myIMU->setOffset(-90);
 	basic_goal_grab();
 }
 
