@@ -3,20 +3,61 @@
 #include "autons/quals.hpp"
 #include "autons/skills.hpp"
 
-void basic_goal_grab()
+void basic_goal_grabe(bool mode) // mode isn't read
 {
+
+	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 1_tile - 1_in});
 	claw.Leave();
 
 	drive.setMaxVelocity(600);
-	drive.chassis->model().tank(.6, .6);
-	while (drive.chassis->getState().y < 2_tile - 0_in)
+	// drive.chassis->model().tank(.8, .8);
+	drive.chassis->model().left(1);
+	drive.chassis->model().right(1);
+	while (drive.chassis->getState().y < 3_tile - 6_in - 14_in)
+		pros::delay(10);
+
+	drive.chassis->model().left(.3);
+	drive.chassis->model().right(.3);
+	while (drive.chassis->getState().y < 3_tile - 6_in)
 		pros::delay(10);
 
 	drive.chassis->model().tank(0, 0);
 	claw.Clasp();
 
 	skillsn::moveDistance(-2_tile);
-	skillsn::monitorStuckage();
+}
+
+void basic_goal_grab() {
+	basic_goal_grabe(true);
+}
+
+
+
+void basic_neugoal_grab(bool move = true)
+{
+
+	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 0_tile - 0_in});
+	claw.Leave();
+
+	drive.setMaxVelocity(600);
+	// drive.chassis->model().tank(.8, .8);
+	drive.chassis->model().left(1);
+	drive.chassis->model().right(1);
+	while (drive.chassis->getState().y < 3_tile - 2_in - 19_in)
+		pros::delay(10);
+
+	drive.chassis->model().left(.3);
+	drive.chassis->model().right(.3);
+	while (drive.chassis->getState().y < 3_tile - 2_in - 2_in)
+		pros::delay(10);
+
+	drive.chassis->model().tank(0, 0);
+	claw.Clasp();
+
+	if (move)
+	{
+		skillsn::moveDistance(-2_tile);
+	}
 }
 
 void myawp_left()
@@ -34,9 +75,26 @@ void myawp_left()
 void testing_routine()
 {
 
-	return;
 	using namespace skillsn;
+	basic_neugoal_grab();
+	turnAngle(-38_deg - 9.5_deg - 90_deg);
+	claw.Leave();
+	moveDistance(-24.5_in);
+	back_claw.Clasp();
+	pros::delay(300);
+	moveDistance(25_in);
+
+	return;
+	turnAngle(-(360_deg - 2* (5.0 / 7.0 * 180_deg)), okapi::ChassisController::swing::left);
+moveDistance(-4_in);
 	back_claw.Toggle();
+	pros::delay(200);
+	//turnAngle(-38_deg);// -38 lines it up
+	turnToAngle(-55_deg); // a little more makes it not run into the platform
+	moveDistance(2_tile);
+
+	//	basic_goal_grab();
+	return;
 	back_claw.Toggle();
 	turnAngle(100_deg, okapi::ChassisController::swing::left);
 

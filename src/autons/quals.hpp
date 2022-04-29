@@ -74,6 +74,7 @@ void grab_tallneu()
 {
     //claw.Leave();
     back_claw.ArmSetNum(2);
+    pros::delay(1000);
 
     //drive.setMaxVelocity(150);
     //drive.chassis->model().tank(1, 1);
@@ -82,14 +83,12 @@ void grab_tallneu()
 
     //drive.chassis->model().tank(0, 0);
 
-    skillsn::moveDistance(-65_in);
-    skillsn::currently_carrying = skillsn::SLOW_BC;
-    skillsn::moveDistance(-7_in);
+    skillsn::moveDistance(-40_in);
 
-    back_claw.ArmSetNumWait(1);
+    back_claw.ArmSetNumWait(0);
 
     skillsn::currently_carrying = skillsn::NO_GOAL;
-    skillsn::moveDistance(50_in);
+    skillsn::moveDistance(40_in);
 }
 void right_awp()
 {

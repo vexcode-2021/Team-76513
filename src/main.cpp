@@ -5,6 +5,7 @@
 
 #include "auton_screen.hpp"
 #include "display.hpp"
+#include "pros-grafana-lib/api.h"
 
 void opctrl_drivetrain()
 {
@@ -97,6 +98,19 @@ pros::Task *back_claw_task = nullptr;
 void print()
 {
 	pros::Imu imu_sensor(HARDWARE::IMUPORT);
+
+	auto manager = std::make_shared<grafanalib::GUIManager>();
+	manager->setRefreshRate(20);
+
+	grafanalib::Variable<std::shared_ptr<okapi::IterativePosPIDController>> forwpid("PID Forw", skillsn::getChassisPID()->distancePid);
+	forwpid.add_getter(
+		"Inp", [](std::shared_ptr<okapi::IterativePosPIDController> c) -> double
+		{ return (double) c->getProcessValue(); });
+
+	 forwpid.add_getter(		"Out", [](std::shared_ptr<okapi::IterativePosPIDController> c) -> double	{ return (double) c->getOutput(); });
+	manager->registerDataHandler(&forwpid);
+	manager->startTask();
+
 	while (true)
 	{
 		//		printf("pot %f %f\n", HARDWARE::POTL->get(), HARDWARE::POTR->get());
@@ -107,6 +121,7 @@ void print()
 		//		printf("MYIMU %f %d\n", myIMU->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
 		//		printf("MYIMUy %f %d\n", myIMUy->get(), static_cast<std::int32_t>(myIMU->get() * 100.0));
 		//
+		printf("hi %x\n", pros::c::competition_get_status());
 		printf("temp, torq, power arm: %f %f %f\n", pros::c::motor_get_temperature(HARDWARE::CLAW_ARM_MOTOR1.getPort()), pros::c::motor_get_torque(HARDWARE::CLAW_ARM_MOTOR1.getPort()), pros::c::motor_get_power(HARDWARE::CLAW_ARM_MOTOR1.getPort()));
 		printf("drive temperature %f %f %f %f %f %f tq:%f N\n", pros::c::motor_get_temperature(12), pros::c::motor_get_temperature(13), pros::c::motor_get_temperature(15), pros::c::motor_get_temperature(17), pros::c::motor_get_temperature(18), pros::c::motor_get_temperature(19), drive.getForce().convert(1_n));
 		//
@@ -133,15 +148,15 @@ void sg3_warn()
 	//  Here, 0b101, ENABLED,NO_AUTON,CONNECTED is my wanted state
 	//  when it reaches the wanted state (i.e.) status returned is 0b101, the answer is 0
 	// until the answer is 0 (i.e. while ans != 0), it loops and waits
-	while ((pros::c::competition_get_status() ^ (0b100)) != 0)
+	while ((pros::c::competition_get_status() ^ (0b1100)) != 0)
 	{
 		pros::delay(1000);
 	}
 	// printf("SG# FINISH DELAYING\n");
 
 	// after it finishes looping, i.e. when driver control starts
-	// we need to wait for 1:45 - 0:40 = 1:05 (65s) and then buzz at 40s
-	pros::delay((1_min + 5_s).convert(1_ms));
+	// we need to wait for 1:45 - 0:25 = 1:25 and then buzz at 40s
+	pros::delay((1_min + 20_s).convert(1_ms));
 
 	// first rumble partner to pre-warn, then rumble main controller, then re-rumble partner to remind
 	int retries = 0;
@@ -360,6 +375,12 @@ void opcontrol()
 		if (printf_state_button.changedToPressed())
 		{
 			back_claw.Toggle();
+		};
+
+static auto awppis_state_button = okapi::ControllerButton(ButtonMapping::claw_controller, okapi::ControllerDigital::A);
+		if (awppis_state_button.changedToPressed())
+		{
+			awp_piston->toggle();
 		};
 
 		static auto back_button = okapi::ControllerButton(ButtonMapping::claw_controller, okapi::ControllerDigital::down);

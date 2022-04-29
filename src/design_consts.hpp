@@ -48,6 +48,9 @@ namespace HARDWARE
     const char BACK_CLAW_PORT = 'E';
     const bool BACK_CLAW_REVERSED = true;
 
+    const char AWP_PISTON = 'H';
+    const bool AWP_PISTON_REVERSED = true;
+
     const int VISION_FRONT = 8;
     const int VISION_BACK = 14;
     const int IMUPORT = 20;

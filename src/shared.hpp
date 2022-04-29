@@ -11,12 +11,13 @@ BackClaw back_claw;
 Drivetrain drive;
 std::shared_ptr<okapi::IMU> myIMU = std::make_shared<okapi::IMU>(okapi::IMU(HARDWARE::IMUPORT));
 std::shared_ptr<okapi::IMU> myIMUy = std::make_shared<okapi::IMU>(okapi::IMU(HARDWARE::IMUPORT, okapi::IMUAxes::y));
+std::shared_ptr<Piston> awp_piston = std::make_shared<Piston>(Piston(HARDWARE::AWP_PISTON, HARDWARE::AWP_PISTON_REVERSED, false));
 
 std::shared_ptr<okapi::AsyncMotionProfileController> profileController;
 
 okapi::ADIUltrasonic ultrasonic = okapi::ADIUltrasonic(HARDWARE::ULTRASONIC_FRONT_OUTPUT, HARDWARE::ULTRASONIC_FRONT_INPUT, std::make_unique<okapi::MedianFilter<5>>());
 
-namespace okapi
+    namespace okapi
 {
     constexpr QLength tile = 24 * inch;
     namespace literals

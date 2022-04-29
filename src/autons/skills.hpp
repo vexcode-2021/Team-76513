@@ -26,14 +26,27 @@ namespace skillsn
         claw.WaitUntilSettled();
     }
 
-    void setPID()
+      std::shared_ptr<okapi::ChassisControllerPID> chassisPID;
+
+    std::shared_ptr<okapi::ChassisControllerPID> getChassisPID()
+    {
+        if (chassisPID != nullptr) {
+            return chassisPID;
+        }
+        chassisPID = std::static_pointer_cast<okapi::ChassisControllerPID>(std::static_pointer_cast<okapi::DefaultOdomChassisController>(drive.chassis)->getChassisController());
+        return getChassisPID();
+    }
+
+  void setPID()
     {
         drive.setMaxVelocity(PID_CONSTS::AUTO_DRIVE_SPEEDS[currently_carrying]);
 
         auto mygains = PID_CONSTS::AUTO_DRIVE_GAINS;
 
-        std::static_pointer_cast<okapi::ChassisControllerPID>(std::static_pointer_cast<okapi::DefaultOdomChassisController>(drive.chassis)->getChassisController())->setGains(mygains[currently_carrying][0], mygains[currently_carrying][1], mygains[currently_carrying][2]);
+        getChassisPID()->setGains(mygains[currently_carrying][0], mygains[currently_carrying][1], mygains[currently_carrying][2]);
     }
+
+
 
     void turnToAngle(okapi::QAngle angle, okapi::ChassisController::swing swing = okapi::ChassisController::swing::none)
     {
@@ -165,7 +178,7 @@ void auton_skils()
 {
     claw.Leave();
     using namespace skillsn;
-    //Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
+    // Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
 
     drive.chassis->setState(okapi::OdomState{x : 5_tile + 2.5_in, y : 5.5_tile});
     myIMU->setOffset(90);
@@ -200,7 +213,7 @@ void auton_skils()
 
     currently_carrying = NO_GOAL;
     setPID();
-    //drive.chassis->driveToPoint({5.3_tile, 1.5_tile}, true);
+    // drive.chassis->driveToPoint({5.3_tile, 1.5_tile}, true);
 
     claw.ArmSetNum(3);
     drive.chassis->driveToPoint({5.3_tile, 5.0_tile}, true);
@@ -209,7 +222,7 @@ void auton_skils()
     moveDistance(10_in);
     auto a = pros::Task(custom_stuckage);
     drive.chassis->driveToPoint({0.5_tile, 4.5_tile + 2_in}, true, -13_in);
-    //monitorStuckage();
+    // monitorStuckage();
     back_claw.ArmSetNum(0);
 
     drive.chassis->driveToPoint({1.5_tile, 4.5_tile}, true);
