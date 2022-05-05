@@ -33,11 +33,12 @@ void myemptyfunc() {
 void addAutons()
 {
 	ez::as::auton_selector.add_autons({
+		Auton("SKills\n\nDesc.", auton_skils),
 		Auton("GO FORW GRAB\n\n", basic_goal_grab),
-		Auton("NEU GOAL GRAB\n\n", grab_tallneu),
+		Auton("RIGHT AWP + GRAB TALL\n\ndrop ring and do the turn thing", right_awp_grab),
+		Auton("NEU GOAL GRAB\n\n", basic_neugoal_grab_true),
 		Auton("LEFT AWP Turn\n\ndrop ring and do the turn thing", myawp_left),
 		Auton("NONE\n\n", myemptyfunc),
-		Auton("SKills\n\nDesc.", auton_skils),
 	});
 }
 void on_screen_button()

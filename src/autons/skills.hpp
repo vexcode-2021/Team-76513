@@ -177,59 +177,77 @@ void custom_stuckage()
 void auton_skils()
 {
     claw.Leave();
+    printf("HIIIIIIIIIIIIIII\n");
     using namespace skillsn;
     // Visions[Vision::FRONT]->sensor->set_exposure(32); // TODO remove
 
-    drive.chassis->setState(okapi::OdomState{x : 5_tile + 2.5_in, y : 5.5_tile});
+    drive.chassis->setState(okapi::OdomState{x : 5_tile - 4_in, y : 5.5_tile});
     myIMU->setOffset(90);
 
-    currently_carrying = NO_GOAL;
-    back_claw.ArmSetNumWait(2);
-    moveDistance(-8_in);
+        currently_carrying = SLOW_BC;
+        moveDistance(-10_in);
 
-    back_claw.ArmSetNumWait(1);
-    moveDistance(4_in);
+        back_claw.Clasp();
+        awp_piston->extend();
+        pros::delay(500);
+        awp_piston->retract();
+	//now we have rings and goal grabbed
 
-    back_claw.ArmSetNumWait(0);
-
-    drive.chassis->setSwing(okapi::ChassisController::swing::left);
-    drive.chassis->turnToPoint({4.5_tile, 3_tile});
-    drive.chassis->setSwing(okapi::ChassisController::swing::none);
-    drive.chassis->driveToPoint({4.5_tile, 3_tile}, false);
 
     currently_carrying = NO_GOAL;
     setPID();
-    drive.chassis->driveToPoint({4.7_tile, 2_tile - 13_in});
-    back_claw.ArmSetNumWait(2);
-    drive.chassis->moveDistanceAsync(10_in);
-    monitorStuckage();
+    drive.chassis->setSwing(okapi::ChassisController::swing::left);
+    drive.chassis->turnToPoint({4.7_tile, 3_tile});
+    drive.chassis->setSwing(okapi::ChassisController::swing::none);
+    drive.chassis->driveToPoint({4.7_tile, 3.5_tile}, false);
+
+    drive.chassis->driveToPoint({4.5_tile, 2_tile - 13_in});
+    //moveDistanceAsync(10_in);
+    //monitorStuckage();
     claw.Leave();
 
-    drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, true, -19_in);
-    currently_carrying = SLOW_BC;
-    moveDistanceAsync(-12_in);
+    drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, false, 14_in);
+    moveDistanceAsync(14_in);
     monitorStuckage();
-    back_claw.ArmSetNum(0);
+    claw.Clasp();
+    drive.chassis->driveToPoint({3_tile, 1.5_tile}, true);
+    back_claw.Leave();
+    drive.chassis->driveToPoint({3_tile, 4_tile});
+    claw.Leave();
+
+
+    drive.chassis->driveToPoint({0.5_tile, 4.5_tile}, false, 10_in);
+    moveDistanceAsync(10_in);
+    monitorStuckage();
+
+    claw.Clasp();
+
+    drive.chassis->driveToPoint({1.7_tile, 4_tile}, true);
+    drive.chassis->driveToPoint({1.5_tile, 2_tile});
+
+    return;
+    back_claw.Leave();
+
+    drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, true, -06_in);
+    currently_carrying = SLOW_BC;
+    back_claw.Clasp();
 
     currently_carrying = NO_GOAL;
     setPID();
-    // drive.chassis->driveToPoint({5.3_tile, 1.5_tile}, true);
 
-    claw.ArmSetNum(3);
     drive.chassis->driveToPoint({5.3_tile, 5.0_tile}, true);
-    back_claw.ArmSetNumWait(2);
+    back_claw.Leave();
 
     moveDistance(10_in);
     auto a = pros::Task(custom_stuckage);
-    drive.chassis->driveToPoint({0.5_tile, 4.5_tile + 2_in}, true, -13_in);
-    // monitorStuckage();
-    back_claw.ArmSetNum(0);
+    drive.chassis->driveToPoint({0.5_tile, 4.5_tile + 2_in}, true, -10_in);
+    back_claw.Clasp();
 
-    drive.chassis->driveToPoint({1.5_tile, 4.5_tile}, true);
-    turnToAngle(0_deg);
+    drive.chassis->driveToPoint({1.5_tile, 4.5_tile}, false);
+    turnToAngle(-90_deg);
 
-    moveDistance(-75_in);
+    moveDistance(75_in);
     turnToAngle(45_deg);
-    back_claw.ArmSetNumWait(2);
+    back_claw.Leave();
     moveDistance(200_in);
 }

@@ -3,7 +3,7 @@
 
 void back_piston_extend_retract_seq()
 {
-	back_claw.piston.extend();
+	awp_piston->extend();
 	pros::delay(250);
-	back_claw.piston.retract();
+	awp_piston->retract();
 }

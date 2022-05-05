@@ -27,16 +27,15 @@ void basic_goal_grabe(bool mode) // mode isn't read
 	skillsn::moveDistance(-2_tile);
 }
 
-void basic_goal_grab() {
+void basic_goal_grab()
+{
 	basic_goal_grabe(true);
 }
-
-
 
 void basic_neugoal_grab(bool move = true)
 {
 
-	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 0_tile - 0_in});
+	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 0_tile + 0_in});
 	claw.Leave();
 
 	drive.setMaxVelocity(600);
@@ -59,6 +58,9 @@ void basic_neugoal_grab(bool move = true)
 		skillsn::moveDistance(-2_tile);
 	}
 }
+void basic_neugoal_grab_true() {
+	basic_neugoal_grab(true);
+}
 
 void myawp_left()
 {
@@ -67,31 +69,72 @@ void myawp_left()
 	pros::delay(1200);
 	turnAngle(100_deg, okapi::ChassisController::swing::left);
 
-	drive.chassis->setState(okapi::OdomState{x : 0_tile, y : 0_tile});
 	myIMU->setOffset(-90);
 	basic_goal_grab();
+}
+
+void right_awp_grab() {
+	using namespace skillsn;
+	drive.chassis->setState(okapi::OdomState{x : 5.5_tile, y : 0_tile + 7.5_in});
+	myIMU->setOffset(-180);
+	currently_carrying = SLOW_BC;
+	moveDistance(-8_in);
+
+	back_claw.Clasp();
+	awp_piston->extend();
+	pros::delay(500);
+	awp_piston->retract();
+
+	currently_carrying = NO_GOAL;
+	turnAngle(135_deg + 2_deg, okapi::ChassisController::swing::left);
+	back_claw.Leave();
+	claw.Leave();
+	//moveDistance(2_tile + 6_in);
+	//currently_carrying = SLOW_BC;
+	//moveDistance(8_in);
+
+	drive.chassis->model().left(1);
+	drive.chassis->model().right(1);
+	while (drive.chassis->getState().y < 3_tile - 2_in - 19_in - 10_in)
+		pros::delay(10);
+
+	drive.chassis->model().left(.3);
+	drive.chassis->model().right(.3);
+	while (drive.chassis->getState().y < 3_tile - 2_in - 2_in - 10_in)
+		pros::delay(10);
+
+	claw.Clasp();
+	currently_carrying = NO_GOAL;
+	moveDistance(-2_tile);
 }
 
 void testing_routine()
 {
 
-	using namespace skillsn;
-	basic_neugoal_grab();
-	turnAngle(-38_deg - 9.5_deg - 90_deg);
-	claw.Leave();
-	moveDistance(-24.5_in);
-	back_claw.Clasp();
-	pros::delay(300);
-	moveDistance(25_in);
+	using namespace skillsn; // don't do anything in real match
+	return;
+basic_neugoal_grab();return;
+		return;
+
+		//grab tall and then short
+		// doesn't work because swing needs to traverse a little bit first
+	//basic_neugoal_grab();
+	//turnAngle(-38_deg - 9.5_deg - 90_deg);
+	//claw.Leave();
+	//moveDistance(-24.5_in);
+	//back_claw.Clasp();
+	//pros::delay(300);
+	//moveDistance(25_in);
 
 	return;
-	turnAngle(-(360_deg - 2* (5.0 / 7.0 * 180_deg)), okapi::ChassisController::swing::left);
-moveDistance(-4_in);
-	back_claw.Toggle();
-	pros::delay(200);
-	//turnAngle(-38_deg);// -38 lines it up
-	turnToAngle(-55_deg); // a little more makes it not run into the platform
-	moveDistance(2_tile);
+	// idk
+	//turnAngle(-(360_deg - 2 * (5.0 / 7.0 * 180_deg)), okapi::ChassisController::swing::left);
+	//moveDistance(-4_in);
+	//back_claw.Toggle();
+	//pros::delay(200);
+	//// turnAngle(-38_deg);// -38 lines it up
+	//turnToAngle(-55_deg); // a little more makes it not run into the platform
+	//moveDistance(2_tile);
 
 	//	basic_goal_grab();
 	return;
