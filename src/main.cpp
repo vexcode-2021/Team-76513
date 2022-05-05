@@ -109,6 +109,13 @@ void print()
 
 	 forwpid.add_getter(		"Out", [](std::shared_ptr<okapi::IterativePosPIDController> c) -> double	{ return (double) c->getOutput(); });
 	manager->registerDataHandler(&forwpid);
+
+	grafanalib::Variable<std::shared_ptr<okapi::OdomChassisController>> odovar("Odom", drive.chassis);
+	odovar.add_getter("Angle", [](std::shared_ptr<okapi::OdomChassisController> c) -> double {return c->getState().theta.convert(1_deg);});
+	odovar.add_getter("X", [](std::shared_ptr<okapi::OdomChassisController> c) -> double {return c->getState().x.convert(1_in);});
+	odovar.add_getter("Y", [](std::shared_ptr<okapi::OdomChassisController> c) -> double {return c->getState().y.convert(1_in);});
+	manager->registerDataHandler(&odovar);
+
 	manager->startTask();
 
 	while (true)
@@ -279,9 +286,9 @@ void fi_t()
 {
 	pre_auton();
 
-	// front_intake(50_s, Vision::ANY);
-	skillsn::currently_carrying = skillsn::SLOW_BC;
-	skillsn::moveDistance(6_in);
+	 front_intake(50_s, Vision::ANY);
+	//skillsn::currently_carrying = skillsn::SLOW_BC;
+	//skillsn::moveDistance(6_in);
 	post_auton();
 	pros::Task::current().suspend();
 }
@@ -290,13 +297,15 @@ void fi2_t()
 	pre_auton();
 
 	skillsn::currently_carrying = skillsn::NO_GOAL;
-	while (true)
-	{
-		drive.chassis->turnAngle(90_deg);
-		drive.chassis->moveDistance(10_in);
-		//	skillsn::turnAngle(90_deg);
-		//	skillsn::moveDistance(10_in);
-	}
+	skillsn::turnAngle(90_deg);
+
+	//while (true)
+	//{
+	//	drive.chassis->turnAngle(90_deg);
+	//	drive.chassis->moveDistance(10_in);
+	//	//	skillsn::turnAngle(90_deg);
+	//	//	skillsn::moveDistance(10_in);
+	//}
 	pros::delay(20);
 	post_auton();
 	pros::Task::current().suspend();
