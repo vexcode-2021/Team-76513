@@ -27,7 +27,7 @@ namespace HARDWARE
 
     // there needs to be one per motor above
     const std::initializer_list<std::pair<char, int>> LIMIT_SWITCHES = {
-        {'H', 2},
+        //{'H', 2},
         {'G', -9},
     };
 
