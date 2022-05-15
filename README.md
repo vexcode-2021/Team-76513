@@ -27,7 +27,7 @@ HUGE THANKS to:
 
 To see code history: <https://github.com/vexcode-2021/Team-76513/commits/pros>
 
-This requires a custom version of OkapiLib at ../OkapiLib from https://github.com/vex-76513/vex-76513-OkapiLib/commit/3c5879de0cd2fa5e4e163e399a040e8aa5de1798
+This requires a custom version of OkapiLib at ../OkapiLib from https://github.com/vexcode-2021/Team-76513-OkapiLib/commit/3c5879de0cd2fa5e4e163e399a040e8aa5de1798
 And EZ-Template at ../EZ-Template from https://github.com/EZ-Robotics/EZ-Template/commit/aeaf1785d5a580da01bc50094d1646d7a82383dc
 
 To init environment:
