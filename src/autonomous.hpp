@@ -58,7 +58,8 @@ void basic_neugoal_grab(bool move = true)
 		skillsn::moveDistance(-2_tile);
 	}
 }
-void basic_neugoal_grab_true() {
+void basic_neugoal_grab_true()
+{
 	basic_neugoal_grab(true);
 }
 
@@ -73,12 +74,13 @@ void myawp_left()
 	basic_goal_grab();
 }
 
-void right_awp_grab() {
+void right_awp_grab()
+{
 	using namespace skillsn;
 	drive.chassis->setState(okapi::OdomState{x : 5.5_tile, y : 0_tile + 7.5_in});
 	myIMU->setOffset(-180);
 	currently_carrying = SLOW_BC;
-	moveDistance(-8_in);
+	moveDistance(-12_in);
 
 	back_claw.Clasp();
 	awp_piston->extend();
@@ -86,12 +88,12 @@ void right_awp_grab() {
 	awp_piston->retract();
 
 	currently_carrying = NO_GOAL;
-	turnAngle(135_deg + 2_deg, okapi::ChassisController::swing::left);
+	turnAngle(135_deg + 2_deg - 2_deg, okapi::ChassisController::swing::left);
 	back_claw.Leave();
 	claw.Leave();
-	//moveDistance(2_tile + 6_in);
-	//currently_carrying = SLOW_BC;
-	//moveDistance(8_in);
+	// moveDistance(2_tile + 6_in);
+	// currently_carrying = SLOW_BC;
+	// moveDistance(8_in);
 
 	drive.chassis->model().left(1);
 	drive.chassis->model().right(1);
@@ -112,29 +114,36 @@ void testing_routine()
 {
 
 	using namespace skillsn; // don't do anything in real match
+	ez::as::auton_selector.call_selected_auton();
 	return;
-basic_neugoal_grab();return;
-		return;
+	moveDistanceAsync(10_in);
+	monitorStuckage();
+	moveDistance(-10_in);
 
-		//grab tall and then short
-		// doesn't work because swing needs to traverse a little bit first
-	//basic_neugoal_grab();
-	//turnAngle(-38_deg - 9.5_deg - 90_deg);
-	//claw.Leave();
-	//moveDistance(-24.5_in);
-	//back_claw.Clasp();
-	//pros::delay(300);
-	//moveDistance(25_in);
+	return;
+	basic_neugoal_grab();
+	return;
+	return;
+
+	// grab tall and then short
+	//  doesn't work because swing needs to traverse a little bit first
+	// basic_neugoal_grab();
+	// turnAngle(-38_deg - 9.5_deg - 90_deg);
+	// claw.Leave();
+	// moveDistance(-24.5_in);
+	// back_claw.Clasp();
+	// pros::delay(300);
+	// moveDistance(25_in);
 
 	return;
 	// idk
-	//turnAngle(-(360_deg - 2 * (5.0 / 7.0 * 180_deg)), okapi::ChassisController::swing::left);
-	//moveDistance(-4_in);
-	//back_claw.Toggle();
-	//pros::delay(200);
+	// turnAngle(-(360_deg - 2 * (5.0 / 7.0 * 180_deg)), okapi::ChassisController::swing::left);
+	// moveDistance(-4_in);
+	// back_claw.Toggle();
+	// pros::delay(200);
 	//// turnAngle(-38_deg);// -38 lines it up
-	//turnToAngle(-55_deg); // a little more makes it not run into the platform
-	//moveDistance(2_tile);
+	// turnToAngle(-55_deg); // a little more makes it not run into the platform
+	// moveDistance(2_tile);
 
 	//	basic_goal_grab();
 	return;

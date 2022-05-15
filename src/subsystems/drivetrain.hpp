@@ -47,9 +47,9 @@ public:
             chassis->getModel()->setBrakeMode(on ? okapi::AbstractMotor::brakeMode::hold : okapi::AbstractMotor::brakeMode::coast);
     }
 
-    void setMaxVelocity(double rpm)
+    void setMaxVelocity(double pct)
     {
-        chassis->setMaxVelocity(rpm * HARDWARE::drive_gearset.ratio);
+        chassis->setMaxVelocity(pct * HARDWARE::drive_gearset.ratio);
     }
 
     okapi::QForce getForce()

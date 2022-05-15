@@ -10,7 +10,7 @@ void main_auton()
 
 	ez::as::auton_selector.call_selected_auton();
 	return;
-	Visions[Vision::FRONT]->sensor->set_exposure(71); // TODO
+	//Visions[Vision::FRONT]->sensor->set_exposure(71); // TODO
 	printf("arm SETTLED\n");
 
 	if (SELECTED_AUTON_ROUTINE == awp_right)
@@ -33,12 +33,12 @@ void myemptyfunc() {
 void addAutons()
 {
 	ez::as::auton_selector.add_autons({
-		Auton("SKills\n\nDesc.", auton_skils),
 		Auton("GO FORW GRAB\n\n", basic_goal_grab),
-		Auton("RIGHT AWP + GRAB TALL\n\ndrop ring and do the turn thing", right_awp_grab),
 		Auton("NEU GOAL GRAB\n\n", basic_neugoal_grab_true),
 		Auton("LEFT AWP Turn\n\ndrop ring and do the turn thing", myawp_left),
 		Auton("NONE\n\n", myemptyfunc),
+		Auton("SKills\n\nDesc.", auton_skils),
+		Auton("RIGHT AWP + GRAB TALL\n\ndrop ring and do the turn thing", right_awp_grab),
 	});
 }
 void on_screen_button()

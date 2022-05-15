@@ -77,7 +77,7 @@ namespace skillsn
     void moveDistance(okapi::QLength length)
     {
         setPID();
-        drive.chassis->moveDistance(length);
+        drive.chassis->moveDistance(length );
     }
     void moveDistanceAsync(okapi::QLength length)
     {
@@ -91,13 +91,13 @@ namespace skillsn
         int count = 0;
         while (!drive.chassis->isSettled())
         {
-            if (drive.getForce() > 40_n)
+            if (drive.getForce() > 35_n)
                 count++;
             else if (count > 0)
                 count -= 1;
 
             // 1 sec of stuck
-            if (count > 20)
+            if (count > 10)
                 drive.chassis->stop();
             // stop will cause return on next loop
 
@@ -188,9 +188,8 @@ void auton_skils()
         moveDistance(-10_in);
 
         back_claw.Clasp();
-        awp_piston->extend();
-        pros::delay(500);
-        awp_piston->retract();
+        back_piston_extend_retract_seq();
+
 	//now we have rings and goal grabbed
 
 
@@ -206,23 +205,30 @@ void auton_skils()
     //monitorStuckage();
     claw.Leave();
 
-    drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, false, 14_in);
-    moveDistanceAsync(14_in);
-    monitorStuckage();
+    drive.chassis->driveToPoint({5.5_tile, 1.5_tile}, false, 19_in);
+	drive.chassis->model().left(.3);
+	drive.chassis->model().right(.3);
+    pros::delay(3000);
+    drive.chassis->model().tank(0,0);
     claw.Clasp();
-    drive.chassis->driveToPoint({3_tile, 1.5_tile}, true);
+    drive.chassis->driveToPoint({3_tile - 6_in, 1.5_tile + 9_in}, true);
     back_claw.Leave();
     drive.chassis->driveToPoint({3_tile, 4_tile});
     claw.Leave();
+    //claw.Leave();
 
 
-    drive.chassis->driveToPoint({0.5_tile, 4.5_tile}, false, 10_in);
-    moveDistanceAsync(10_in);
-    monitorStuckage();
+    drive.chassis->driveToPoint({0.5_tile, 4.5_tile - 8_in}, false, 18_in);
+	drive.chassis->model().left(.3);
+	drive.chassis->model().right(.3);
+    pros::delay(3000);
+    drive.chassis->model().tank(0,0);
+//    moveDistanceAsync(29_in);
+//    monitorStuckage();
 
     claw.Clasp();
 
-    drive.chassis->driveToPoint({1.7_tile, 4_tile}, true);
+    drive.chassis->driveToPoint({1.8_tile, 4_tile}, true);
     drive.chassis->driveToPoint({1.5_tile, 2_tile});
 
     return;

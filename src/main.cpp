@@ -116,7 +116,7 @@ void print()
 	odovar.add_getter("Y", [](std::shared_ptr<okapi::OdomChassisController> c) -> double {return c->getState().y.convert(1_in);});
 	manager->registerDataHandler(&odovar);
 
-	manager->startTask();
+	//manager->startTask();
 
 	while (true)
 	{
@@ -315,8 +315,11 @@ void opcontrol()
 {
 
 	printf("opinited\n");
+//drive.setMaxVelocity(100);
+//    drive.chassis->stop();
 	while (true)
 	{
+		
 		static okapi::ControllerButton drive_mode_button = okapi::ControllerButton(ButtonMapping::drive_controller, ButtonMapping::drive_mode_switch);
 
 		if (drive_mode_button.changedToPressed())
